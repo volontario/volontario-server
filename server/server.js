@@ -27,7 +27,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/locations', function(req, res) {
-  Location.find(function(_err, locations) {
+  Location.find({'category': req.query.category}, function(_err, locations) {
     return res.json(locations);
   });
 });
