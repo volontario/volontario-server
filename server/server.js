@@ -1,22 +1,5 @@
-var assert = require('assert');
-var config = require('config');
 var express = require('express');
-var mongoose = require('mongoose');
-
-var db = mongoose.connection;
-
-var locationSchema = new mongoose.Schema({
-  'category': String,
-  'location': {
-    'latitude': Number,
-    'longitude': Number
-  }
-});
-
-var Location = mongoose.model('Location', locationSchema);
-
-mongoose.connect(config.get('mongo').url);
-
+var m = require('./app/mongoose-connection.js');
 var app = express();
 
 // For debugging in development
@@ -27,7 +10,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/locations', function(req, res) {
-  Location.find({'category': req.query.category}, function(_err, locations) {
+  m.schemas.Location.find({'category': req.query.category}, function(_err, locations) {
     return res.json(locations);
   });
 });
