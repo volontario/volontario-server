@@ -10,7 +10,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/locations', function(req, res) {
-  m.schemas.Location.find({'category': req.query.category}, function(_err, locations) {
+  m.schemas.Location.find(req.query, function(_err, locations) {
     return res.json(locations);
   });
 });
