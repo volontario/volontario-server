@@ -26,7 +26,7 @@ Returns a list of events.
 | latitude | `float` | Latitude |
 | longitude | `float` | Longitude |
 | name | `string` | Name of the event |
-| originalID | `string` | ID in the original system |
+| originalId | `string` | ID in the original system |
 | url | `string` | URL for the event |
 
 Enters an event into the database

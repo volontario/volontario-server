@@ -29,7 +29,7 @@ module.exports = function (app, m) {
       'latitude',
       'longitude',
       'name',
-      'originalID',
+      'originalId',
       'url'
     ];
 
@@ -46,7 +46,7 @@ module.exports = function (app, m) {
       'latitude': req.body.latitude,
       'longitude': req.body.longitude,
       'name': req.body.name,
-      'originalID': req.body.originalID,
+      'originalId': req.body.originalId,
       'url': req.body.url
     });
 
