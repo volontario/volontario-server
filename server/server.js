@@ -2,8 +2,9 @@ var express = require('express');
 var m = require('./app/mongoose-connection.js');
 var app = express();
 
-// For debugging in development
-app.set('json spaces', 2);
+if (process.env.NODE_ENV === 'development') {
+  app.set('json spaces', 2);
+}
 
 app.get('/', function(req, res) {
   res.json({});
