@@ -18,7 +18,7 @@ module.exports = (function() {
 
   var locationSchema = new mongoose.Schema({
     'category': String,
-    'location': {
+    'coordinates': {
       'latitude': Number,
       'longitude': Number
     }
