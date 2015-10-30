@@ -6,20 +6,26 @@ API
 ---
 All responses are formatted in JSON.
 
-### `GET /`
+### Root
+
+#### `GET /`
 Returns an empty object for debugging. Consider Redis's `PONG`.
 
-### `GET /locations`
+### Locations
+
+#### `GET /locations`
 | Field | Meaning |
 |-------|:--------|
 | category | Filter by category |
 
 Returns a list of locations.
 
-### `GET /events`
+### Events
+
+#### `GET /events`
 Returns a list of events.
 
-### `POST /events`
+#### `POST /events`
 | Field | Type | Meaning |
 |-------|:---- |:--------|
 | category | `string` | Category, e.g. "charity" |
