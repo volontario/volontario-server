@@ -5,6 +5,17 @@ module.exports = (function() {
   var db = mongoose.connection;
   var schemas = {};
 
+  var eventSchema = new mongoose.Schema({
+    'category': String,
+    'coordinates': {
+      'latitude': Number,
+      'longitude': Number
+    },
+    'name': String,
+    'original_id': String,
+    'url': String
+  });
+
   var locationSchema = new mongoose.Schema({
     'category': String,
     'location': {
@@ -13,6 +24,7 @@ module.exports = (function() {
     }
   });
 
+  schemas.Event = mongoose.model('Event', eventSchema);
   schemas.Location = mongoose.model('Location', locationSchema);
 
   mongoose.connect(config.get('mongo').url);
