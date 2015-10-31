@@ -1,7 +1,9 @@
 module.exports = (function() {
   var prefixGet = function(body) {
-    var id = 'VOLONTARIO_' + process.env.NODE_ENV.toUpperCase() + '_' + body;
-    return process.env[id];
+    var environment = process.env.NODE_ENV || 'development';
+    var id = 'VOLONTARIO_' + environment + '_' + body;
+    var upperCaseId = id.toUpperCase();
+    return process.env[upperCaseId];
   };
 
   return {
