@@ -54,4 +54,10 @@ module.exports = function (app, m) {
       return res.json({'ok': error ? false : true}); // Umm
     });
   });
+
+  app.get('/users', function(req, res) {
+    m.schemas.User.find(req.query, function(_err, users) {
+      return res.json(users);
+    });
+  });
 };

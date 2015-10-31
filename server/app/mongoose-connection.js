@@ -23,8 +23,22 @@ module.exports = function(config) {
     }
   });
 
+  var userSchema = new mongoose.Schema({
+    'coordinates': {
+      'latitude': Number,
+      'longitude': Number
+    },
+    'dateOfBirth': Date,
+    'email': String,
+    'familyName': String,
+    'givenName': String,
+    'phoneNumber': String,
+    'tags': [String]
+  });
+
   schemas.Event = mongoose.model('Event', eventSchema);
   schemas.Location = mongoose.model('Location', locationSchema);
+  schemas.User = mongoose.model('User', userSchema);
 
   mongoose.connect(config.MONGO_URL, {
     user: config.MONGO_USERNAME,
