@@ -1,5 +1,4 @@
-module.exports = (function() {
-  var config = require('config');
+module.exports = function(config) {
   var mongoose = require('mongoose');
 
   var db = mongoose.connection;
@@ -27,10 +26,13 @@ module.exports = (function() {
   schemas.Event = mongoose.model('Event', eventSchema);
   schemas.Location = mongoose.model('Location', locationSchema);
 
-  mongoose.connect(config.get('mongo').url);
+  mongoose.connect(config.MONGO_URL, {
+    user: config.MONGO_USERNAME,
+    password: config.MONGO_PASSWORD
+  });
 
   return {
     db: db,
     schemas: schemas
   };
-}());
+};
