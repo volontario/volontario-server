@@ -84,8 +84,8 @@ module.exports = function (app, m) {
     }
 
     // This is crappy and I admit it
-    var event = new m.schemas.Event({
-      'dateOfBirth': req.body.dateOfBirth,
+    var user = new m.schemas.User({
+      'dateOfBirth': new Date(req.body.dateOfBirth),
       'familyName': req.body.familyName,
       'givenName': req.body.givenName,
       'latitude': req.body.latitude,
@@ -95,8 +95,15 @@ module.exports = function (app, m) {
       'tags': req.body.tags.split(',')
     });
 
-    event.save(function(error, event) {
-      return res.json({'ok': error ? false : true}); // Umm
+    user.save(function(error, _user) {
+      if (error) {
+        return res.json({
+          'ok': false,
+          'error': error
+        });
+      } else {
+        return res.json({'ok': true});
+      }
     });
   });
 
