@@ -23,6 +23,8 @@ if (process.env.NODE_ENV === 'development') {
   app.set('json spaces', 2);
 }
 
-app.listen(config.EXPRESS_PORT, function() {
+// For compatibility with Heroku
+var expressPort = config.EXPRESS_PORT || process.env.PORT;
+app.listen(expressPort, function() {
   console.log('Server up');
 });
