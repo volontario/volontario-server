@@ -36,3 +36,22 @@ Returns a list of events.
 | url | `string` | URL for the event |
 
 Enters an event into the database
+
+### Users
+
+#### `GET /users`
+Returns a list of users.
+
+#### `POST /users`
+| Field | Type | Meaning |
+|-------|:---- |:--------|
+| dateOfBirth | `string` | Date of birth formatted as `YYYY-MM-DD`
+| email | `string` | Email address
+| familyName | `string` | Family name |
+| givenName | `string` | Given name |
+| latitude | `float` | Latitude |
+| longitude | `float` | Longitude |
+| phoneNumber | `string` | Phone number with country code |
+| tags | `string,string,...` | Comma separated list of tags |
+
+Enters a user into the database
