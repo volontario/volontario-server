@@ -1,5 +1,5 @@
 /**
- * All the controllers
+ * All the routes
  *
  * @param app - Express.js application
  * @param m - Mongoose connection

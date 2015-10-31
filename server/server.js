@@ -1,23 +1,10 @@
-var config = (function() {
-  var prefixGet = function(body) {
-    var id = 'VOLONTARIO_' + process.env.NODE_ENV.toUpperCase() + '_' + body;
-    return process.env[id];
-  };
-
-  return {
-    EXPRESS_PORT: prefixGet('EXPRESS_PORT'),
-    MONGO_URL: prefixGet('MONGO_URL'),
-    MONGO_USERNAME: prefixGet('MONGO_USERNAME'),
-    MONGO_PASSWORD: prefixGet('MONGO_PASSWORD'),
-  };
-}());
-
+var config = require('./app/config.js');
+var routesLoader = require('./app/routes-loader.js');
 var express = require('express');
 var mongooseConnection = require('./app/mongoose-connection.js')(config);
-var controllerLoader = require('./app/controllers-loader.js');
 
 var app = express();
-controllerLoader(app, mongooseConnection);
+routesLoader(app, mongooseConnection);
 
 if (process.env.NODE_ENV === 'development') {
   app.set('json spaces', 2);
@@ -25,6 +12,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // For compatibility with Heroku
 var expressPort = config.EXPRESS_PORT || process.env.PORT;
+
 app.listen(expressPort, function() {
   console.log('Server up');
 });
