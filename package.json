@@ -11,7 +11,14 @@
     "type": "git",
     "url": "git+https://github.com/firoxer/volontar.io.git"
   },
-  "author": "Oliver Vartiainen",
+  "author": "",
+  "contributors": [{
+	"name": "Oliver Vartiainen",
+	"email": "firoxer@gmail.com"
+  }, {
+	"name": "Jarkko Laaksonen",
+	"email": "jarkko@24rent.fi"
+  }],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/firoxer/volontar.io/issues"
