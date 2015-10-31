@@ -42,6 +42,7 @@ module.exports = function (app, m) {
       return res.json({'missingFields': missingFields});
     }
 
+    // This is crappy and I admit it
     var event = new m.schemas.Event({
       'latitude': req.body.latitude,
       'longitude': req.body.longitude,
@@ -60,4 +61,43 @@ module.exports = function (app, m) {
       return res.json(users);
     });
   });
+
+  app.post('/users', function(req, res) {
+    var requiredFields = [
+      'dateOfBirth',
+      'familyName',
+      'givenName',
+      'latitude',
+      'longitude',
+      'email',
+      'phoneNumber',
+      'tags'
+    ];
+
+    var missingFields = requiredFields.reduce(function(mf, rf) {
+      return req.body[rf] === undefined ? mf.concat(rf) : mf;
+    }, []);
+
+    // Early exit in case of missing fields
+    if (missingFields.length !== 0) {
+      return res.json({'missingFields': missingFields});
+    }
+
+    // This is crappy and I admit it
+    var event = new m.schemas.Event({
+      'dateOfBirth': req.body.dateOfBirth,
+      'familyName': req.body.familyName,
+      'givenName': req.body.givenName,
+      'latitude': req.body.latitude,
+      'longitude': req.body.longitude,
+      'email': req.body.email,
+      'phoneNumber': req.body.phoneNumber,
+      'tags': req.body.tags.split(',')
+    });
+
+    event.save(function(error, event) {
+      return res.json({'ok': error ? false : true}); // Umm
+    });
+  });
+
 };
