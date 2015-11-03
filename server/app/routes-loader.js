@@ -1,10 +1,14 @@
+function runMiner(mongooseConnection, name) {
+  require('./miner-master.js')(mongooseConnection, name);
+}
+
 /**
  * All the routes
  *
  * @param app - Express.js application
  * @param m - Mongoose connection
  */
-module.exports = function (app, m) {
+module.exports = function (m, app) {
   var bodyParser = require('body-parser');
   app.use(bodyParser.urlencoded({extended: true}));
 
@@ -28,6 +32,7 @@ module.exports = function (app, m) {
   });
 
   app.get('/events', function(req, res) {
+    runMiner(m, 'toimintasuomi');
     m.schemas.Event.find(req.query, function(_err, events) {
       return res.json(events);
     });

@@ -11,7 +11,8 @@ module.exports = function(config) {
       'longitude': Number
     },
     'name': String,
-    'original_id': String,
+    'originalId': String,
+    'origin': String,
     'url': String
   });
 

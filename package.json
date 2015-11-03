@@ -4,7 +4,7 @@
   "description": "Backend for volontar.io",
   "main": "server/server.js",
   "scripts": {
-	"start": "node server/server.js",
+    "start": "node server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -12,13 +12,16 @@
     "url": "git+https://github.com/firoxer/volontar.io.git"
   },
   "author": "",
-  "contributors": [{
-	"name": "Oliver Vartiainen",
-	"email": "firoxer@gmail.com"
-  }, {
-	"name": "Jarkko Laaksonen",
-	"email": "jarkko@24rent.fi"
-  }],
+  "contributors": [
+    {
+      "name": "Oliver Vartiainen",
+      "email": "firoxer@gmail.com"
+    },
+    {
+      "name": "Jarkko Laaksonen",
+      "email": "jarkko@24rent.fi"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/firoxer/volontar.io/issues"
@@ -29,6 +32,7 @@
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
     "mongodb": "^2.0.47",
-    "mongoose": "^4.2.3"
+    "mongoose": "^4.2.3",
+    "request": "^2.65.0"
   }
 }
