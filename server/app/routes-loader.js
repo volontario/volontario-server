@@ -19,12 +19,8 @@ module.exports = function (m, app) {
   app.get('/locations', function(req, res) {
     m.schemas.Location.find(req.query, function(_err, locations) {
       var strippedLocations = locations.map(function(loc) {
-        return {
-          category: loc.category,
-          coordinates: loc.coordinates,
-          title: loc.title,
-          url: loc.url
-        };
+        loc._id = undefined;
+        return loc;
       });
 
       return res.json(strippedLocations);
