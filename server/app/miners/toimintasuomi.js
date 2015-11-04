@@ -11,13 +11,7 @@ module.exports = function(mongooseConnection) {
     });
 
     eventsWithCoordinates.forEach(function(e) {
-      var existingEvent = mongooseConnection.schemas.Event.find({originalId: e.id}).limit(1);
-      if (existingEvent) {
-        console.log('Not adding an existing event');
-        return;
-      }
-
-      var newEvent = new mongooseConnection.schemas.Event({
+      var event = new mongooseConnection.schemas.Event({
         category: 'voluntaryWork',
         coordinates: {
           latitude: e.coordinates[0],
@@ -29,11 +23,17 @@ module.exports = function(mongooseConnection) {
         url: e.uri
       });
 
-      newEvent.save(function(error, _data) {
-        if (error) {
-          console.log(error);
+      delete event._id;
+      mongooseConnection.schemas.Event.findOneAndUpdate(
+        {originalId: event.originalId},
+        event,
+        {upsert: true},
+        function(error) {
+          if (error) {
+            console.log(error);
+          }
         }
-      });
+      );
     });
   });
 };
