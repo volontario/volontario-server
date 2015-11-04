@@ -14,7 +14,16 @@ module.exports = function (app, m) {
 
   app.get('/locations', function(req, res) {
     m.schemas.Location.find(req.query, function(_err, locations) {
-      return res.json(locations);
+      var strippedLocations = locations.map(function(loc) {
+        return {
+          category: loc.category,
+          coordinates: loc.coordinates,
+          title: loc.title,
+          url: loc.url
+        };
+      });
+
+      return res.json(strippedLocations);
     });
   });
 
