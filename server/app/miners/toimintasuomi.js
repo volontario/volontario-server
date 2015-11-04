@@ -13,6 +13,7 @@ module.exports = function(mongooseConnection) {
     eventsWithCoordinates.forEach(function(e) {
       var existingEvent = mongooseConnection.schemas.Event.find({originalId: e.id}).limit(1);
       if (existingEvent) {
+        console.log('Not adding an existing event');
         return;
       }
 
