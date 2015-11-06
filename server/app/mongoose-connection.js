@@ -1,4 +1,10 @@
 module.exports = function(config) {
+  ['MONGO_URL', 'MONGO_USERNAME', 'MONGO_PASSWORD'].forEach(function(envvar) {
+    if (config[envvar] === undefined) {
+      throw new Error('Mongo is missing ' + envvar);
+    }
+  });
+
   var mongoose = require('mongoose');
 
   var db = mongoose.connection;
