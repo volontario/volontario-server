@@ -1,7 +1,7 @@
-var config = require('./app/config.js');
-var routesLoader = require('./app/routes-loader.js');
+var config = require('./config.js');
+var routesLoader = require('./routes-loader.js');
 var express = require('express');
-var mongooseConnection = require('./app/mongoose-connection.js')(config);
+var mongooseConnection = require('./mongoose-connection.js')(config);
 
 var app = express();
 routesLoader(mongooseConnection, app);

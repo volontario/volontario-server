@@ -1,15 +1,15 @@
 {
-  "name": "volontar.io-server",
+  "name": "volontario-server",
   "version": "0.0.1",
   "description": "Backend for volontar.io",
-  "main": "server/server.js",
+  "main": "app/main.js",
   "scripts": {
-    "start": "node server/server.js",
+    "start": "node app/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/firoxer/volontar.io.git"
+    "url": "git+https://github.com/volontario/volontario-server.git"
   },
   "author": "",
   "contributors": [
@@ -24,9 +24,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/firoxer/volontar.io/issues"
+    "url": "https://github.com/volontario/volontario-server/issues"
   },
-  "homepage": "https://github.com/firoxer/volontar.io",
+  "homepage": "https://github.com/volontario/volontario-server",
   "dependencies": {
     "assert": "^1.3.0",
     "body-parser": "^1.14.1",
