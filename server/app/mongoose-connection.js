@@ -27,7 +27,9 @@ module.exports = function(config) {
     'coordinates': {
       'latitude': Number,
       'longitude': Number
-    }
+    },
+    'title': String,
+    'url': String
   });
 
   var userSchema = new mongoose.Schema({
