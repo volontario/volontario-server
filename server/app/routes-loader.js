@@ -19,11 +19,45 @@ module.exports = function (m, app) {
   app.get('/locations', function(req, res) {
     m.schemas.Location.find(req.query, function(_err, locations) {
       var strippedLocations = locations.map(function(loc) {
-        loc._id = undefined;
+        loc._id = loc.__v = undefined;
         return loc;
       });
 
       return res.json(strippedLocations);
+    });
+  });
+
+  app.post('/locations', function(req, res) {
+    var requiredFields = [
+      'category',
+      'latitude',
+      'longitude',
+      'title',
+      'url'
+    ];
+
+    var missingFields = requiredFields.reduce(function(mf, rf) {
+      return req.body[rf] === undefined ? mf.concat(rf) : mf;
+    }, []);
+
+    // Early exit in case of missing fields
+    if (missingFields.length !== 0) {
+      return res.json({'missingFields': missingFields});
+    }
+
+    // This is crappy and I admit it
+    var location = new m.schemas.Location({
+      'category': req.body.category,
+      'coordinates': {
+        'latitude': req.body.latitude,
+        'longitude': req.body.longitude
+      },
+      'title': req.body.title,
+      'url': req.body.url
+    });
+
+    location.save(function(error) {
+      return res.json({'ok': error ? false : true});
     });
   });
 
