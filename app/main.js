@@ -1,3 +1,4 @@
+require('babel-core/register');
 var config = require('./config.js');
 var routesLoader = require('./routes-loader.js');
 var express = require('express');

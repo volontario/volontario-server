@@ -28,7 +28,7 @@ module.exports = function (m, app) {
   });
 
   app.post('/locations', function(req, res) {
-    var requiredFields = [
+    let requiredFields = [
       'category',
       'latitude',
       'longitude',
