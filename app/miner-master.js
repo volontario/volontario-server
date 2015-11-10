@@ -1,5 +1,12 @@
-module.exports = function(schemas, subordinate) {
-  let miner = require(`./miners/${subordinate}.js`);
+module.exports = function(schemas) {
+  return {
+    _requireMiner: function(name) {
+      return require(`./miners/${name}.js`);
+    },
 
-  miner(schemas);
+    mine: function(name) {
+      let miner = this._requireMiner(name);
+      miner(schemas);
+    }
+  };
 };

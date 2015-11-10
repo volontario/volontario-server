@@ -5,11 +5,11 @@
  * @return {object} Routes per HTTP method
  */
 module.exports = function(schemas) {
-  let minerMaster = require('../miner-master.js');
+  let minerMaster = require('../miner-master.js')(schemas);
 
   return {
     get: function(req, res) {
-      minerMaster(schemas, 'toimintasuomi');
+      minerMaster.mine('toimintasuomi');
       schemas.Event.find(req.query, (_error, events) => res.json(events));
     },
     post: function(req, res) {
