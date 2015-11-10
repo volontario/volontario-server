@@ -1,4 +1,6 @@
 module.exports = function() {
+  console.log('Initializing...');
+
   // Initialization
   var config = require('./config.js');
   var routesLoader = require('./routes-loader.js');
@@ -18,6 +20,6 @@ module.exports = function() {
 
   // Booting
   app.listen(config.EXPRESS_PORT, function() {
-    console.log('Server up');
+    console.log('Server up!');
   });
 };
