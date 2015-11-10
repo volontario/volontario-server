@@ -5,10 +5,10 @@
  * @param {function} app Express.js application
  */
 module.exports = function(m, app) {
-  let rc = require('./controllers/root.js')();
-  let lc = require('./controllers/locations.js')(m.schemas);
-  let ec = require('./controllers/events.js')(m.schemas);
-  let uc = require('./controllers/users.js')(m.schemas);
+  let rc = require('../controllers/root.js')();
+  let lc = require('../controllers/locations.js')(m.schemas);
+  let ec = require('../controllers/events.js')(m.schemas);
+  let uc = require('../controllers/users.js')(m.schemas);
 
   app.get('/', rc.get);
 

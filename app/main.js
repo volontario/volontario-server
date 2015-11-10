@@ -4,10 +4,11 @@ module.exports = function() {
   // Initialization
   let app = require('express')();
   let bodyParser = require('body-parser');
-  let config = require('./config.js');
+  let config = require('./config/config.js');
   let mongoose = require('mongoose');
-  let mongooseConnection = require('./mongoose-connector.js')(config, mongoose);
-  let routeBinder = require('./route-binder.js');
+  let mongooseConnection =
+    require('./database/mongoose-connector.js')(config, mongoose);
+  let routeBinder = require('./routing/binder.js');
 
   // Configuration
   app.use(bodyParser.urlencoded({extended: true}));

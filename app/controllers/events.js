@@ -5,7 +5,7 @@
  * @return {object} Routes per HTTP method
  */
 module.exports = function(schemas) {
-  let minerMaster = require('../miner-master.js')(schemas);
+  let minerMaster = require('../mining/master.js')(schemas);
 
   return {
     get: function(req, res) {
