@@ -1,16 +1,10 @@
 module.exports = function(config) {
-  ['MONGO_URL', 'MONGO_USERNAME', 'MONGO_PASSWORD'].forEach(function(envvar) {
-    if (config[envvar] === undefined) {
-      throw new Error('Mongo is missing ' + envvar);
-    }
-  });
+  let mongoose = require('mongoose');
 
-  var mongoose = require('mongoose');
+  let db = mongoose.connection;
+  let schemas = {};
 
-  var db = mongoose.connection;
-  var schemas = {};
-
-  var eventSchema = new mongoose.Schema({
+  let eventSchema = new mongoose.Schema({
     category: String,
     coordinates: {
       latitude: Number,
@@ -22,7 +16,7 @@ module.exports = function(config) {
     url: String
   });
 
-  var locationSchema = new mongoose.Schema({
+  let locationSchema = new mongoose.Schema({
     category: String,
     coordinates: {
       latitude: Number,
@@ -32,7 +26,7 @@ module.exports = function(config) {
     url: String
   });
 
-  var userSchema = new mongoose.Schema({
+  let userSchema = new mongoose.Schema({
     coordinates: {
       latitude: Number,
       longitude: Number

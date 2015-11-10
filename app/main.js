@@ -2,14 +2,11 @@ module.exports = function() {
   console.log('Initializing...');
 
   // Initialization
-  var config = require('./config.js');
-  var routesLoader = require('./routes-loader.js');
-  var express = require('express');
-  var mongooseConnection = require('./mongoose-connection.js')(config);
-  var bodyParser = require('body-parser');
-
-  var app = express();
-  routesLoader(mongooseConnection, app);
+  let app = require('express')();
+  let bodyParser = require('body-parser');
+  let config = require('./config.js');
+  let mongooseConnection = require('./mongoose-connection.js')(config);
+  let routeBinder = require('./route-binder.js');
 
   // Configuration
   app.use(bodyParser.urlencoded({extended: true}));
@@ -18,8 +15,9 @@ module.exports = function() {
     app.set('json spaces', 2);
   }
 
+  // Route binding
+  routeBinder(mongooseConnection, app);
+
   // Booting
-  app.listen(config.EXPRESS_PORT, function() {
-    console.log('Server up!');
-  });
+  app.listen(config.EXPRESS_PORT, () => console.log('Server up!'));
 };

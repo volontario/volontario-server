@@ -7,8 +7,8 @@
 module.exports = function(schemas) {
   return {
     get: function(req, res) {
-      schemas.Location.find(req.query, function(_err, locations) {
-        var strippedLocations = locations.map(function(loc) {
+      schemas.Location.find(req.query, function(_error, locations) {
+        let strippedLocations = locations.map(function(loc) {
           loc._id = loc.__v = undefined;
           return loc;
         });
@@ -16,6 +16,7 @@ module.exports = function(schemas) {
         return res.json(strippedLocations);
       });
     },
+
     post: function(req, res) {
       let requiredFields = [
         'category',
@@ -25,7 +26,7 @@ module.exports = function(schemas) {
         'url'
       ];
 
-      var missingFields = requiredFields.reduce(function(mf, rf) {
+      let missingFields = requiredFields.reduce(function(mf, rf) {
         return req.body[rf] === undefined ? mf.concat(rf) : mf;
       }, []);
 
@@ -35,7 +36,7 @@ module.exports = function(schemas) {
       }
 
       // This is crappy and I admit it
-      var location = new schemas.Location({
+      let location = new schemas.Location({
         category: req.body.category,
         coordinates: {
           latitude: req.body.latitude,
@@ -45,9 +46,7 @@ module.exports = function(schemas) {
         url: req.body.url
       });
 
-      location.save(function(error) {
-        return res.json({ok: !error});
-      });
+      location.save(error => res.json({ok: !error}));
     }
   };
 };

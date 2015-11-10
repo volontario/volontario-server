@@ -1,22 +1,25 @@
 module.exports = (function() {
-  var DEFAULT_PORT = 8080;
+  const environment = process.env.NODE_ENV || 'production';
 
-  var environment = process.env.NODE_ENV || 'development';
+  const prefixGet = function(body) {
+    let id = `VOLONTARIO_${environment}_${body}`;
+    let upperCaseId = id.toUpperCase();
 
-  var prefixGet = function(body) {
-    var id = 'VOLONTARIO_' + environment + '_' + body;
-    var upperCaseId = id.toUpperCase();
+    if (process.env[upperCaseId] === undefined) {
+      throw new Error(`Missing envvar: ${upperCaseId}`);
+    }
+
     return process.env[upperCaseId];
   };
 
-  var expressPort = (function() {
+  const expressPort = (function() {
     if (prefixGet('EXPRESS_PORT')) {
       return prefixGet('EXPRESS_PORT');
     } else if (process.env.PORT) {
       return process.env.PORT;
     }
 
-    return DEFAULT_PORT;
+    throw new Error('Neither $VOLONTARIO_$ENV_EXPRESS_PORT nor $PORT is set');
   })();
 
   return {

@@ -1,17 +1,16 @@
 module.exports = function(schemas) {
-  var request = require('request');
+  const URL = 'https://www.toimintasuomi.fi/api/v1/vapaaehtoistoiminta.json';
 
-  var URL = 'https://www.toimintasuomi.fi/api/v1/vapaaehtoistoiminta.json';
+  let request = require('request');
 
   request(URL, function(error, response, body) {
-    var events = JSON.parse(body);
+    let events = JSON.parse(body);
 
-    var eventsWithCoordinates = events.filter(function(e) {
-      return e.coordinates && e.coordinates.length === 2;
-    });
+    let hasCoordinates = e => e.coordinates && e.coordinates.length === 2;
+    let eventsWithCoordinates = events.filter(hasCoordinates);
 
     eventsWithCoordinates.forEach(function(e) {
-      var event = new schemas.Event({
+      let event = new schemas.Event({
         category: 'voluntaryWork',
         coordinates: {
           latitude: e.coordinates[0],

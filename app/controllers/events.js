@@ -5,17 +5,15 @@
  * @return {object} Routes per HTTP method
  */
 module.exports = function(schemas) {
-  var minerMaster = require('../miner-master.js');
+  let minerMaster = require('../miner-master.js');
 
   return {
     get: function(req, res) {
       minerMaster(schemas, 'toimintasuomi');
-      schemas.Event.find(req.query, function(_err, events) {
-        return res.json(events);
-      });
+      schemas.Event.find(req.query, (_error, events) => res.json(events));
     },
     post: function(req, res) {
-      var requiredFields = [
+      let requiredFields = [
         'latitude',
         'longitude',
         'name',
@@ -23,7 +21,7 @@ module.exports = function(schemas) {
         'url'
       ];
 
-      var missingFields = requiredFields.reduce(function(mf, rf) {
+      let missingFields = requiredFields.reduce(function(mf, rf) {
         return req.body[rf] === undefined ? mf.concat(rf) : mf;
       }, []);
 
@@ -33,7 +31,7 @@ module.exports = function(schemas) {
       }
 
       // This is crappy and I admit it
-      var event = new schemas.Event({
+      let event = new schemas.Event({
         latitude: req.body.latitude,
         longitude: req.body.longitude,
         name: req.body.name,
@@ -41,9 +39,7 @@ module.exports = function(schemas) {
         url: req.body.url
       });
 
-      event.save(function(error) {
-        return res.json({ok: !error});
-      });
+      event.save(error => res.json({ok: !error}));
     }
   };
 };

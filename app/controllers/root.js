@@ -5,8 +5,6 @@
  */
 module.exports = function() {
   return {
-    get: function(req, res) {
-      res.json({});
-    }
+    get: (_req, res) => res.json({})
   };
 };

@@ -7,12 +7,10 @@
 module.exports = function(schemas) {
   return {
     get: function(req, res) {
-      schemas.User.find(req.query, function(_err, users) {
-        return res.json(users);
-      });
+      schemas.User.find(req.query, (_err, users) => res.json(users));
     },
     post: function(req, res) {
-      var requiredFields = [
+      let requiredFields = [
         'dateOfBirth',
         'familyName',
         'givenName',
@@ -23,7 +21,7 @@ module.exports = function(schemas) {
         'tags'
       ];
 
-      var missingFields = requiredFields.reduce(function(mf, rf) {
+      let missingFields = requiredFields.reduce(function(mf, rf) {
         return req.body[rf] === undefined ? mf.concat(rf) : mf;
       }, []);
 
@@ -33,7 +31,7 @@ module.exports = function(schemas) {
       }
 
       // This is crappy and I admit it
-      var user = new schemas.User({
+      let user = new schemas.User({
         dateOfBirth: new Date(req.body.dateOfBirth),
         familyName: req.body.familyName,
         givenName: req.body.givenName,
