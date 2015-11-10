@@ -1,15 +1,12 @@
-function runMiner(mongooseConnection, name) {
-  require('./miner-master.js')(mongooseConnection, name);
-}
-
 /**
  * All the routes
  *
- * @param app - Express.js application
- * @param m - Mongoose connection
+ * @param {object} m Mongoose connection
+ * @param {function} app Express.js application
  */
-module.exports = function (m, app) {
+module.exports = function(m, app) {
   var bodyParser = require('body-parser');
+  var minerMaster = require('./miner-master.js');
   app.use(bodyParser.urlencoded({extended: true}));
 
   app.get('/', function(req, res) {
@@ -42,27 +39,27 @@ module.exports = function (m, app) {
 
     // Early exit in case of missing fields
     if (missingFields.length !== 0) {
-      return res.json({'missingFields': missingFields});
+      return res.json({missingFields: missingFields});
     }
 
     // This is crappy and I admit it
     var location = new m.schemas.Location({
-      'category': req.body.category,
-      'coordinates': {
-        'latitude': req.body.latitude,
-        'longitude': req.body.longitude
+      category: req.body.category,
+      coordinates: {
+        latitude: req.body.latitude,
+        longitude: req.body.longitude
       },
-      'title': req.body.title,
-      'url': req.body.url
+      title: req.body.title,
+      url: req.body.url
     });
 
     location.save(function(error) {
-      return res.json({'ok': error ? false : true});
+      return res.json({ok: !error});
     });
   });
 
   app.get('/events', function(req, res) {
-    runMiner(m, 'toimintasuomi');
+    minerMaster(m, 'toimintasuomi');
     m.schemas.Event.find(req.query, function(_err, events) {
       return res.json(events);
     });
@@ -83,20 +80,20 @@ module.exports = function (m, app) {
 
     // Early exit in case of missing fields
     if (missingFields.length !== 0) {
-      return res.json({'missingFields': missingFields});
+      return res.json({missingFields: missingFields});
     }
 
     // This is crappy and I admit it
     var event = new m.schemas.Event({
-      'latitude': req.body.latitude,
-      'longitude': req.body.longitude,
-      'name': req.body.name,
-      'originalId': req.body.originalId,
-      'url': req.body.url
+      latitude: req.body.latitude,
+      longitude: req.body.longitude,
+      name: req.body.name,
+      originalId: req.body.originalId,
+      url: req.body.url
     });
 
-    event.save(function(error, event) {
-      return res.json({'ok': error ? false : true}); // Umm
+    event.save(function(error) {
+      return res.json({ok: !error});
     });
   });
 
@@ -124,31 +121,30 @@ module.exports = function (m, app) {
 
     // Early exit in case of missing fields
     if (missingFields.length !== 0) {
-      return res.json({'missingFields': missingFields});
+      return res.json({missingFields: missingFields});
     }
 
     // This is crappy and I admit it
     var user = new m.schemas.User({
-      'dateOfBirth': new Date(req.body.dateOfBirth),
-      'familyName': req.body.familyName,
-      'givenName': req.body.givenName,
-      'latitude': req.body.latitude,
-      'longitude': req.body.longitude,
-      'email': req.body.email,
-      'phoneNumber': req.body.phoneNumber,
-      'tags': req.body.tags.split(',')
+      dateOfBirth: new Date(req.body.dateOfBirth),
+      familyName: req.body.familyName,
+      givenName: req.body.givenName,
+      latitude: req.body.latitude,
+      longitude: req.body.longitude,
+      email: req.body.email,
+      phoneNumber: req.body.phoneNumber,
+      tags: req.body.tags.split(',')
     });
 
-    user.save(function(error, _user) {
+    user.save(function(error) {
       if (error) {
         return res.json({
-          'ok': false,
-          'error': error
+          ok: false,
+          error: !error
         });
-      } else {
-        return res.json({'ok': true});
       }
+
+      return res.json({ok: true});
     });
   });
-
 };

@@ -9,14 +9,14 @@ module.exports = (function() {
     return process.env[upperCaseId];
   };
 
-  var expressPort = (function () {
+  var expressPort = (function() {
     if (prefixGet('EXPRESS_PORT')) {
       return prefixGet('EXPRESS_PORT');
     } else if (process.env.PORT) {
       return process.env.PORT;
-    } else {
-      return DEFAULT_PORT;
     }
+
+    return DEFAULT_PORT;
   })();
 
   return {
@@ -24,6 +24,6 @@ module.exports = (function() {
     EXPRESS_PORT: expressPort,
     MONGO_URL: prefixGet('MONGO_URL'),
     MONGO_USERNAME: prefixGet('MONGO_USERNAME'),
-    MONGO_PASSWORD: prefixGet('MONGO_PASSWORD'),
+    MONGO_PASSWORD: prefixGet('MONGO_PASSWORD')
   };
-}());
+})();

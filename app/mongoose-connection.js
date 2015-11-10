@@ -11,38 +11,38 @@ module.exports = function(config) {
   var schemas = {};
 
   var eventSchema = new mongoose.Schema({
-    'category': String,
-    'coordinates': {
-      'latitude': Number,
-      'longitude': Number
+    category: String,
+    coordinates: {
+      latitude: Number,
+      longitude: Number
     },
-    'name': String,
-    'originalId': String,
-    'origin': String,
-    'url': String
+    name: String,
+    originalId: String,
+    origin: String,
+    url: String
   });
 
   var locationSchema = new mongoose.Schema({
-    'category': String,
-    'coordinates': {
-      'latitude': Number,
-      'longitude': Number
+    category: String,
+    coordinates: {
+      latitude: Number,
+      longitude: Number
     },
-    'title': String,
-    'url': String
+    title: String,
+    url: String
   });
 
   var userSchema = new mongoose.Schema({
-    'coordinates': {
-      'latitude': Number,
-      'longitude': Number
+    coordinates: {
+      latitude: Number,
+      longitude: Number
     },
-    'dateOfBirth': Date,
-    'email': String,
-    'familyName': String,
-    'givenName': String,
-    'phoneNumber': String,
-    'tags': [String]
+    dateOfBirth: Date,
+    email: String,
+    familyName: String,
+    givenName: String,
+    phoneNumber: String,
+    tags: [String]
   });
 
   schemas.Event = mongoose.model('Event', eventSchema);
