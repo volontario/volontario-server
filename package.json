@@ -2,9 +2,9 @@
   "name": "volontario-server",
   "version": "0.0.1",
   "description": "Backend for volontar.io",
-  "main": "app/main.js",
+  "main": "app/init.js",
   "scripts": {
-    "start": "node app/main.js",
+    "start": "node app/init.js",
     "test": "jasmine-node tests"
   },
   "repository": {
