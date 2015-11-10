@@ -5,7 +5,8 @@ module.exports = function() {
   let app = require('express')();
   let bodyParser = require('body-parser');
   let config = require('./config.js');
-  let mongooseConnection = require('./mongoose-connection.js')(config);
+  let mongoose = require('mongoose');
+  let mongooseConnection = require('./mongoose-connector.js')(config, mongoose);
   let routeBinder = require('./route-binder.js');
 
   // Configuration
