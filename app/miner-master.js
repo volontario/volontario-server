@@ -1,5 +1,5 @@
-module.exports = function(mongooseConnection, subordinate) {
+module.exports = function(schemas, subordinate) {
   var miner = require('./miners/' + subordinate + '.js');
 
-  miner(mongooseConnection);
+  miner(schemas);
 };

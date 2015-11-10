@@ -1,4 +1,4 @@
-module.exports = function(mongooseConnection) {
+module.exports = function(schemas) {
   var request = require('request');
 
   var URL = 'https://www.toimintasuomi.fi/api/v1/vapaaehtoistoiminta.json';
@@ -11,7 +11,7 @@ module.exports = function(mongooseConnection) {
     });
 
     eventsWithCoordinates.forEach(function(e) {
-      var event = new mongooseConnection.schemas.Event({
+      var event = new schemas.Event({
         category: 'voluntaryWork',
         coordinates: {
           latitude: e.coordinates[0],
@@ -24,7 +24,7 @@ module.exports = function(mongooseConnection) {
       });
 
       delete event._id;
-      mongooseConnection.schemas.Event.findOneAndUpdate(
+      schemas.Event.findOneAndUpdate(
         {originalId: event.originalId},
         event,
         {upsert: true},
