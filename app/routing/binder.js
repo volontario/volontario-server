@@ -13,11 +13,14 @@ module.exports = function(m, app) {
   app.get('/', rc.get);
 
   app.get('/locations', lc.get);
+  app.get('/locations/:id', lc.getByID);
   app.post('/locations', lc.post);
 
   app.get('/events', ec.get);
+  app.get('/events/:id', ec.getByID);
   app.post('/events', ec.post);
 
   app.get('/users', uc.get);
+  app.get('/users/:id', uc.getByID);
   app.post('/users', uc.post);
 };

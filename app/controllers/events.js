@@ -14,6 +14,11 @@ module.exports = function(EventSchema) {
       EventSchema.find(req.query, (_error, events) => res.json(events));
     },
 
+    getByID: function(req, res) {
+      let query = {_id: req.params.id};
+      EventSchema.findOne(query, (_error, event) => res.json(event));
+    },
+
     post: function(req, res) {
       let requiredFields = [
         'latitude',

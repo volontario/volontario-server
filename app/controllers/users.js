@@ -10,6 +10,11 @@ module.exports = function(UserSchema) {
       UserSchema.find(req.query, (_error, users) => res.json(users));
     },
 
+    getByID: function(req, res) {
+      let query = {_id: req.params.id};
+      UserSchema.findOne(query, (_error, user) => res.json(user));
+    },
+
     post: function(req, res) {
       let requiredFields = [
         'dateOfBirth',

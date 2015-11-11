@@ -10,6 +10,11 @@ module.exports = function(LocationSchema) {
       LocationSchema.find(req.query, (_error, locs) => res.json(locs));
     },
 
+    getByID: function(req, res) {
+      let query = {_id: req.params.id};
+      LocationSchema.findOne(query, (_error, loc) => res.json(loc));
+    },
+
     post: function(req, res) {
       let requiredFields = [
         'category',
