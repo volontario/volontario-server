@@ -1,6 +1,6 @@
 volontario API
 ==============
-All responses are formatted in JSON.
+All responses are formatted in JSON. Info on data returned via `GET` is not provided because we embrace experimentation.
 
 Root
 ----
@@ -22,7 +22,7 @@ Returns a list of locations.
 Returns a location with the provided `id`.
 
 ### `POST /locations`
-Enters a location into the system
+Enters a location into the system. Returns `{ "ok": true|false }`.
 
 | Field | Type | Meaning |
 |-------|:---- |:--------|
@@ -45,7 +45,7 @@ Returns a list of events.
 Returns an event with the provided `id`.
 
 ### `POST /events`
-Enters an event into the system
+Enters an event into the system. Returns `{ "ok": true|false }`.
 
 | Field | Type | Meaning |
 |-------|:---- |:--------|
@@ -69,7 +69,7 @@ Returns a list of users.
 Returns a user with the provided `id`.
 
 ### `POST /users`
-Enters a user into the system
+Enters a user into the system. Returns `{ "ok": true|false }`.
 
 | Field | Type | Meaning |
 |-------|:---- |:--------|
