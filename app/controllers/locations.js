@@ -8,12 +8,12 @@ module.exports = function(schemas) {
   return {
     get: function(req, res) {
       schemas.Location.find(req.query, function(_error, locations) {
-        let strippedLocations = locations.map(function(loc) {
-          loc._id = loc.__v = undefined;
-          return loc;
+        let bareLocations = locations.map(function(l) {
+          l._id = l.__v = undefined;
+          return l;
         });
 
-        return res.json(strippedLocations);
+        return res.json(bareLocations);
       });
     },
 

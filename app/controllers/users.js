@@ -7,7 +7,14 @@
 module.exports = function(schemas) {
   return {
     get: function(req, res) {
-      schemas.User.find(req.query, (_err, users) => res.json(users));
+      schemas.User.find(req.query, function(_error, users) {
+        let bareUsers = users.map(function(u) {
+          u._id = u.__v = undefined;
+          return u;
+        });
+
+        res.json(bareUsers);
+      });
     },
     post: function(req, res) {
       let requiredFields = [

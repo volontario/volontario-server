@@ -10,7 +10,15 @@ module.exports = function(schemas) {
   return {
     get: function(req, res) {
       minerMaster.mine('toimintasuomi');
-      schemas.Event.find(req.query, (_error, events) => res.json(events));
+
+      schemas.Event.find(req.query, function(_error, events) {
+        let bareEvents = events.map(function(e) {
+          e._id = e.__v = undefined;
+          return e;
+        });
+
+        res.json(bareEvents);
+      });
     },
     post: function(req, res) {
       let requiredFields = [
