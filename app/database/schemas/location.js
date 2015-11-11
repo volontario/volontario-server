@@ -6,7 +6,7 @@ module.exports = function(mongoose) {
       latitude: Number,
       longitude: Number
     },
-    title: String,
+    name: String,
     url: String,
     updatedAt: {type: Date, default: Date.now}
   });

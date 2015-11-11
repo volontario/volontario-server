@@ -29,7 +29,7 @@ Enters a location into the system
 | category | `string` | Category, e.g. "bloodServiceCentre" |
 | latitude | `float` | Latitude |
 | longitude | `float` | Longitude |
-| title | `string` | Title of the location |
+| name | `string` | Name of the location |
 | url | `string` | URL for the location |
 
 Events

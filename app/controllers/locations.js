@@ -20,7 +20,7 @@ module.exports = function(LocationSchema) {
         'category',
         'latitude',
         'longitude',
-        'title',
+        'name',
         'url'
       ];
 
@@ -40,7 +40,7 @@ module.exports = function(LocationSchema) {
           latitude: req.body.latitude,
           longitude: req.body.longitude
         },
-        title: req.body.title,
+        name: req.body.name,
         url: req.body.url
       });
 
