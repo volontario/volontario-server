@@ -18,11 +18,28 @@ Returns a list of locations.
 |-------|:--------|
 | category | Filter by category |
 
+### `GET /locations/:id`
+Returns a location with the provided `id`.
+
+### `POST /locations`
+Enters a location into the system
+
+| Field | Type | Meaning |
+|-------|:---- |:--------|
+| category | `string` | Category, e.g. "bloodServiceCentre" |
+| latitude | `float` | Latitude |
+| longitude | `float` | Longitude |
+| title | `string` | Title of the location |
+| url | `string` | URL for the location |
+
 Events
 ------
 
 ### `GET /events`
 Returns a list of events.
+
+### `GET /events/:id`
+Returns an event with the provided `id`.
 
 ### `POST /events`
 Enters an event into the system
@@ -41,6 +58,9 @@ Users
 
 ### `GET /users`
 Returns a list of users.
+
+### `GET /users/:id`
+Returns a user with the provided `id`.
 
 ### `POST /users`
 Enters a user into the system
