@@ -7,14 +7,7 @@
 module.exports = function(LocationSchema) {
   return {
     get: function(req, res) {
-      LocationSchema.find(req.query, function(_error, locations) {
-        let bareLocations = locations.map(function(l) {
-          l._id = l.__v = undefined;
-          return l;
-        });
-
-        return res.json(bareLocations);
-      });
+      LocationSchema.find(req.query, (_error, locs) => res.json(locs));
     },
 
     post: function(req, res) {

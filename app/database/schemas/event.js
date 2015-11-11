@@ -1,5 +1,5 @@
 module.exports = function(mongoose) {
-  return new mongoose.Schema({
+  let EventSchema = new mongoose.Schema({
     addedAt: {type: Date, default: Date.now},
     category: String,
     coordinates: {
@@ -12,4 +12,13 @@ module.exports = function(mongoose) {
     url: String,
     updatedAt: {type: Date, default: Date.now}
   });
+
+  EventSchema.set('toJSON', {
+    transform: function(_es, result) {
+      result.id = result._id;
+      result._id = result.__v = undefined;
+    }
+  });
+
+  return EventSchema;
 };

@@ -7,15 +7,9 @@
 module.exports = function(UserSchema) {
   return {
     get: function(req, res) {
-      UserSchema.find(req.query, function(_error, users) {
-        let bareUsers = users.map(function(u) {
-          u._id = u.__v = undefined;
-          return u;
-        });
-
-        res.json(bareUsers);
-      });
+      UserSchema.find(req.query, (_error, users) => res.json(users));
     },
+
     post: function(req, res) {
       let requiredFields = [
         'dateOfBirth',

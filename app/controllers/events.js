@@ -11,15 +11,9 @@ module.exports = function(EventSchema) {
     get: function(req, res) {
       minerMaster.mine('toimintasuomi');
 
-      EventSchema.find(req.query, function(_error, events) {
-        let bareEvents = events.map(function(e) {
-          e._id = e.__v = undefined;
-          return e;
-        });
-
-        res.json(bareEvents);
-      });
+      EventSchema.find(req.query, (_error, events) => res.json(events));
     },
+
     post: function(req, res) {
       let requiredFields = [
         'latitude',
