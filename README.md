@@ -1,31 +1,32 @@
-volontar.io
-===========
-volontar.io is the best stuff imaginable designed by two bold men holding their keep against the dark armies of to-do items and their master, *Mattsam*.
-
-API
----
+volontario API
+==============
 All responses are formatted in JSON.
 
-### Root
+Root
+----
 
-#### `GET /`
-Returns an empty object for debugging. Consider Redis's `PONG`.
+### `GET /`
+Returns an empty object as a status check. Consider Redis's `PONG`.
 
-### Locations
+Locations
+---------
 
-#### `GET /locations`
+### `GET /locations`
+Returns a list of locations.
+
 | Field | Meaning |
 |-------|:--------|
 | category | Filter by category |
 
-Returns a list of locations.
+Events
+------
 
-### Events
-
-#### `GET /events`
+### `GET /events`
 Returns a list of events.
 
-#### `POST /events`
+### `POST /events`
+Enters an event into the system
+
 | Field | Type | Meaning |
 |-------|:---- |:--------|
 | category | `string` | Category, e.g. "charity" |
@@ -35,14 +36,15 @@ Returns a list of events.
 | originalId | `string` | ID in the original system |
 | url | `string` | URL for the event |
 
-Enters an event into the database
+Users
+-----
 
-### Users
-
-#### `GET /users`
+### `GET /users`
 Returns a list of users.
 
-#### `POST /users`
+### `POST /users`
+Enters a user into the system
+
 | Field | Type | Meaning |
 |-------|:---- |:--------|
 | dateOfBirth | `string` | Date of birth formatted as `YYYY-MM-DD`
@@ -53,5 +55,3 @@ Returns a list of users.
 | longitude | `float` | Longitude |
 | phoneNumber | `string` | Phone number with country code |
 | tags | `string,string,...` | Comma separated list of tags |
-
-Enters a user into the database
