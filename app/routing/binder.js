@@ -6,9 +6,9 @@
  */
 module.exports = function(m, app) {
   let rc = require('../controllers/root.js')();
-  let lc = require('../controllers/locations.js')(m.schemas);
-  let ec = require('../controllers/events.js')(m.schemas);
-  let uc = require('../controllers/users.js')(m.schemas);
+  let lc = require('../controllers/locations.js')(m.schemas.Location);
+  let ec = require('../controllers/events.js')(m.schemas.Event);
+  let uc = require('../controllers/users.js')(m.schemas.User);
 
   app.get('/', rc.get);
 

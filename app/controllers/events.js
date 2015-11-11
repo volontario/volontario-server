@@ -1,17 +1,17 @@
 /**
  * Controllers for /events
  *
- * @param {object} schemas Mongoose schemas
+ * @param {object} EventSchema Mongoose event schema
  * @return {object} Routes per HTTP method
  */
-module.exports = function(schemas) {
-  let minerMaster = require('../mining/master.js')(schemas);
+module.exports = function(EventSchema) {
+  let minerMaster = require('../mining/master.js')(EventSchema);
 
   return {
     get: function(req, res) {
       minerMaster.mine('toimintasuomi');
 
-      schemas.Event.find(req.query, function(_error, events) {
+      EventSchema.find(req.query, function(_error, events) {
         let bareEvents = events.map(function(e) {
           e._id = e.__v = undefined;
           return e;
@@ -39,7 +39,7 @@ module.exports = function(schemas) {
       }
 
       // This is crappy and I admit it
-      let event = new schemas.Event({
+      let event = new EventSchema({
         latitude: req.body.latitude,
         longitude: req.body.longitude,
         name: req.body.name,

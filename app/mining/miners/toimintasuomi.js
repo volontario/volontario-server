@@ -1,4 +1,4 @@
-module.exports = function(schemas) {
+module.exports = function(EventSchema) {
   const URL = 'https://www.toimintasuomi.fi/api/v1/vapaaehtoistoiminta.json';
 
   let request = require('request');
@@ -22,7 +22,7 @@ module.exports = function(schemas) {
         url: e.uri
       };
 
-      schemas.Event.findOneAndUpdate(
+      EventSchema.findOneAndUpdate(
         {originalId: event.originalId},
         event,
         {upsert: true},

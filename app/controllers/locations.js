@@ -1,13 +1,13 @@
 /**
  * Controllers for /locations
  *
- * @param {object} schemas Mongoose schemas
+ * @param {object} LocationSchema Mongoose location schema
  * @return {object} Routes per HTTP method
  */
-module.exports = function(schemas) {
+module.exports = function(LocationSchema) {
   return {
     get: function(req, res) {
-      schemas.Location.find(req.query, function(_error, locations) {
+      LocationSchema.find(req.query, function(_error, locations) {
         let bareLocations = locations.map(function(l) {
           l._id = l.__v = undefined;
           return l;
@@ -36,7 +36,7 @@ module.exports = function(schemas) {
       }
 
       // This is crappy and I admit it
-      let location = new schemas.Location({
+      let location = new LocationSchema({
         category: req.body.category,
         coordinates: {
           latitude: req.body.latitude,

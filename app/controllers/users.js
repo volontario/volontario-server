@@ -1,13 +1,13 @@
 /**
  * Controllers for /users
  *
- * @param {object} schemas Mongoose schemas
+ * @param {object} UserSchema Mongoose user schema
  * @return {object} Routes per HTTP method
  */
-module.exports = function(schemas) {
+module.exports = function(UserSchema) {
   return {
     get: function(req, res) {
-      schemas.User.find(req.query, function(_error, users) {
+      UserSchema.find(req.query, function(_error, users) {
         let bareUsers = users.map(function(u) {
           u._id = u.__v = undefined;
           return u;
@@ -38,7 +38,7 @@ module.exports = function(schemas) {
       }
 
       // This is crappy and I admit it
-      let user = new schemas.User({
+      let user = new UserSchema({
         dateOfBirth: new Date(req.body.dateOfBirth),
         familyName: req.body.familyName,
         givenName: req.body.givenName,
