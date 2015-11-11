@@ -10,7 +10,7 @@ module.exports = function(schemas) {
     let eventsWithCoordinates = events.filter(hasCoordinates);
 
     eventsWithCoordinates.forEach(function(e) {
-      let event = new schemas.Event({
+      let event = {
         category: 'voluntaryWork',
         coordinates: {
           latitude: e.coordinates[0],
@@ -20,9 +20,8 @@ module.exports = function(schemas) {
         originalId: e.id,
         origin: 'toimintasuomi',
         url: e.uri
-      });
+      };
 
-      delete event._id;
       schemas.Event.findOneAndUpdate(
         {originalId: event.originalId},
         event,
