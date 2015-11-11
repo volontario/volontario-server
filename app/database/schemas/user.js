@@ -1,5 +1,6 @@
 module.exports = function(mongoose) {
   return new mongoose.Schema({
+    addedAt: {type: Date, default: Date.now},
     coordinates: {
       latitude: Number,
       longitude: Number
@@ -9,6 +10,7 @@ module.exports = function(mongoose) {
     familyName: String,
     givenName: String,
     phoneNumber: String,
-    tags: [String]
+    tags: [String],
+    updatedAt: {type: Date, default: Date.now}
   });
 };
