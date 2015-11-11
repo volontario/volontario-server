@@ -32,6 +32,9 @@ Enters a location into the system
 | name | `string` | Name of the location |
 | url | `string` | URL for the location |
 
+### `DELETE /locations/:id`
+Deletes a location with the provided `id`. Returns `{ "ok": true|false }`.
+
 Events
 ------
 
@@ -52,6 +55,9 @@ Enters an event into the system
 | name | `string` | Name of the event |
 | originalId | `string` | ID in the original system |
 | url | `string` | URL for the event |
+
+### `DELETE /events/:id`
+Deletes an event with the provided `id`. Returns `{ "ok": true|false }`.
 
 Users
 -----
@@ -75,3 +81,6 @@ Enters a user into the system
 | longitude | `float` | Longitude |
 | phoneNumber | `string` | Phone number with country code |
 | tags | `string,string,...` | Comma separated list of tags |
+
+### `DELETE /users/:id`
+Deletes a user with the provided `id`. Returns `{ "ok": true|false }`.
