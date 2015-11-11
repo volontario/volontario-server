@@ -6,6 +6,12 @@
  */
 module.exports = function(LocationSchema) {
   return {
+    deleteByID: function(req, res) {
+      LocationSchema.findByIdAndRemove(req.params.id, function(error) {
+        res.json({ok: !error});
+      });
+    },
+
     get: function(req, res) {
       LocationSchema.find(req.query, (_error, locs) => res.json(locs));
     },

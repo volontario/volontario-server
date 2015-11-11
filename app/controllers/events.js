@@ -8,6 +8,12 @@ module.exports = function(EventSchema) {
   let minerMaster = require('../mining/master.js')(EventSchema);
 
   return {
+    deleteByID: function(req, res) {
+      EventSchema.findByIdAndRemove(req.params.id, function(error) {
+        res.json({ok: !error});
+      });
+    },
+
     get: function(req, res) {
       minerMaster.mine('toimintasuomi');
 

@@ -6,6 +6,12 @@
  */
 module.exports = function(UserSchema) {
   return {
+    deleteByID: function(req, res) {
+      UserSchema.findByIdAndRemove(req.params.id, function(error) {
+        res.json({ok: !error});
+      });
+    },
+
     get: function(req, res) {
       UserSchema.find(req.query, (_error, users) => res.json(users));
     },
