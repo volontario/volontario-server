@@ -13,10 +13,10 @@ module.exports = (function() {
   };
 
   const expressPort = (function() {
-    if (prefixGet('EXPRESS_PORT')) {
-      return prefixGet('EXPRESS_PORT');
-    } else if (process.env.PORT) {
+    if (process.env.PORT) {
       return process.env.PORT;
+    } else if (prefixGet('EXPRESS_PORT')) {
+      return prefixGet('EXPRESS_PORT');
     }
 
     throw new Error('Neither $VOLONTARIO_$ENV_EXPRESS_PORT nor $PORT is set');
