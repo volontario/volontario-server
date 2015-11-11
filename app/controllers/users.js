@@ -17,8 +17,9 @@ module.exports = function(UserSchema) {
     },
 
     getByID: function(req, res) {
-      let query = {_id: req.params.id};
-      UserSchema.findOne(query, (_error, user) => res.json(user));
+      UserSchema.findById(req.params.id, function(_error, user) {
+        return user ? res.json(user) : res.json({});
+      });
     },
 
     post: function(req, res) {

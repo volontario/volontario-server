@@ -17,8 +17,9 @@ module.exports = function(LocationSchema) {
     },
 
     getByID: function(req, res) {
-      let query = {_id: req.params.id};
-      LocationSchema.findOne(query, (_error, loc) => res.json(loc));
+      LocationSchema.findById(req.params.id, function(_error, loc) {
+        return loc ? res.json(loc) : res.json({});
+      });
     },
 
     post: function(req, res) {

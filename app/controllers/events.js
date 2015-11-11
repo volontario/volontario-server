@@ -21,8 +21,9 @@ module.exports = function(EventSchema) {
     },
 
     getByID: function(req, res) {
-      let query = {_id: req.params.id};
-      EventSchema.findOne(query, (_error, event) => res.json(event));
+      EventSchema.findById(req.params.id, function(_error, event) {
+        return event ? res.json(event) : res.json({});
+      });
     },
 
     post: function(req, res) {
