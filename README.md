@@ -32,6 +32,9 @@ Enters a location into the system. Returns `{ "ok": true|false }`.
 | name | `string` | Name of the location |
 | url | `string` | URL for the location |
 
+### `DELETE /locations`
+Deletes locations that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
+
 ### `DELETE /locations/:id`
 Deletes a location with the provided `id`. Returns `{ "ok": true|false }`.
 
@@ -55,6 +58,9 @@ Enters an event into the system. Returns `{ "ok": true|false }`.
 | name | `string` | Name of the event |
 | originalId | `string` | ID in the original system |
 | url | `string` | URL for the event |
+
+### `DELETE /events`
+Deletes events that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
 
 ### `DELETE /events/:id`
 Deletes an event with the provided `id`. Returns `{ "ok": true|false }`.
@@ -81,6 +87,9 @@ Enters a user into the system. Returns `{ "ok": true|false }`.
 | longitude | `float` | Longitude |
 | phoneNumber | `string` | Phone number with country code |
 | tags | `string,string,...` | Comma separated list of tags |
+
+### `DELETE /users`
+Deletes users that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
 
 ### `DELETE /users/:id`
 Deletes a user with the provided `id`. Returns `{ "ok": true|false }`.
