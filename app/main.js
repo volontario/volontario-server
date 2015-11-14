@@ -6,11 +6,11 @@ module.exports = function() {
   let errorHandler = require('./errors/handler.js');
   let express = require('express');
   let mongoose = require('mongoose');
-  let mongooseConnection = require('./database/mongoose-connector.js');
+  let mongooseConnector = require('./database/mongoose-connector.js');
   let morgan = require('morgan');
   let routeBinder = require('./routing/binder.js');
 
-  mongooseConnection(config, mongoose);
+  let mongooseConnection = mongooseConnector(config, mongoose);
 
   let app = express();
 
