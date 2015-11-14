@@ -26,4 +26,7 @@ module.exports = function(m, app) {
   app.get('/users', uc.get);
   app.get('/users/:id', uc.getByID);
   app.post('/users', uc.post);
+
+  // If path not found
+  app.get('*', (_req, _res, next) => next(new Error('Bad path')));
 };

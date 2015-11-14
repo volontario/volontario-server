@@ -5,6 +5,7 @@ module.exports = function() {
   let app = require('express')();
   let bodyParser = require('body-parser');
   let config = require('./config/config.js');
+  let errorHandler = require('./errors/handler.js');
   let mongoose = require('mongoose');
   let mongooseConnection =
     require('./database/mongoose-connector.js')(config, mongoose);
@@ -19,6 +20,9 @@ module.exports = function() {
 
   // Route binding
   routeBinder(mongooseConnection, app);
+
+  // Error handling
+  errorHandler(app);
 
   // Booting
   app.listen(config.EXPRESS_PORT, () => console.log('Server up!'));
