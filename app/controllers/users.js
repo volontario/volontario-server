@@ -7,13 +7,17 @@
 module.exports = function(UserSchema) {
   return {
     delete: function(req, res, next) {
-      if (Object.getOwnPropertyNames(req.body).length === 0 &&
-          req.body.notVague !== 'true') {
+      let query;
+      if (req.body.notVague === 'true') {
+        query = {};
+      } else if (Object.getOwnPropertyNames(req.body).length === 0) {
         next(new Error('Possibly too vague: use notVague=true to enforce'));
         return;
+      } else {
+        query = req.body;
       }
 
-      UserSchema.remove(req.body, function(error) {
+      UserSchema.remove(query, function(error) {
         if (error) {
           next(new Error());
         } else {
