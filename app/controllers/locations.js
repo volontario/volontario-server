@@ -6,6 +6,22 @@
  */
 module.exports = function(LocationSchema) {
   return {
+    delete: function(req, res, next) {
+      if (Object.getOwnPropertyNames(req.body).length === 0 &&
+          req.body.notVague !== 'true') {
+        next(new Error('Possibly too vague: use notVague=true to enforce'));
+        return;
+      }
+
+      LocationSchema.remove(req.body, function(error) {
+        if (error) {
+          next(new Error());
+        } else {
+          res.status(200).send();
+        }
+      });
+    },
+
     deleteByID: function(req, res, next) {
       LocationSchema.findByIdAndRemove(req.params.id, function(error) {
         if (!error) {

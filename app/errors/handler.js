@@ -14,6 +14,7 @@ module.exports = function(app) {
         case 'Bad path':
         case 'Bad resource ID':
         case 'Missing fields':
+        case 'Possibly too vague':
           return 422;
         default:
           return 500;

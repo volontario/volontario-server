@@ -12,16 +12,19 @@ module.exports = function(m, app) {
 
   app.get('/', rc.get);
 
+  app.delete('/locations', lc.delete);
   app.delete('/locations/:id', lc.deleteByID);
   app.get('/locations', lc.get);
   app.get('/locations/:id', lc.getByID);
   app.post('/locations', lc.post);
 
+  app.delete('/events', ec.delete);
   app.delete('/events/:id', ec.deleteByID);
   app.get('/events', ec.get);
   app.get('/events/:id', ec.getByID);
   app.post('/events', ec.post);
 
+  app.delete('/users', uc.delete);
   app.delete('/users/:id', uc.deleteByID);
   app.get('/users', uc.get);
   app.get('/users/:id', uc.getByID);

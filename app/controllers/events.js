@@ -8,6 +8,22 @@ module.exports = function(EventSchema) {
   let minerMaster = require('../mining/master.js')(EventSchema);
 
   return {
+    delete: function(req, res, next) {
+      if (Object.getOwnPropertyNames(req.body).length === 0 &&
+          req.body.notVague !== 'true') {
+        next(new Error('Possibly too vague: use notVague=true to enforce'));
+        return;
+      }
+
+      EventSchema.remove(req.body, function(error) {
+        if (error) {
+          next(new Error());
+        } else {
+          res.status(200).send();
+        }
+      });
+    },
+
     deleteByID: function(req, res, next) {
       EventSchema.findByIdAndRemove(req.params.id, function(error) {
         if (!error) {
