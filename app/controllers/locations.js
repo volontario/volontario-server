@@ -6,9 +6,15 @@
  */
 module.exports = function(LocationSchema) {
   return {
-    deleteByID: function(req, res) {
+    deleteByID: function(req, res, next) {
       LocationSchema.findByIdAndRemove(req.params.id, function(error) {
-        res.json({ok: !error});
+        if (!error) {
+          res.status(200).send();
+        } else if (error.name === 'CastError') {
+          next(new Error('Bad resource ID'));
+        } else {
+          next(new Error());
+        }
       });
     },
 
@@ -16,13 +22,13 @@ module.exports = function(LocationSchema) {
       LocationSchema.find(req.query, (_error, locs) => res.json(locs));
     },
 
-    getByID: function(req, res) {
+    getByID: function(req, res, next) {
       LocationSchema.findById(req.params.id, function(_error, loc) {
-        return loc ? res.json(loc) : res.json({});
+        return loc ? res.json(loc) : next(new Error('Location not found'));
       });
     },
 
-    post: function(req, res) {
+    post: function(req, res, next) {
       let requiredFields = [
         'category',
         'latitude',
@@ -37,7 +43,8 @@ module.exports = function(LocationSchema) {
 
       // Early exit in case of missing fields
       if (missingFields.length !== 0) {
-        return res.json({missingFields: missingFields});
+        next(new Error(`Missing fields: ${missingFields}`));
+        return;
       }
 
       // This is crappy and I admit it
