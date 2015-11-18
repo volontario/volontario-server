@@ -13,8 +13,8 @@ module.exports = function(EventSchema) {
       let event = {
         category: 'voluntaryWork',
         coordinates: {
-          latitude: e.coordinates[0],
-          longitude: e.coordinates[1]
+          longitude: e.coordinates[0],
+          latitude: e.coordinates[1]
         },
         name: e.title,
         originalId: e.id,
