@@ -1,45 +1,50 @@
-let eventFields = {
-  addedAt: {type: Date, default: Date.now},
-  category: String,
-  coordinates: {
-    latitude: Number,
-    longitude: Number
-  },
-  name: String,
-  originalId: String,
-  origin: String,
-  url: String,
-  updatedAt: {type: Date, default: Date.now}
-};
-
-let locationFields = {
-  addedAt: {type: Date, default: Date.now},
-  category: String,
-  coordinates: {
-    latitude: Number,
-    longitude: Number
-  },
-  name: String,
-  url: String,
-  updatedAt: {type: Date, default: Date.now}
-};
-
-let userFields = {
-  addedAt: {type: Date, default: Date.now},
-  coordinates: {
-    latitude: Number,
-    longitude: Number
-  },
-  dateOfBirth: Date,
-  email: String,
-  familyName: String,
-  givenName: String,
-  phoneNumber: String,
-  tags: [String],
-  updatedAt: {type: Date, default: Date.now}
-};
-
 module.exports = function(config, mongoose) {
+  let objectId = mongoose.Schema.Types.ObjectId;
+
+  let eventFields = {
+    addedAt: {type: Date, default: Date.now},
+    category: String,
+    coordinates: {
+      latitude: Number,
+      longitude: Number
+    },
+    name: String,
+    originalId: String,
+    origin: String,
+    owner: {type: objectId, default: null},
+    url: String,
+    updatedAt: {type: Date, default: Date.now}
+  };
+
+  let locationFields = {
+    addedAt: {type: Date, default: Date.now},
+    category: String,
+    coordinates: {
+      latitude: Number,
+      longitude: Number
+    },
+    name: String,
+    owner: {type: objectId, default: null},
+    url: String,
+    updatedAt: {type: Date, default: Date.now}
+  };
+
+  let userFields = {
+    addedAt: {type: Date, default: Date.now},
+    coordinates: {
+      latitude: Number,
+      longitude: Number
+    },
+    dateOfBirth: Date,
+    email: String,
+    familyName: String,
+    givenName: String,
+    owner: {type: objectId, default: null},
+    phoneNumber: String,
+    tags: [String],
+    updatedAt: {type: Date, default: Date.now}
+  };
+
   let schemaFactory = function(name, fields) {
     let Schema = new mongoose.Schema(fields);
 
