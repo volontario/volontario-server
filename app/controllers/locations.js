@@ -8,13 +8,13 @@ module.exports = function(LocationSchema) {
   return {
     delete: function(req, res, next) {
       let query;
-      if (req.body.notVague === 'true') {
+      if (req.query.notVague === 'true') {
         query = {};
-      } else if (Object.getOwnPropertyNames(req.body).length === 0) {
+      } else if (Object.getOwnPropertyNames(req.query).length === 0) {
         next(new Error('Possibly too vague: use notVague=true to enforce'));
         return;
       } else {
-        query = req.body;
+        query = req.query;
       }
 
       LocationSchema.remove(query, function(error) {
@@ -27,7 +27,7 @@ module.exports = function(LocationSchema) {
     },
 
     deleteByID: function(req, res, next) {
-      LocationSchema.findByIdAndRemove(req.params.id, function(error) {
+      LocationSchema.findByIdAndRemove(req.query.id, function(error) {
         if (!error) {
           res.status(200).send();
         } else if (error.name === 'CastError') {
@@ -43,7 +43,7 @@ module.exports = function(LocationSchema) {
     },
 
     getByID: function(req, res, next) {
-      LocationSchema.findById(req.params.id, function(_error, loc) {
+      LocationSchema.findById(req.query.id, function(_error, loc) {
         return loc ? res.json(loc) : next(new Error('Location not found'));
       });
     },
@@ -58,7 +58,7 @@ module.exports = function(LocationSchema) {
       ];
 
       let missingFields = requiredFields.reduce(function(mf, rf) {
-        return req.body[rf] === undefined ? mf.concat(rf) : mf;
+        return req.query[rf] === undefined ? mf.concat(rf) : mf;
       }, []);
 
       // Early exit in case of missing fields
@@ -69,13 +69,13 @@ module.exports = function(LocationSchema) {
 
       // This is crappy and I admit it
       let location = new LocationSchema({
-        category: req.body.category,
+        category: req.query.category,
         coordinates: {
-          latitude: req.body.latitude,
-          longitude: req.body.longitude
+          latitude: req.query.latitude,
+          longitude: req.query.longitude
         },
-        name: req.body.name,
-        url: req.body.url
+        name: req.query.name,
+        url: req.query.url
       });
 
       location.save(error => res.json({ok: !error}));

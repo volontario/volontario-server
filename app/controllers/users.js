@@ -8,13 +8,13 @@ module.exports = function(UserSchema) {
   return {
     delete: function(req, res, next) {
       let query;
-      if (req.body.notVague === 'true') {
+      if (req.query.notVague === 'true') {
         query = {};
-      } else if (Object.getOwnPropertyNames(req.body).length === 0) {
+      } else if (Object.getOwnPropertyNames(req.query).length === 0) {
         next(new Error('Possibly too vague: use notVague=true to enforce'));
         return;
       } else {
-        query = req.body;
+        query = req.query;
       }
 
       UserSchema.remove(query, function(error) {
@@ -27,7 +27,7 @@ module.exports = function(UserSchema) {
     },
 
     deleteByID: function(req, res, next) {
-      UserSchema.findByIdAndRemove(req.params.id, function(error) {
+      UserSchema.findByIdAndRemove(req.query.id, function(error) {
         if (!error) {
           res.status(200).send();
         } else if (error.name === 'CastError') {
@@ -43,7 +43,7 @@ module.exports = function(UserSchema) {
     },
 
     getByID: function(req, res, next) {
-      UserSchema.findById(req.params.id, function(_error, user) {
+      UserSchema.findById(req.query.id, function(_error, user) {
         return user ? res.json(user) : next(new Error('User not found'));
       });
     },
@@ -61,7 +61,7 @@ module.exports = function(UserSchema) {
       ];
 
       let missingFields = requiredFields.reduce(function(mf, rf) {
-        return req.body[rf] === undefined ? mf.concat(rf) : mf;
+        return req.query[rf] === undefined ? mf.concat(rf) : mf;
       }, []);
 
       // Early exit in case of missing fields
@@ -72,14 +72,14 @@ module.exports = function(UserSchema) {
 
       // This is crappy and I admit it
       let user = new UserSchema({
-        dateOfBirth: new Date(req.body.dateOfBirth),
-        familyName: req.body.familyName,
-        givenName: req.body.givenName,
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-        email: req.body.email,
-        phoneNumber: req.body.phoneNumber,
-        tags: req.body.tags.split(',')
+        dateOfBirth: new Date(req.query.dateOfBirth),
+        familyName: req.query.familyName,
+        givenName: req.query.givenName,
+        latitude: req.query.latitude,
+        longitude: req.query.longitude,
+        email: req.query.email,
+        phoneNumber: req.query.phoneNumber,
+        tags: req.query.tags.split(',')
       });
 
       user.save(function(error) {

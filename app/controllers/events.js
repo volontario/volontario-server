@@ -10,13 +10,13 @@ module.exports = function(EventSchema) {
   return {
     delete: function(req, res, next) {
       let query;
-      if (req.body.notVague === 'true') {
+      if (req.query.notVague === 'true') {
         query = {};
-      } else if (Object.getOwnPropertyNames(req.body).length === 0) {
+      } else if (Object.getOwnPropertyNames(req.query).length === 0) {
         next(new Error('Possibly too vague: use notVague=true to enforce'));
         return;
       } else {
-        query = req.body;
+        query = req.query;
       }
 
       EventSchema.remove(query, function(error) {
@@ -29,7 +29,7 @@ module.exports = function(EventSchema) {
     },
 
     deleteByID: function(req, res, next) {
-      EventSchema.findByIdAndRemove(req.params.id, function(error) {
+      EventSchema.findByIdAndRemove(req.query.id, function(error) {
         if (!error) {
           res.status(200).send();
         } else if (error.name === 'CastError') {
@@ -47,7 +47,7 @@ module.exports = function(EventSchema) {
     },
 
     getByID: function(req, res, next) {
-      EventSchema.findById(req.params.id, function(_error, event) {
+      EventSchema.findById(req.query.id, function(_error, event) {
         return event ? res.json(event) : next(new Error('Event not found'));
       });
     },
@@ -62,7 +62,7 @@ module.exports = function(EventSchema) {
       ];
 
       let missingFields = requiredFields.reduce(function(mf, rf) {
-        return req.body[rf] === undefined ? mf.concat(rf) : mf;
+        return req.query[rf] === undefined ? mf.concat(rf) : mf;
       }, []);
 
       // Early exit in case of missing fields
@@ -73,11 +73,11 @@ module.exports = function(EventSchema) {
 
       // This is crappy and I admit it
       let event = new EventSchema({
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-        name: req.body.name,
-        originalId: req.body.originalId,
-        url: req.body.url
+        latitude: req.query.latitude,
+        longitude: req.query.longitude,
+        name: req.query.name,
+        originalId: req.query.originalId,
+        url: req.query.url
       });
 
       event.save(error => res.json({ok: !error}));
