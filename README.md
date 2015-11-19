@@ -1,6 +1,8 @@
 volontario API
 ==============
-All responses are formatted in JSON. Info on data returned via `GET` is not provided because we embrace experimentation.
+* All responses are formatted in JSON.
+* Info on data returned via `GET` requests is not provided because we embrace experimentation.
+* Parameters are sent via query – not body
 
 Root
 ----
