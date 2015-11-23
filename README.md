@@ -61,11 +61,27 @@ Enters an event into the system. Returns `{ "ok": true|false }`.
 | originalId | `string` | ID in the original system |
 | url | `string` | URL for the event |
 
+### `POST /events/:id/calendar`
+Enters an item into an event calendar.
+
+| Field | Type | Meaning |
+|-------|:---- |:--------|
+| userId | `hexstring` | Attendee |
+| from | `date` | Attending from |
+| to | `date` | Attending to |
+
 ### `DELETE /events`
 Deletes events that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
 
 ### `DELETE /events/:id`
 Deletes an event with the provided `id`. Returns `{ "ok": true|false }`.
+
+### `DELETE /events/:id/calendar`
+Deletes an item in an event calendar
+
+| Field | Type | Meaning |
+|-------|:---- |:--------|
+| id | `hexstring` | ID of the item |
 
 Users
 -----
