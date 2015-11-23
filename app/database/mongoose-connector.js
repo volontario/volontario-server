@@ -3,6 +3,13 @@ module.exports = function(config, mongoose) {
 
   let eventFields = {
     addedAt: {type: Date, default: Date.now},
+    calendar: [
+      {
+        userId: objectId,
+        from: Date,
+        to: Date
+      }
+    ],
     category: String,
     coordinates: {
       latitude: Number,
