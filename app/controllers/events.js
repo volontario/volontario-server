@@ -40,6 +40,22 @@ module.exports = function(EventSchema) {
       });
     },
 
+    deleteFromCalendar: function(req, res, next) {
+      EventSchema.findById(req.params.id, function(_error, event) {
+        if (!event) {
+          next(new Error('Event not found'));
+        }
+
+        event.calendar = event.calendar.filter(function(item) {
+          return item._id.toString() !== req.query.id;
+        });
+
+        event.save(function(error) {
+          res.json({ok: !error});
+        });
+      });
+    },
+
     get: function(req, res) {
       minerMaster.mine('toimintasuomi');
 
