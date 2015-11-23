@@ -23,6 +23,9 @@ Returns a list of locations.
 ### `GET /locations/:id`
 Returns a location with the provided `id`.
 
+### `GET /locations/:id/:field`
+Returns a specific field of a location with the provided `id`. Has to be used to fetch expensive fields.
+
 ### `POST /locations`
 Enters a location into the system. Returns `{ "ok": true|false }`.
 
@@ -48,6 +51,9 @@ Returns a list of events.
 
 ### `GET /events/:id`
 Returns an event with the provided `id`.
+
+### `GET /events/:id/:field`
+Returns a specific field of an event with the provided `id`. Has to be used to fetch expensive fields such as calendars.
 
 ### `POST /events`
 Enters an event into the system. Returns `{ "ok": true|false }`.
@@ -91,6 +97,9 @@ Returns a list of users.
 
 ### `GET /users/:id`
 Returns a user with the provided `id`.
+
+### `GET /users/:id/:field`
+Returns a specific field of a user with the provided `id`. Has to be used to fetch expensive fields.
 
 ### `POST /users`
 Enters a user into the system. Returns `{ "ok": true|false }`.
