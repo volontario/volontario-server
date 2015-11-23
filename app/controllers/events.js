@@ -139,14 +139,16 @@ module.exports = function(EventSchema) {
           next(new Error('Event not found'));
         }
 
-        var updateableCalendar = event.calendar
+        var updateableCalendar = event.calendar;
         updateableCalendar.push({
           userId: req.query.userId,
           from: req.query.from,
           to: req.query.to
         });
 
-        event.update({ calendar: updateableCalendar }).exec();
+        event.update({calendar: updateableCalendar}, null, function(error) {
+          res.json({ok: !error});
+        });
       });
     }
   };
