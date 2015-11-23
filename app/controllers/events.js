@@ -115,6 +115,39 @@ module.exports = function(EventSchema) {
       });
 
       event.save(error => res.json({ok: !error}));
+    },
+
+    postToCalendar: function(req, res, next) {
+      let requiredFields = [
+        'userId',
+        'from',
+        'to'
+      ];
+
+      let missingFields = requiredFields.reduce(function(mf, rf) {
+        return req.query[rf] === undefined ? mf.concat(rf) : mf;
+      }, []);
+
+      // Early exit in case of missing fields
+      if (missingFields.length !== 0) {
+        next(new Error(`Missing fields: ${missingFields}`));
+        return;
+      }
+
+      EventSchema.findById(req.params.id, function(_error, event) {
+        if (!event) {
+          next(new Error('Event not found'));
+        }
+
+        var updateableCalendar = event.calendar
+        updateableCalendar.push({
+          userId: req.query.userId,
+          from: req.query.from,
+          to: req.query.to
+        });
+
+        event.update({ calendar: updateableCalendar }).exec();
+      });
     }
   };
 };

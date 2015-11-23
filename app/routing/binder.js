@@ -25,6 +25,7 @@ module.exports = function(m, app) {
   app.get('/events/:id', ec.getById);
   app.get('/events/:id/:field', ec.getFieldById);
   app.post('/events', ec.post);
+  app.post('/events/:id/calendar', ec.postToCalendar);
 
   app.delete('/users', uc.delete);
   app.delete('/users/:id', uc.deleteById);
