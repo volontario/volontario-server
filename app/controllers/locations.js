@@ -48,6 +48,18 @@ module.exports = function(LocationSchema) {
       });
     },
 
+    getFieldById: function(req, res, next) {
+      LocationSchema.findById(req.params.id, function(_error, location) {
+        if (!location) {
+          next(new Error('Location not found'));
+        }
+
+        let response = {};
+        response[req.params.field] = location[req.params.field];
+        return res.json(response);
+      });
+    },
+
     post: function(req, res, next) {
       let requiredFields = [
         'category',

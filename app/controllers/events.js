@@ -74,6 +74,18 @@ module.exports = function(EventSchema) {
       });
     },
 
+    getFieldById: function(req, res, next) {
+      EventSchema.findById(req.params.id, function(_error, event) {
+        if (!event) {
+          next(new Error('Event not found'));
+        }
+
+        let response = {};
+        response[req.params.field] = event[req.params.field];
+        return res.json(response);
+      });
+    },
+
     post: function(req, res, next) {
       let requiredFields = [
         'latitude',

@@ -48,6 +48,18 @@ module.exports = function(UserSchema) {
       });
     },
 
+    getFieldById: function(req, res, next) {
+      UserSchema.findById(req.params.id, function(_error, user) {
+        if (!user) {
+          next(new Error('User not found'));
+        }
+
+        let response = {};
+        response[req.params.field] = user[req.params.field];
+        return res.json(response);
+      });
+    },
+
     post: function(req, res, next) {
       let requiredFields = [
         'dateOfBirth',
