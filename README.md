@@ -67,8 +67,8 @@ Enters an item into an event calendar.
 | Field | Type | Meaning |
 |-------|:---- |:--------|
 | userId | `hexstring` | Attendee |
-| from | `date` | Attending from |
-| to | `date` | Attending to |
+| from | `microtimestamp` | Attending from |
+| to | `microtimestamp` | Attending to |
 
 ### `DELETE /events`
 Deletes events that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
@@ -97,7 +97,7 @@ Enters a user into the system. Returns `{ "ok": true|false }`.
 
 | Field | Type | Meaning |
 |-------|:---- |:--------|
-| dateOfBirth | `string` | Date of birth formatted as `YYYY-MM-DD`
+| dateOfBirth | `microtimestamp` | Date of birth
 | email | `string` | Email address
 | familyName | `string` | Family name |
 | givenName | `string` | Given name |
