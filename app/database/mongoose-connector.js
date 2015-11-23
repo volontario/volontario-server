@@ -1,11 +1,9 @@
 module.exports = function(config, mongoose) {
-  let objectId = mongoose.Schema.Types.ObjectId;
-
   let eventFields = {
     addedAt: {type: Date, default: Date.now},
     calendar: [
       {
-        userId: objectId,
+        userId: String,
         from: Date,
         to: Date
       }
@@ -18,7 +16,7 @@ module.exports = function(config, mongoose) {
     name: String,
     originalId: String,
     origin: String,
-    owner: {type: objectId, default: null},
+    owner: {type: String, default: null},
     url: String,
     updatedAt: {type: Date, default: Date.now}
   };
@@ -31,7 +29,7 @@ module.exports = function(config, mongoose) {
       longitude: Number
     },
     name: String,
-    owner: {type: objectId, default: null},
+    owner: {type: String, default: null},
     url: String,
     updatedAt: {type: Date, default: Date.now}
   };
@@ -46,7 +44,7 @@ module.exports = function(config, mongoose) {
     email: String,
     familyName: String,
     givenName: String,
-    owner: {type: objectId, default: null},
+    owner: {type: String, default: null},
     phoneNumber: String,
     tags: [String],
     updatedAt: {type: Date, default: Date.now}
