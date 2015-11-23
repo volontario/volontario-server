@@ -57,6 +57,13 @@ module.exports = function(config, mongoose) {
       transform: function(_es, result) {
         result.id = result._id;
         result._id = result.__v = undefined;
+
+        if (result.calendar) {
+          result.calendar.forEach(function(item) {
+            item.id = item._id;
+            item._id = undefined;
+          });
+        }
       }
     });
 
