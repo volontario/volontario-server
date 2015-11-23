@@ -13,21 +13,21 @@ module.exports = function(m, app) {
   app.get('/', rc.get);
 
   app.delete('/locations', lc.delete);
-  app.delete('/locations/:id', lc.deleteByID);
+  app.delete('/locations/:id', lc.deleteById);
   app.get('/locations', lc.get);
-  app.get('/locations/:id', lc.getByID);
+  app.get('/locations/:id', lc.getById);
   app.post('/locations', lc.post);
 
   app.delete('/events', ec.delete);
-  app.delete('/events/:id', ec.deleteByID);
+  app.delete('/events/:id', ec.deleteById);
   app.get('/events', ec.get);
-  app.get('/events/:id', ec.getByID);
+  app.get('/events/:id', ec.getById);
   app.post('/events', ec.post);
 
   app.delete('/users', uc.delete);
-  app.delete('/users/:id', uc.deleteByID);
+  app.delete('/users/:id', uc.deleteById);
   app.get('/users', uc.get);
-  app.get('/users/:id', uc.getByID);
+  app.get('/users/:id', uc.getById);
   app.post('/users', uc.post);
 
   // If path not found

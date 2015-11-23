@@ -28,8 +28,8 @@ module.exports = function(EventSchema) {
       });
     },
 
-    deleteByID: function(req, res, next) {
-      EventSchema.findByIdAndRemove(req.query.id, function(error) {
+    deleteById: function(req, res, next) {
+      EventSchema.findByIdAndRemove(req.params.id, function(error) {
         if (!error) {
           res.status(200).send();
         } else if (error.name === 'CastError') {
@@ -43,11 +43,33 @@ module.exports = function(EventSchema) {
     get: function(req, res) {
       minerMaster.mine('toimintasuomi');
 
-      EventSchema.find(req.query, (_error, events) => res.json(events));
+      let desiredProperties = [
+        'addedAt',
+        'category',
+        'coordinates',
+        'id',
+        'name',
+        'origin',
+        'originalId',
+        'owner',
+        'updatedAt',
+        'url'
+      ];
+
+      EventSchema.find(req.query, function(_error, events) {
+        let trimmedEvents = events.map(function(e) {
+          return desiredProperties.reduce(function(incompleteEvent, property) {
+            incompleteEvent[property] = e[property];
+            return incompleteEvent;
+          }, {});
+        });
+
+        return res.json(trimmedEvents);
+      });
     },
 
-    getByID: function(req, res, next) {
-      EventSchema.findById(req.query.id, function(_error, event) {
+    getById: function(req, res, next) {
+      EventSchema.findById(req.params.id, function(_error, event) {
         return event ? res.json(event) : next(new Error('Event not found'));
       });
     },

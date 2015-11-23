@@ -26,8 +26,8 @@ module.exports = function(LocationSchema) {
       });
     },
 
-    deleteByID: function(req, res, next) {
-      LocationSchema.findByIdAndRemove(req.query.id, function(error) {
+    deleteById: function(req, res, next) {
+      LocationSchema.findByIdAndRemove(req.params.id, function(error) {
         if (!error) {
           res.status(200).send();
         } else if (error.name === 'CastError') {
@@ -42,8 +42,8 @@ module.exports = function(LocationSchema) {
       LocationSchema.find(req.query, (_error, locs) => res.json(locs));
     },
 
-    getByID: function(req, res, next) {
-      LocationSchema.findById(req.query.id, function(_error, loc) {
+    getById: function(req, res, next) {
+      LocationSchema.findById(req.params.id, function(_error, loc) {
         return loc ? res.json(loc) : next(new Error('Location not found'));
       });
     },

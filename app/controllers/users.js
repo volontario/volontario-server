@@ -26,8 +26,8 @@ module.exports = function(UserSchema) {
       });
     },
 
-    deleteByID: function(req, res, next) {
-      UserSchema.findByIdAndRemove(req.query.id, function(error) {
+    deleteById: function(req, res, next) {
+      UserSchema.findByIdAndRemove(req.params.id, function(error) {
         if (!error) {
           res.status(200).send();
         } else if (error.name === 'CastError') {
@@ -42,8 +42,8 @@ module.exports = function(UserSchema) {
       UserSchema.find(req.query, (_error, users) => res.json(users));
     },
 
-    getByID: function(req, res, next) {
-      UserSchema.findById(req.query.id, function(_error, user) {
+    getById: function(req, res, next) {
+      UserSchema.findById(req.params.id, function(_error, user) {
         return user ? res.json(user) : next(new Error('User not found'));
       });
     },
