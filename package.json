@@ -36,6 +36,8 @@
     "mongodb": "^2.0.47",
     "mongoose": "^4.2.3",
     "morgan": "^1.6.1",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0",
     "request": "^2.65.0"
   },
   "devDependencies": {
