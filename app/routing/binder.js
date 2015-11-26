@@ -4,11 +4,15 @@
  * @param {object} m Mongoose connection
  * @param {function} app Express.js application
  */
-module.exports = function(m, app) {
+module.exports = function(m, passport, app) {
   let rc = require('../controllers/root.js')();
   let lc = require('../controllers/locations.js')(m.schemas.Location);
   let ec = require('../controllers/events.js')(m.schemas.Event);
   let uc = require('../controllers/users.js')(m.schemas.User);
+
+  let reqAuth = (function() {
+    return passport.authenticate('basic');
+  })();
 
   app.get('/', rc.get);
 
@@ -30,7 +34,7 @@ module.exports = function(m, app) {
 
   app.delete('/users', uc.delete);
   app.delete('/users/:id', uc.deleteById);
-  app.get('/users', uc.get);
+  app.get('/users', passport.authenticate('basic'), uc.get);
   app.get('/users/:id', uc.getById);
   app.get('/users/:id/:field', uc.getFieldById);
   app.post('/users', uc.post);

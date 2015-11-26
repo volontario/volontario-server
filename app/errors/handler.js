@@ -9,6 +9,8 @@ module.exports = function(app) {
 
     let statusCode = (function(errorMessage) {
       switch (errorMessage) {
+        case 'Authentication failed':
+          return 401;
         case 'User not found':
           return 404;
         case 'Bad path':
@@ -16,6 +18,8 @@ module.exports = function(app) {
         case 'Missing fields':
         case 'Possibly too vague':
           return 422;
+        case 'Database error':
+          return 500;
         default:
           return 500;
       }
