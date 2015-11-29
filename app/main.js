@@ -4,6 +4,7 @@ module.exports = function() {
   let basicStrategyConfigurer = require('./auth/basic.js');
   let bodyParser = require('body-parser');
   let config = require('./config/config.js');
+  let crypto = require('crypto');
   let errorHandler = require('./errors/handler.js');
   let express = require('express');
   let mongoose = require('mongoose');
@@ -11,6 +12,7 @@ module.exports = function() {
   let morgan = require('morgan');
   let passport = require('passport');
   let PassportBasicStrategy = require('passport-http').BasicStrategy;
+  let pbkdf2 = require('pbkdf2');
   let routeBinder = require('./routing/binder.js');
 
   let mongooseConnection = mongooseConnector(config, mongoose);
@@ -28,13 +30,26 @@ module.exports = function() {
     app.use(morgan('common'));
   }
 
+  let digester = function(pw, salt) {
+    return pbkdf2
+      .pbkdf2Sync(pw, salt, 16384, 128, 'sha512')
+      .toString('utf8');
+  };
+
   basicStrategyConfigurer(
     passport,
     PassportBasicStrategy,
+    digester,
     mongooseConnection.schemas.User
   );
 
-  routeBinder(mongooseConnection, passport, app);
+  routeBinder(
+    mongooseConnection,
+    passport,
+    app,
+    digester,
+    () => crypto.randomBytes(128).toString('utf8')
+  );
   errorHandler(app);
 
   app.listen(config.EXPRESS_PORT, () => console.log('Server up!'));

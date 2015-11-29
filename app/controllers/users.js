@@ -1,10 +1,12 @@
 /**
  * Controllers for /users
  *
+ * @param {object} digester Digest generator
+ * @param {function} salter Salt generating function
  * @param {object} UserSchema Mongoose user schema
  * @return {object} Routes per HTTP method
  */
-module.exports = function(UserSchema) {
+module.exports = function(digester, salter, UserSchema) {
   return {
     delete: function(req, res, next) {
       let query;
@@ -39,7 +41,20 @@ module.exports = function(UserSchema) {
     },
 
     get: function(req, res) {
-      UserSchema.find(req.query, (_error, users) => res.json(users));
+      UserSchema.find(req.query, function(_error, users) {
+        return res.json(users.map(function(u) {
+          return {
+            dateOfBirth: u.dateOfBirth,
+            email: u.email,
+            familyName: u.familyName,
+            givenName: u.givenName,
+            id: u.id,
+            owner: u.owner,
+            phoneNumber: u.phoneNumber,
+            tags: u.tags
+          };
+        }));
+      });
     },
 
     getById: function(req, res, next) {
@@ -82,15 +97,20 @@ module.exports = function(UserSchema) {
         return;
       }
 
+      let salt = salter();
+      let digest = digester(req.query.password, salt);
+
       // This is crappy and I admit it
       let user = new UserSchema({
         dateOfBirth: new Date(req.query.dateOfBirth),
+        digest: digest,
+        email: req.query.email,
         familyName: req.query.familyName,
         givenName: req.query.givenName,
         latitude: req.query.latitude,
         longitude: req.query.longitude,
-        email: req.query.email,
         phoneNumber: req.query.phoneNumber,
+        salt: salt,
         tags: req.query.tags.split(',')
       });
 

@@ -1,4 +1,11 @@
-module.exports = function(passport, Strategy, UserSchema) {
+module.exports = function(passport, Strategy, digester, UserSchema) {
+  passport.serializeUser(function(user, done) {
+    done(null, user);
+  });
+  passport.deserializeUser(function(user, done) {
+    done(null, user);
+  });
+
   passport.use(new Strategy(function(providedEmail, providedPassword, done) {
     if (providedEmail === '' && providedPassword === '') {
       return done(true);
@@ -13,14 +20,12 @@ module.exports = function(passport, Strategy, UserSchema) {
         return done(new Error('Authentication failed'));
       }
 
-      console.log(hash);
-      hash(providedPassword, user.salt, function(error, digest) {
-        if (error || digest !== user.digest) {
-          return done(new Error('Authentication failed'));
-        }
+      let digest = digester(providedPassword, user.salt);
+      if (digest !== user.digest) {
+        return done(new Error('Authentication failed'));
+      }
 
-        return done(null, user);
-      });
+      return done(null, user);
     });
   }));
 };
