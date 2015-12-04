@@ -21,6 +21,7 @@ module.exports = function(app) {
         case 'Database error':
           return 500;
         default:
+          console.log(`undefined error: ${err}`);
           return 500;
       }
     })(errorMessageHead);
