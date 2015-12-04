@@ -1,18 +1,19 @@
 module.exports = function() {
   console.log('Initializing...');
 
-  let basicStrategyConfigurer = require('./auth/basic.js');
   let bodyParser = require('body-parser');
-  let config = require('./config/config.js');
   let crypto = require('crypto');
-  let errorHandler = require('./errors/handler.js');
   let express = require('express');
   let mongoose = require('mongoose');
-  let mongooseConnector = require('./database/mongoose-connector.js');
   let morgan = require('morgan');
   let passport = require('passport');
   let PassportBasicStrategy = require('passport-http').BasicStrategy;
   let pbkdf2 = require('pbkdf2');
+
+  let basicStrategyConfigurer = require('./auth/basic.js');
+  let config = require('./config.js');
+  let errorHandler = require('./errors/handler.js');
+  let mongooseConnector = require('./database/mongoose-connector.js');
   let routeBinder = require('./routing/binder.js');
 
   let mongooseConnection = mongooseConnector(config, mongoose);
