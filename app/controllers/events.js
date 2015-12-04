@@ -10,13 +10,13 @@ module.exports = function(EventSchema) {
   return {
     delete: function(req, res, next) {
       let query;
-      if (req.query.notVague === 'true') {
+      if (req.body.notVague === 'true') {
         query = {};
-      } else if (Object.getOwnPropertyNames(req.query).length === 0) {
+      } else if (Object.getOwnPropertyNames(req.body).length === 0) {
         next(new Error('Possibly too vague: use notVague=true to enforce'));
         return;
       } else {
-        query = req.query;
+        query = req.body;
       }
 
       EventSchema.remove(query, function(error) {
@@ -47,7 +47,7 @@ module.exports = function(EventSchema) {
         }
 
         event.calendar = event.calendar.filter(function(item) {
-          return item._id.toString() !== req.query.id;
+          return item._id.toString() !== req.body.id;
         });
 
         event.save(function(error) {
@@ -112,7 +112,7 @@ module.exports = function(EventSchema) {
       ];
 
       let missingFields = requiredFields.reduce(function(mf, rf) {
-        return req.query[rf] === undefined ? mf.concat(rf) : mf;
+        return req.body[rf] === undefined ? mf.concat(rf) : mf;
       }, []);
 
       // Early exit in case of missing fields
@@ -123,11 +123,11 @@ module.exports = function(EventSchema) {
 
       // This is crappy and I admit it
       let event = new EventSchema({
-        latitude: req.query.latitude,
-        longitude: req.query.longitude,
-        name: req.query.name,
-        originalId: req.query.originalId,
-        url: req.query.url
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        name: req.body.name,
+        originalId: req.body.originalId,
+        url: req.body.url
       });
 
       event.save(error => res.json({ok: !error}));
@@ -141,7 +141,7 @@ module.exports = function(EventSchema) {
       ];
 
       let missingFields = requiredFields.reduce(function(mf, rf) {
-        return req.query[rf] === undefined ? mf.concat(rf) : mf;
+        return req.body[rf] === undefined ? mf.concat(rf) : mf;
       }, []);
 
       // Early exit in case of missing fields
@@ -157,9 +157,9 @@ module.exports = function(EventSchema) {
 
         var updateableCalendar = event.calendar;
         updateableCalendar.push({
-          userId: req.query.userId,
-          from: req.query.from,
-          to: req.query.to
+          userId: req.body.userId,
+          from: req.body.from,
+          to: req.body.to
         });
 
         event.update({calendar: updateableCalendar}, null, function(error) {

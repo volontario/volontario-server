@@ -10,13 +10,13 @@ module.exports = function(digester, salter, UserSchema) {
   return {
     delete: function(req, res, next) {
       let query;
-      if (req.query.notVague === 'true') {
+      if (req.body.notVague === 'true') {
         query = {};
-      } else if (Object.getOwnPropertyNames(req.query).length === 0) {
+      } else if (Object.getOwnPropertyNames(req.body).length === 0) {
         next(new Error('Possibly too vague: use notVague=true to enforce'));
         return;
       } else {
-        query = req.query;
+        query = req.body;
       }
 
       UserSchema.remove(query, function(error) {
@@ -88,7 +88,7 @@ module.exports = function(digester, salter, UserSchema) {
       ];
 
       let missingFields = requiredFields.reduce(function(mf, rf) {
-        return req.query[rf] === undefined ? mf.concat(rf) : mf;
+        return req.body[rf] === undefined ? mf.concat(rf) : mf;
       }, []);
 
       // Early exit in case of missing fields
@@ -98,20 +98,20 @@ module.exports = function(digester, salter, UserSchema) {
       }
 
       let salt = salter();
-      let digest = digester(req.query.password, salt);
+      let digest = digester(req.body.password, salt);
 
       // This is crappy and I admit it
       let user = new UserSchema({
-        dateOfBirth: new Date(req.query.dateOfBirth),
+        dateOfBirth: new Date(req.body.dateOfBirth),
         digest: digest,
-        email: req.query.email,
-        familyName: req.query.familyName,
-        givenName: req.query.givenName,
-        latitude: req.query.latitude,
-        longitude: req.query.longitude,
-        phoneNumber: req.query.phoneNumber,
+        email: req.body.email,
+        familyName: req.body.familyName,
+        givenName: req.body.givenName,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        phoneNumber: req.body.phoneNumber,
         salt: salt,
-        tags: req.query.tags.split(',')
+        tags: req.body.tags.split(',')
       });
 
       user.save(function(error) {

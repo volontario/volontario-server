@@ -8,13 +8,13 @@ module.exports = function(LocationSchema) {
   return {
     delete: function(req, res, next) {
       let query;
-      if (req.query.notVague === 'true') {
+      if (req.body.notVague === 'true') {
         query = {};
-      } else if (Object.getOwnPropertyNames(req.query).length === 0) {
+      } else if (Object.getOwnPropertyNames(req.body).length === 0) {
         next(new Error('Possibly too vague: use notVague=true to enforce'));
         return;
       } else {
-        query = req.query;
+        query = req.body;
       }
 
       LocationSchema.remove(query, function(error) {
@@ -70,7 +70,7 @@ module.exports = function(LocationSchema) {
       ];
 
       let missingFields = requiredFields.reduce(function(mf, rf) {
-        return req.query[rf] === undefined ? mf.concat(rf) : mf;
+        return req.body[rf] === undefined ? mf.concat(rf) : mf;
       }, []);
 
       // Early exit in case of missing fields
@@ -81,13 +81,13 @@ module.exports = function(LocationSchema) {
 
       // This is crappy and I admit it
       let location = new LocationSchema({
-        category: req.query.category,
+        category: req.body.category,
         coordinates: {
-          latitude: req.query.latitude,
-          longitude: req.query.longitude
+          latitude: req.body.latitude,
+          longitude: req.body.longitude
         },
-        name: req.query.name,
-        url: req.query.url
+        name: req.body.name,
+        url: req.body.url
       });
 
       location.save(error => res.json({ok: !error}));
