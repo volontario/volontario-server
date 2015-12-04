@@ -104,9 +104,11 @@ module.exports = function(EventSchema) {
 
     post: function(req, res, next) {
       let requiredFields = [
+        'category',
         'latitude',
         'longitude',
         'name',
+        'origin',
         'originalId',
         'url'
       ];
@@ -123,9 +125,13 @@ module.exports = function(EventSchema) {
 
       // This is crappy and I admit it
       let event = new EventSchema({
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
+        category: req.body.category,
+        coordinates: {
+          latitude: req.body.latitude,
+          longitude: req.body.longitude
+        },
         name: req.body.name,
+        origin: req.body.origin,
         originalId: req.body.originalId,
         url: req.body.url
       });
