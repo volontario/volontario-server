@@ -1,24 +1,21 @@
 /**
  * Controllers for /users
  *
+ * @param {object} helpers Controller helpers
  * @param {object} digester Digest generator
  * @param {function} salter Salt generating function
  * @param {object} UserSchema Mongoose user schema
  * @return {object} Routes per HTTP method
  */
-module.exports = function(digester, salter, UserSchema) {
+module.exports = function(helpers, digester, salter, UserSchema) {
   return {
     delete: function(req, res, next) {
-      let query;
-      if (req.body.notVague === 'true') {
-        query = {};
-      } else if (Object.getOwnPropertyNames(req.body).length === 0) {
-        next(new Error('Possibly too vague: use notVague=true to enforce'));
-        return;
-      } else {
-        query = req.body;
+      let flagError = helpers.requireNotVagueFlag(req);
+      if (flagError) {
+        return next(flagError);
       }
 
+      let query = req.body;
       UserSchema.remove(query, function(error) {
         if (error) {
           next(new Error());
@@ -42,17 +39,19 @@ module.exports = function(digester, salter, UserSchema) {
 
     get: function(req, res) {
       UserSchema.find(req.query, function(_error, users) {
+        let keptProperties = [
+          'dateOfBirth',
+          'email',
+          'familyName',
+          'givenName',
+          'id',
+          'owner',
+          'phoneNumber',
+          'tags'
+        ];
+
         return res.json(users.map(function(u) {
-          return {
-            dateOfBirth: u.dateOfBirth,
-            email: u.email,
-            familyName: u.familyName,
-            givenName: u.givenName,
-            id: u.id,
-            owner: u.owner,
-            phoneNumber: u.phoneNumber,
-            tags: u.tags
-          };
+          return helpers.dropExcludedProperties(keptProperties, u);
         }));
       });
     },
@@ -66,7 +65,7 @@ module.exports = function(digester, salter, UserSchema) {
     getFieldById: function(req, res, next) {
       UserSchema.findById(req.params.id, function(_error, user) {
         if (!user) {
-          next(new Error('User not found'));
+          return next(new Error('User not found'));
         }
 
         let response = {};
@@ -88,14 +87,9 @@ module.exports = function(digester, salter, UserSchema) {
         'tags'
       ];
 
-      let missingFields = requiredFields.reduce(function(mf, rf) {
-        return req.body[rf] === undefined ? mf.concat(rf) : mf;
-      }, []);
-
-      // Early exit in case of missing fields
-      if (missingFields.length !== 0) {
-        next(new Error(`Missing fields: ${missingFields}`));
-        return;
+      let fieldError = helpers.requireFields(req, requiredFields);
+      if (fieldError) {
+        return next(fieldError);
       }
 
       let salt = salter();

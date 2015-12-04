@@ -7,7 +7,7 @@ module.exports = function(passport, Strategy, digester, UserSchema) {
   });
 
   passport.use(new Strategy(function(providedEmail, providedPassword, done) {
-    if (providedEmail === '' && providedPassword === '') {
+    if (providedEmail === '' || providedPassword === '') {
       return done(true);
     }
 

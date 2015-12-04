@@ -1,24 +1,21 @@
 /**
  * Controllers for /events
  *
+ * @param {object} helpers Controller helpers
  * @param {object} EventSchema Mongoose event schema
  * @return {object} Routes per HTTP method
  */
-module.exports = function(EventSchema) {
+module.exports = function(helpers, EventSchema) {
   let minerMaster = require('../mining/master.js')(EventSchema);
 
   return {
     delete: function(req, res, next) {
-      let query;
-      if (req.body.notVague === 'true') {
-        query = {};
-      } else if (Object.getOwnPropertyNames(req.body).length === 0) {
-        next(new Error('Possibly too vague: use notVague=true to enforce'));
-        return;
-      } else {
-        query = req.body;
+      let flagError = helpers.requireNotVagueFlag(req);
+      if (flagError) {
+        return next(flagError);
       }
 
+      let query = req.body;
       EventSchema.remove(query, function(error) {
         if (error) {
           next(new Error());
@@ -43,7 +40,7 @@ module.exports = function(EventSchema) {
     deleteFromCalendar: function(req, res, next) {
       EventSchema.findById(req.params.id, function(_error, event) {
         if (!event) {
-          next(new Error('Event not found'));
+          return next(new Error('Event not found'));
         }
 
         event.calendar = event.calendar.filter(function(item) {
@@ -59,7 +56,7 @@ module.exports = function(EventSchema) {
     get: function(req, res) {
       minerMaster.mine('toimintasuomi');
 
-      let desiredProperties = [
+      let keptProperties = [
         'addedAt',
         'category',
         'coordinates',
@@ -73,14 +70,9 @@ module.exports = function(EventSchema) {
       ];
 
       EventSchema.find(req.query, function(_error, events) {
-        let trimmedEvents = events.map(function(e) {
-          return desiredProperties.reduce(function(incompleteEvent, property) {
-            incompleteEvent[property] = e[property];
-            return incompleteEvent;
-          }, {});
-        });
-
-        return res.json(trimmedEvents);
+        return res.json(events.map(function(e) {
+          return helpers.dropExcludedProperties(keptProperties, e);
+        }));
       });
     },
 
@@ -93,7 +85,7 @@ module.exports = function(EventSchema) {
     getFieldById: function(req, res, next) {
       EventSchema.findById(req.params.id, function(_error, event) {
         if (!event) {
-          next(new Error('Event not found'));
+          return next(new Error('Event not found'));
         }
 
         let response = {};
@@ -113,14 +105,9 @@ module.exports = function(EventSchema) {
         'url'
       ];
 
-      let missingFields = requiredFields.reduce(function(mf, rf) {
-        return req.body[rf] === undefined ? mf.concat(rf) : mf;
-      }, []);
-
-      // Early exit in case of missing fields
-      if (missingFields.length !== 0) {
-        next(new Error(`Missing fields: ${missingFields}`));
-        return;
+      let fieldError = helpers.requireFields(req, requiredFields);
+      if (fieldError) {
+        return next(fieldError);
       }
 
       // This is crappy and I admit it
@@ -147,19 +134,14 @@ module.exports = function(EventSchema) {
         'to'
       ];
 
-      let missingFields = requiredFields.reduce(function(mf, rf) {
-        return req.body[rf] === undefined ? mf.concat(rf) : mf;
-      }, []);
-
-      // Early exit in case of missing fields
-      if (missingFields.length !== 0) {
-        next(new Error(`Missing fields: ${missingFields}`));
-        return;
+      let fieldError = helpers.requireFields(req, requiredFields);
+      if (fieldError) {
+        return next(fieldError);
       }
 
       EventSchema.findById(req.params.id, function(_error, event) {
         if (!event) {
-          next(new Error('Event not found'));
+          return next(new Error('Event not found'));
         }
 
         var updateableCalendar = event.calendar;

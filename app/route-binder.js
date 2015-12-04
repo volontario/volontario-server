@@ -1,17 +1,19 @@
 /**
  * All the routes
  *
- * @param {object} m Mongoose connection
+ * @param {object} schs Mongoose schemas
  * @param {object} passport Passport
  * @param {function} app Express.js application
  * @param {function} digester Digest generator
  * @param {function} salter Salt generating function
  */
-module.exports = function(m, passport, app, digester, salter) {
-  let rc = require('../controllers/root.js')();
-  let lc = require('../controllers/locations.js')(m.schemas.Location);
-  let ec = require('../controllers/events.js')(m.schemas.Event);
-  let uc = require('../controllers/users.js')(digester, salter, m.schemas.User);
+module.exports = function(schs, passport, app, digester, salter) {
+  let h = require('./controllers/helpers.js');
+
+  let rc = require('./controllers/root.js')();
+  let lc = require('./controllers/locations.js')(h, schs.Location);
+  let ec = require('./controllers/events.js')(h, schs.Event);
+  let uc = require('./controllers/users.js')(h, digester, salter, schs.User);
 
   let reqAuth = passport.authenticate('basic');
 

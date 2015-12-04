@@ -1,22 +1,19 @@
 /**
  * Controllers for /locations
  *
+ * @param {object} helpers Controller helpers
  * @param {object} LocationSchema Mongoose location schema
  * @return {object} Routes per HTTP method
  */
-module.exports = function(LocationSchema) {
+module.exports = function(helpers, LocationSchema) {
   return {
     delete: function(req, res, next) {
-      let query;
-      if (req.body.notVague === 'true') {
-        query = {};
-      } else if (Object.getOwnPropertyNames(req.body).length === 0) {
-        next(new Error('Possibly too vague: use notVague=true to enforce'));
-        return;
-      } else {
-        query = req.body;
+      let flagError = helpers.requireNotVagueFlag(req);
+      if (flagError) {
+        return next(flagError);
       }
 
+      let query = req.body;
       LocationSchema.remove(query, function(error) {
         if (error) {
           next(new Error());
@@ -51,7 +48,7 @@ module.exports = function(LocationSchema) {
     getFieldById: function(req, res, next) {
       LocationSchema.findById(req.params.id, function(_error, location) {
         if (!location) {
-          next(new Error('Location not found'));
+          return next(new Error('Location not found'));
         }
 
         let response = {};
@@ -69,14 +66,9 @@ module.exports = function(LocationSchema) {
         'url'
       ];
 
-      let missingFields = requiredFields.reduce(function(mf, rf) {
-        return req.body[rf] === undefined ? mf.concat(rf) : mf;
-      }, []);
-
-      // Early exit in case of missing fields
-      if (missingFields.length !== 0) {
-        next(new Error(`Missing fields: ${missingFields}`));
-        return;
+      let fieldError = helpers.requireFields(req, requiredFields);
+      if (fieldError) {
+        return next(fieldError);
       }
 
       // This is crappy and I admit it

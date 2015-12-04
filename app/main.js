@@ -14,12 +14,13 @@ module.exports = function() {
   let config = require('./config.js');
   let errorHandler = require('./errors/handler.js');
   let mongooseConnector = require('./database/mongoose-connector.js');
-  let routeBinder = require('./routing/binder.js');
+  let routeBinder = require('./route-binder.js');
 
   let mongooseConnection = mongooseConnector(config, mongoose);
 
   let app = express();
 
+  app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({extended: true}));
 
   app.use(passport.initialize());
@@ -45,7 +46,7 @@ module.exports = function() {
   );
 
   routeBinder(
-    mongooseConnection,
+    mongooseConnection.schemas,
     passport,
     app,
     digester,
