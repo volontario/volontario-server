@@ -67,7 +67,7 @@ module.exports = function(EventSchema) {
         'name',
         'origin',
         'originalId',
-        'owner',
+        'ownerId',
         'updatedAt',
         'url'
       ];
@@ -133,6 +133,7 @@ module.exports = function(EventSchema) {
         name: req.body.name,
         origin: req.body.origin,
         originalId: req.body.originalId,
+        ownerId: req.user.id,
         url: req.body.url
       });
 
