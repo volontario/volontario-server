@@ -16,7 +16,7 @@ module.exports = function(config, mongoose) {
     name: String,
     originalId: String,
     origin: String,
-    owner: {type: String, default: null},
+    ownerId: {type: String, default: null},
     url: String,
     updatedAt: {type: Date, default: Date.now}
   };
@@ -29,7 +29,7 @@ module.exports = function(config, mongoose) {
       longitude: Number
     },
     name: String,
-    owner: {type: String, default: null},
+    ownerId: {type: String, default: null},
     url: String,
     updatedAt: {type: Date, default: Date.now}
   };

@@ -87,6 +87,7 @@ module.exports = function(LocationSchema) {
           longitude: req.body.longitude
         },
         name: req.body.name,
+        ownerId: req.user.id,
         url: req.body.url
       });
 
