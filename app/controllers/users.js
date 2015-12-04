@@ -78,11 +78,12 @@ module.exports = function(digester, salter, UserSchema) {
     post: function(req, res, next) {
       let requiredFields = [
         'dateOfBirth',
+        'email',
         'familyName',
         'givenName',
         'latitude',
         'longitude',
-        'email',
+        'password',
         'phoneNumber',
         'tags'
       ];
