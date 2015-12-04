@@ -17,24 +17,24 @@ module.exports = function(m, passport, app, digester, salter) {
 
   app.get('/', rc.get);
 
-  app.delete('/locations', lc.delete);
-  app.delete('/locations/:id', lc.deleteById);
+  app.delete('/locations', reqAuth, lc.delete);
+  app.delete('/locations/:id', reqAuth, lc.deleteById);
   app.get('/locations', lc.get);
   app.get('/locations/:id', lc.getById);
   app.get('/locations/:id/:field', lc.getFieldById);
-  app.post('/locations', lc.post);
+  app.post('/locations', reqAuth, lc.post);
 
-  app.delete('/events', ec.delete);
-  app.delete('/events/:id', ec.deleteById);
-  app.delete('/events/:id/calendar', ec.deleteFromCalendar);
+  app.delete('/events', reqAuth, ec.delete);
+  app.delete('/events/:id', reqAuth, ec.deleteById);
+  app.delete('/events/:id/calendar', reqAuth, ec.deleteFromCalendar);
   app.get('/events', ec.get);
   app.get('/events/:id', ec.getById);
   app.get('/events/:id/:field', ec.getFieldById);
-  app.post('/events', ec.post);
-  app.post('/events/:id/calendar', ec.postToCalendar);
+  app.post('/events', reqAuth, ec.post);
+  app.post('/events/:id/calendar', reqAuth, ec.postToCalendar);
 
-  app.delete('/users', uc.delete);
-  app.delete('/users/:id', uc.deleteById);
+  app.delete('/users', reqAuth, uc.delete);
+  app.delete('/users/:id', reqAuth, uc.deleteById);
   app.get('/users', reqAuth, uc.get);
   app.get('/users/:id', uc.getById);
   app.get('/users/:id/:field', uc.getFieldById);
