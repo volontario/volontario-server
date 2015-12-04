@@ -30,7 +30,7 @@ module.exports = function() {
       phoneNumber: '+35850000000',
       tags: 'tagA,tagB,tagC'
     })
-    .expectStatus(200)
+    .expectStatus(201)
     .after(function() {
       frisby.create('Create a new location')
         .post(url + '/locations', {
@@ -40,12 +40,12 @@ module.exports = function() {
           name: 'Testing Location',
           url: 'http://location-testing-url/'
         })
-        .expectStatus(200)
+        .expectStatus(201)
         .toss();
 
       frisby.create('Delete testing locations')
         .delete(url + '/locations', {category: 'testing'})
-        .expectStatus(200)
+        .expectStatus(205)
         .toss();
 
       frisby.create('Create a new event')
@@ -58,18 +58,18 @@ module.exports = function() {
           originalId: 'Original Testing Event',
           url: 'http://event-testing-url/'
         })
-        .expectStatus(200)
+        .expectStatus(201)
         .toss();
 
       frisby.create('Delete testing events')
         .delete(url + '/events', {category: 'testing'})
-        .expectStatus(200)
+        .expectStatus(205)
+        .toss();
+
+      frisby.create('Delete testing users')
+        .delete(url + '/users', {email: TESTING_EMAIL})
+        .expectStatus(205)
         .toss();
     })
-    .toss();
-
-  frisby.create('Delete testing users')
-    .delete(url + '/users', {email: 'test@test.test'})
-    .expectStatus(200)
     .toss();
 };
