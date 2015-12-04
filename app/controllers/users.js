@@ -16,11 +16,11 @@ module.exports = function(helpers, digester, salter, UserSchema) {
       }
 
       let query = req.body;
-      UserSchema.remove(query, function(error) {
+      UserSchema.remove(query, function(error, obj) {
         if (error) {
           next(new Error());
         } else {
-          res.status(200).send();
+          res.status(obj.result.n > 0 ? 205 : 204).send();
         }
       });
     },
@@ -28,7 +28,7 @@ module.exports = function(helpers, digester, salter, UserSchema) {
     deleteById: function(req, res, next) {
       UserSchema.findByIdAndRemove(req.params.id, function(error) {
         if (!error) {
-          res.status(200).send();
+          res.status(204).send();
         } else if (error.name === 'CastError') {
           next(new Error('Bad resource ID'));
         } else {
@@ -111,13 +111,10 @@ module.exports = function(helpers, digester, salter, UserSchema) {
 
       user.save(function(error) {
         if (error) {
-          return res.json({
-            ok: false,
-            error: !error
-          });
+          next(new Error('Database error'));
+        } else {
+          res.status(201).send();
         }
-
-        return res.json({ok: true});
       });
     }
   };

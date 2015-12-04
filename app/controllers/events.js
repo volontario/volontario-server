@@ -16,11 +16,11 @@ module.exports = function(helpers, EventSchema) {
       }
 
       let query = req.body;
-      EventSchema.remove(query, function(error) {
+      EventSchema.remove(query, function(error, obj) {
         if (error) {
           next(new Error());
         } else {
-          res.status(200).send();
+          res.status(obj.result.n > 0 ? 205 : 204).send();
         }
       });
     },
@@ -28,7 +28,7 @@ module.exports = function(helpers, EventSchema) {
     deleteById: function(req, res, next) {
       EventSchema.findByIdAndRemove(req.params.id, function(error) {
         if (!error) {
-          res.status(200).send();
+          res.status(204).send();
         } else if (error.name === 'CastError') {
           next(new Error('Bad resource ID'));
         } else {
@@ -48,7 +48,11 @@ module.exports = function(helpers, EventSchema) {
         });
 
         event.save(function(error) {
-          res.json({ok: !error});
+          if (error) {
+            next(new Error('Database error'));
+          } else {
+            res.status(204).send();
+          }
         });
       });
     },
@@ -124,7 +128,13 @@ module.exports = function(helpers, EventSchema) {
         url: req.body.url
       });
 
-      event.save(error => res.json({ok: !error}));
+      event.save(function(error) {
+        if (error) {
+          next(new Error('Database error'));
+        } else {
+          res.status(201).send();
+        }
+      });
     },
 
     postToCalendar: function(req, res, next) {
@@ -152,7 +162,11 @@ module.exports = function(helpers, EventSchema) {
         });
 
         event.update({calendar: updateableCalendar}, null, function(error) {
-          res.json({ok: !error});
+          if (error) {
+            next(new Error('Database error'));
+          } else {
+            res.status(201).send();
+          }
         });
       });
     }
