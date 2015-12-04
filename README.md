@@ -1,8 +1,7 @@
 volontario API
 ==============
-* All responses are formatted in JSON.
-* Info on data returned via `GET` requests is not provided because we embrace experimentation.
-* Parameters are sent via query – not body
+* All responses are formatted as JSON.
+* To use any `POST` or `DELETE` commands except `POST /users`, you have to authenticate via HTTP Basic Auth. Create a user and use the same credentials as given to the newly made user when creating or deleting things. This is to be able to match things to their creators and deleters.
 
 Root
 ----
