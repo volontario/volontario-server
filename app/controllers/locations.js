@@ -14,11 +14,11 @@ module.exports = function(helpers, LocationSchema) {
       }
 
       let query = req.body;
-      LocationSchema.remove(query, function(error) {
+      LocationSchema.remove(query, function(error, obj) {
         if (error) {
           next(new Error());
         } else {
-          res.status(200).send();
+          res.status(obj.result.n > 0 ? 205 : 204).send();
         }
       });
     },
@@ -26,7 +26,7 @@ module.exports = function(helpers, LocationSchema) {
     deleteById: function(req, res, next) {
       LocationSchema.findByIdAndRemove(req.params.id, function(error) {
         if (!error) {
-          res.status(200).send();
+          res.status(204).send();
         } else if (error.name === 'CastError') {
           next(new Error('Bad resource ID'));
         } else {
@@ -83,7 +83,13 @@ module.exports = function(helpers, LocationSchema) {
         url: req.body.url
       });
 
-      location.save(error => res.json({ok: !error}));
+      location.save(function(error) {
+        if (error) {
+          next(new Error('Database error'));
+        } else {
+          res.status(201).send();
+        }
+      });
     }
   };
 };
