@@ -27,7 +27,7 @@ Returns a location with the provided `id`.
 Returns a specific field of a location with the provided `id`. Has to be used to fetch expensive fields.
 
 ### `POST /locations`
-Enters a location into the system. Returns `{ "ok": true|false }`.
+Enters a location into the system. Returns `201` on success.
 
 | Field | Type | Meaning |
 |-------|:---- |:--------|
@@ -40,8 +40,10 @@ Enters a location into the system. Returns `{ "ok": true|false }`.
 ### `DELETE /locations`
 Deletes locations that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
 
+On success, returns either `205` or `204` depending on whether anything was actually deleted.
+
 ### `DELETE /locations/:id`
-Deletes a location with the provided `id`. Returns `{ "ok": true|false }`.
+Deletes a location with the provided `id`. Returns `204` on success.
 
 Events
 ------
@@ -56,7 +58,7 @@ Returns an event with the provided `id`.
 Returns a specific field of an event with the provided `id`. Has to be used to fetch expensive fields such as calendars.
 
 ### `POST /events`
-Enters an event into the system. Returns `{ "ok": true|false }`.
+Enters an event into the system. Returns `201` on success.
 
 | Field | Type | Meaning |
 |-------|:---- |:--------|
@@ -68,7 +70,7 @@ Enters an event into the system. Returns `{ "ok": true|false }`.
 | url | `string` | URL for the event |
 
 ### `POST /events/:id/calendar`
-Enters an item into an event calendar.
+Enters an item into an event calendar. Returns `201` on success.
 
 | Field | Type | Meaning |
 |-------|:---- |:--------|
@@ -79,11 +81,13 @@ Enters an item into an event calendar.
 ### `DELETE /events`
 Deletes events that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
 
+On success, returns either `205` or `204` depending on whether anything was actually deleted.
+
 ### `DELETE /events/:id`
-Deletes an event with the provided `id`. Returns `{ "ok": true|false }`.
+Deletes an event with the provided `id`. Returns `204` on success.
 
 ### `DELETE /events/:id/calendar`
-Deletes an item in an event calendar
+Deletes an item in an event calendar. Returns `204` on success.
 
 | Field | Type | Meaning |
 |-------|:---- |:--------|
@@ -102,7 +106,7 @@ Returns a user with the provided `id`.
 Returns a specific field of a user with the provided `id`. Has to be used to fetch expensive fields.
 
 ### `POST /users`
-Enters a user into the system. Returns `{ "ok": true|false }`.
+Enters a user into the system. Returns `201` on success.
 
 | Field | Type | Meaning |
 |-------|:---- |:--------|
@@ -118,5 +122,7 @@ Enters a user into the system. Returns `{ "ok": true|false }`.
 ### `DELETE /users`
 Deletes users that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
 
+On success, returns either `205` or `204` depending on whether anything was actually deleted.
+
 ### `DELETE /users/:id`
-Deletes a user with the provided `id`. Returns `{ "ok": true|false }`.
+Deletes a user with the provided `id`. Returns `204` on success.
