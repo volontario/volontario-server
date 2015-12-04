@@ -32,9 +32,11 @@ module.exports = function() {
 
   frisby.create('Create a new event')
     .post(url + '/events', {
+      category: 'testing',
       latitude: 62.000,
       longitude: 22.000,
       name: 'Testing Event',
+      origin: 'test_run',
       originalId: 'Original Testing Event',
       url: 'http://event-testing-url/'
     })
@@ -54,6 +56,7 @@ module.exports = function() {
       givenName: 'Testing',
       latitude: 58.000,
       longitude: 18.000,
+      password: 'testingpassword',
       phoneNumber: '+35850000000',
       tags: 'tagA,tagB,tagC'
     })
