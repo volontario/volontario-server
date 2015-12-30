@@ -22,9 +22,11 @@ module.exports = {
       return req.body[rf] === undefined ? mf.concat(rf) : mf;
     }, []);
 
+    let missingFormattedFields = missingFields.join(', ');
+
     // Early exit in case of missing fields
     if (missingFields.length !== 0) {
-      return new Error(`Missing fields: ${missingFields}`);
+      return new Error(`Missing fields: ${missingFormattedFields}`);
     }
   }
 };
