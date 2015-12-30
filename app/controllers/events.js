@@ -107,16 +107,20 @@ module.exports = function(helpers, EventSchema) {
         }
 
         if (req.body.op !== 'replace') {
-          return next(new Error(''));
+          return next(new Error('Unsupported operation'));
         }
 
         let field = req.body.path.substring(1);
         event[field] = req.body.value;
 
-        event.save();
+        event.save(function(error) {
+          if (error) {
+            next(new Error('Database error'));
+          } else {
+            res.status(204).send();
+          }
+        });
       });
-
-      res.status(204).send();
     },
 
     post: function(req, res, next) {
