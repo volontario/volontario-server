@@ -64,12 +64,14 @@ module.exports = function(helpers, EventSchema) {
         'addedAt',
         'category',
         'coordinates',
+        'endsAt',
         'id',
         'name',
         'origin',
         'originalId',
         'ownerId',
         'updatedAt',
+        'startsAt',
         'url'
       ];
 
@@ -121,10 +123,12 @@ module.exports = function(helpers, EventSchema) {
           latitude: req.body.latitude,
           longitude: req.body.longitude
         },
+        endsAt: (req.body.endsAt || undefined),
         name: req.body.name,
         origin: req.body.origin,
         originalId: req.body.originalId,
         ownerId: req.user.id,
+        startsAt: (req.body.startsAt || undefined),
         url: req.body.url
       });
 
