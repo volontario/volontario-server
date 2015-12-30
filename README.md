@@ -21,26 +21,26 @@ The response should then be an empty `204`.
 Root
 ----
 
-### `GET /`
+#### `GET /`
 Returns an empty object as a status check. Consider Redis's `PONG`.
 
 Locations
 ---------
 
-### `GET /locations`
+#### `GET /locations`
 Returns a list of locations.
 
 | Field | Meaning |
 |-------|:--------|
 | category | Filter by category |
 
-### `GET /locations/:id`
+#### `GET /locations/:id`
 Returns a location with the provided `id`.
 
-### `GET /locations/:id/:field`
+#### `GET /locations/:id/:field`
 Returns a specific field of a location with the provided `id`. Has to be used to fetch expensive fields.
 
-### `POST /locations`
+#### `POST /locations`
 Enters a location into the system. Returns `201` on success.
 
 | Field | Type | Meaning |
@@ -51,30 +51,30 @@ Enters a location into the system. Returns `201` on success.
 | name | `string` | Name of the location |
 | url | `string` | URL for the location |
 
-### `DELETE /locations`
+#### `DELETE /locations`
 Deletes locations that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
 
 On success, returns either `205` or `204` depending on whether anything was actually deleted.
 
-### `DELETE /locations/:id`
+#### `DELETE /locations/:id`
 Deletes a location with the provided `id`. Returns `204` on success.
 
 Events
 ------
 
-### `GET /events`
+#### `GET /events`
 Returns a list of events.
 
-### `GET /events/:id`
+#### `GET /events/:id`
 Returns an event with the provided `id`.
 
-### `GET /events/:id/calender`
+#### `GET /events/:id/calender`
 Works exactly as you would expect. Except, you could give the request a `inverted` field, though, and set it to `true`. Then, instead of *reserved* times, you would get the *free* times of the calendar.
 
-### `GET /events/:id/:field`
+#### `GET /events/:id/:field`
 Returns a specific field of an event with the provided `id`. Has to be used to fetch expensive fields such as calendars.
 
-### `POST /events`
+#### `POST /events`
 Enters an event into the system. Returns `201` on success.
 
 | Field | Type | Meaning |
@@ -86,7 +86,7 @@ Enters an event into the system. Returns `201` on success.
 | originalId | `string` | ID in the original system |
 | url | `string` | URL for the event |
 
-### `POST /events/:id/calendar`
+#### `POST /events/:id/calendar`
 Enters an item into an event calendar. Returns `201` on success.
 
 | Field | Type | Meaning |
@@ -95,18 +95,18 @@ Enters an item into an event calendar. Returns `201` on success.
 | from | `microtimestamp` | Attending from |
 | to | `microtimestamp` | Attending to |
 
-### `PATCH /events/:id`
+#### `PATCH /events/:id`
 Updates the given field of an event. See Notes for more information.
 
-### `DELETE /events`
+#### `DELETE /events`
 Deletes events that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
 
 On success, returns either `205` or `204` depending on whether anything was actually deleted.
 
-### `DELETE /events/:id`
+#### `DELETE /events/:id`
 Deletes an event with the provided `id`. Returns `204` on success.
 
-### `DELETE /events/:id/calendar`
+#### `DELETE /events/:id/calendar`
 Deletes an item in an event calendar. Returns `204` on success.
 
 | Field | Type | Meaning |
@@ -116,16 +116,16 @@ Deletes an item in an event calendar. Returns `204` on success.
 Users
 -----
 
-### `GET /users`
+#### `GET /users`
 Returns a list of users.
 
-### `GET /users/:id`
+#### `GET /users/:id`
 Returns a user with the provided `id`.
 
-### `GET /users/:id/:field`
+#### `GET /users/:id/:field`
 Returns a specific field of a user with the provided `id`. Has to be used to fetch expensive fields.
 
-### `POST /users`
+#### `POST /users`
 Enters a user into the system. Returns `201` on success.
 
 | Field | Type | Meaning |
@@ -139,10 +139,10 @@ Enters a user into the system. Returns `201` on success.
 | phoneNumber | `string` | Phone number with country code |
 | tags | `string,string,...` | Comma separated list of tags |
 
-### `DELETE /users`
+#### `DELETE /users`
 Deletes users that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
 
 On success, returns either `205` or `204` depending on whether anything was actually deleted.
 
-### `DELETE /users/:id`
+#### `DELETE /users/:id`
 Deletes a user with the provided `id`. Returns `204` on success.
