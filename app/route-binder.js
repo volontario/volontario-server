@@ -32,6 +32,7 @@ module.exports = function(schs, passport, app, digester, salter) {
   app.get('/events', ec.get);
   app.get('/events/:id', ec.getById);
   app.get('/events/:id/:field', ec.getFieldById);
+  app.patch('/events/:id', ec.patchField);
   app.post('/events', reqAuth, ec.post);
   app.post('/events/:id/calendar', reqAuth, ec.postToCalendar);
 
