@@ -6,6 +6,8 @@
  * @return {object} Routes per HTTP method
  */
 module.exports = function(helpers, LocationSchema) {
+  let minerMaster = require('../mining/master.js')(LocationSchema);
+
   return {
     delete: function(req, res, next) {
       let flagError = helpers.requireNotVagueFlag(req);
@@ -36,6 +38,8 @@ module.exports = function(helpers, LocationSchema) {
     },
 
     get: function(req, res) {
+      minerMaster.mine('bloodservicecentres');
+
       LocationSchema.find(req.query, (_error, locs) => res.json(locs));
     },
 
