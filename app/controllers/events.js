@@ -88,6 +88,77 @@ module.exports = function(helpers, EventSchema) {
       });
     },
 
+    getCalendar: function(req, res, next) {
+      EventSchema.findById(req.params.id, function(_error, event) {
+        if (!event) {
+          return next(new Error('Event not found'));
+        }
+
+        if (req.query.inverted !== 'true') {
+          // Just the plain calender -- this is normal behavior from /:field
+          return res.json(event.calendar);
+        }
+
+        if (event.startsAt === undefined || event.endsAt === undefined) {
+          return next(
+            new Error('Impossible: either startsAt or endsAt is not defined')
+          );
+        }
+
+        /**
+         * Magic
+         */
+        let freeIntervals = (function(e) {
+          let points = [];
+          let maxUsers = 1;
+          let curUsers = 0;
+
+          points.push({
+            userChange: u => u,
+            time: e.startsAt
+          });
+
+          points.push({
+            userChange: u => u,
+            time: e.endsAt
+          });
+
+          e.calendar.forEach(function(userTime) {
+            points.push({
+              userChange: u => u + 1,
+              time: userTime.from
+            });
+
+            points.push({
+              userChange: u => u - 1,
+              time: userTime.to
+            });
+          });
+
+          points.sort((a, b) => a.time.valueOf() > b.time.valueOf() ? 1 : -1);
+
+          let openInterval = {};
+          let freeIntervals = [];
+          for (let i = 0; i < points.length; i += 1) {
+            curUsers = points[i].userChange(curUsers);
+
+            if ((curUsers >= maxUsers || i === points.length - 1) &&
+                openInterval.to === undefined) {
+              openInterval.to = points[i].time;
+              freeIntervals.push(openInterval);
+              openInterval = {};
+            } else if (openInterval.from === undefined) {
+              openInterval.from = points[i].time;
+            }
+          }
+
+          return freeIntervals;
+        })(event);
+
+        return res.json(freeIntervals);
+      });
+    },
+
     getFieldById: function(req, res, next) {
       EventSchema.findById(req.params.id, function(_error, event) {
         if (!event) {
