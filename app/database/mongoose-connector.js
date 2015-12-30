@@ -13,10 +13,12 @@ module.exports = function(config, mongoose) {
       latitude: Number,
       longitude: Number
     },
+    endsAt: Date,
     name: String,
     originalId: String,
     origin: String,
     ownerId: {type: String, default: null},
+    startsAt: Date,
     url: String,
     updatedAt: {type: Date, default: Date.now}
   };
