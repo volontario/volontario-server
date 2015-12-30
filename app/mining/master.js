@@ -1,7 +1,7 @@
 module.exports = function(schemas) {
   return {
     _requireMiner: function(name) {
-      return require(`./miners/${name}.js`);
+      return require(`./miners/${name}/miner.js`);
     },
 
     mine: function(name) {
