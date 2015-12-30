@@ -3,6 +3,21 @@ volontario API
 * All responses are formatted as JSON.
 * To use any `POST` or `DELETE` commands except `POST /users`, you have to authenticate via HTTP Basic Auth. Create a user and use the same credentials as given to the newly made user when creating or deleting things. This is to be able to match things to their creators and deleters.
 
+### Notes on `PATCH`
+`PATCH` requests are formatted as specified in RFC6902. The only supported operation is `replace`.
+
+For example, to update the `startsAt` field of an event, send the following body to `/events/:id`:
+
+```json
+{
+	"op": "replace",
+	"path": "/startsAt",
+	"value": "2015-12-30T21:10:03.772Z"
+}
+```
+
+The response should then be an empty `204`.
+
 Root
 ----
 
@@ -76,6 +91,9 @@ Enters an item into an event calendar. Returns `201` on success.
 | userId | `hexstring` | Attendee |
 | from | `microtimestamp` | Attending from |
 | to | `microtimestamp` | Attending to |
+
+### `PATCH /events/:id`
+Updates the given field of an event. See Notes for more information.
 
 ### `DELETE /events`
 Deletes events that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
