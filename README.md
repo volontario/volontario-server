@@ -68,6 +68,9 @@ Returns a list of events.
 ### `GET /events/:id`
 Returns an event with the provided `id`.
 
+### `GET /events/:id/calender`
+Works exactly as you would expect. Except, you could give the request a `inverted` field, though, and set it to `true`. Then, instead of *reserved* times, you would get the *free* times of the calendar.
+
 ### `GET /events/:id/:field`
 Returns a specific field of an event with the provided `id`. Has to be used to fetch expensive fields such as calendars.
 
