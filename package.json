@@ -33,6 +33,7 @@
     "babel-preset-es2015": "^6.1.2",
     "body-parser": "^1.14.1",
     "crypto": "0.0.3",
+    "current-path": "^1.0.1",
     "express": "^4.13.3",
     "mongodb": "^2.0.47",
     "mongoose": "^4.2.3",
@@ -40,6 +41,7 @@
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
     "pbkdf2": "^3.0.4",
+    "read-file": "^0.2.0",
     "request": "^2.65.0"
   },
   "devDependencies": {
