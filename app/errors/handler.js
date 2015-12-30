@@ -20,6 +20,8 @@ module.exports = function(app) {
           return 422;
         case 'Database error':
           return 500;
+        case 'Unsupported operation':
+          return 501;
         default:
           console.log(`undefined error: ${err}`);
           return 500;
