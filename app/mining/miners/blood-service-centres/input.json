@@ -1,0 +1,132 @@
+[
+  {
+    "originalId": "563a46ab5695ccbccd0fbe18",
+    "url": "http://www.veripalvelu.fi/www/Jyvaskyla",
+    "category": "bloodServiceCentre",
+    "updatedAt": "2015-12-30T17:23:26.050Z",
+    "ownerId": null,
+    "coordinates": {
+      "longitude": 25.7527736,
+      "latitude": 62.2451577
+    },
+    "addedAt": "2015-12-30T17:23:26.048Z",
+    "id": "568414e349b8c43048c18689"
+  },
+  {
+    "originalId": "563a46ab5695ccbccd0fbe19",
+    "url": "http://www.veripalvelu.fi/www/Kivihaka",
+    "category": "bloodServiceCentre",
+    "updatedAt": "2015-12-30T17:23:26.054Z",
+    "ownerId": null,
+    "coordinates": {
+      "longitude": 24.90440602226265,
+      "latitude": 60.21226727740157
+    },
+    "addedAt": "2015-12-30T17:23:26.054Z",
+    "id": "568414e449b8c43048c1868a"
+  },
+  {
+    "originalId": "563a46ab5695ccbccd0fbe1a",
+    "url": "http://www.veripalvelu.fi/www/Kuopio",
+    "category": "bloodServiceCentre",
+    "updatedAt": "2015-12-30T17:23:26.055Z",
+    "ownerId": null,
+    "coordinates": {
+      "longitude": 27.679796,
+      "latitude": 62.89249
+    },
+    "addedAt": "2015-12-30T17:23:26.055Z",
+    "id": "568414e449b8c43048c1868b"
+  },
+  {
+    "originalId": "563a46ab5695ccbccd0fbe1b",
+    "url": "http://www.veripalvelu.fi/www/Oulu",
+    "category": "bloodServiceCentre",
+    "updatedAt": "2015-12-30T17:23:26.056Z",
+    "ownerId": null,
+    "coordinates": {
+      "longitude": 25.4706285,
+      "latitude": 65.0103311
+    },
+    "addedAt": "2015-12-30T17:23:26.056Z",
+    "id": "568414e449b8c43048c1868c"
+  },
+  {
+    "originalId": "563a46ab5695ccbccd0fbe1c",
+    "url": "http://www.veripalvelu.fi/www/Seinajoki",
+    "category": "bloodServiceCentre",
+    "updatedAt": "2015-12-30T17:23:26.057Z",
+    "ownerId": null,
+    "coordinates": {
+      "longitude": 22.834242,
+      "latitude": 62.788247
+    },
+    "addedAt": "2015-12-30T17:23:26.057Z",
+    "id": "568414e449b8c43048c1868d"
+  },
+  {
+    "originalId": "563a46ab5695ccbccd0fbe1d",
+    "url": "http://www.veripalvelu.fi/www/Tampere",
+    "category": "bloodServiceCentre",
+    "updatedAt": "2015-12-30T17:23:26.058Z",
+    "ownerId": null,
+    "coordinates": {
+      "longitude": 23.771625,
+      "latitude": 61.499769
+    },
+    "addedAt": "2015-12-30T17:23:26.058Z",
+    "id": "568414e449b8c43048c1868e"
+  },
+  {
+    "originalId": "563a46ab5695ccbccd0fbe1e",
+    "url": "http://www.veripalvelu.fi/www/Turku",
+    "category": "bloodServiceCentre",
+    "updatedAt": "2015-12-30T17:23:26.058Z",
+    "ownerId": null,
+    "coordinates": {
+      "longitude": 22.2677662,
+      "latitude": 60.4526825
+    },
+    "addedAt": "2015-12-30T17:23:26.058Z",
+    "id": "568414e449b8c43048c1868f"
+  },
+  {
+    "originalId": "563a46ab5695ccbccd0fbe1f",
+    "url": "http://www.veripalvelu.fi/www/sanomatalo",
+    "category": "bloodServiceCentre",
+    "updatedAt": "2015-12-30T17:23:26.059Z",
+    "ownerId": null,
+    "coordinates": {
+      "longitude": 24.938643,
+      "latitude": 60.172343
+    },
+    "addedAt": "2015-12-30T17:23:26.059Z",
+    "id": "568414e449b8c43048c18690"
+  },
+  {
+    "originalId": "563a46ab5695ccbccd0fbe20",
+    "url": "http://www.veripalvelu.fi/www/Lahti",
+    "category": "bloodServiceCentre",
+    "updatedAt": "2015-12-30T17:23:26.061Z",
+    "ownerId": null,
+    "coordinates": {
+      "longitude": 25.66408791583974,
+      "latitude": 60.98388860443699
+    },
+    "addedAt": "2015-12-30T17:23:26.060Z",
+    "id": "568414e449b8c43048c18691"
+  },
+  {
+    "originalId": "563a46ab5695ccbccd0fbe21",
+    "url": "http://www.veripalvelu.fi/www/Espoo",
+    "category": "bloodServiceCentre",
+    "updatedAt": "2015-12-30T17:23:26.063Z",
+    "ownerId": null,
+    "coordinates": {
+      "longitude": 24.740111,
+      "latitude": 60.161102
+    },
+    "addedAt": "2015-12-30T17:23:26.062Z",
+    "id": "568414e449b8c43048c18692"
+  }
+]
