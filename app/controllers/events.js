@@ -100,6 +100,25 @@ module.exports = function(helpers, EventSchema) {
       });
     },
 
+    patchField: function(req, res, next) {
+      EventSchema.findById(req.params.id, function(_error, event) {
+        if (!event) {
+          return next(new Error('Event not found'));
+        }
+
+        if (req.body.op !== 'replace') {
+          return next(new Error(''));
+        }
+
+        let field = req.body.path.substring(1);
+        event[field] = req.body.value;
+
+        event.save();
+      });
+
+      res.status(204).send();
+    },
+
     post: function(req, res, next) {
       let requiredFields = [
         'category',
