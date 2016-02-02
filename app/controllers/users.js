@@ -67,8 +67,7 @@ module.exports = function(helpers, digester, salter, schemas) {
     getEvents: function(req, res) {
       const query = {'calendar.userId': req.params.id};
       schemas.Event.find(query, function(_error, events) {
-        const eventsIds = events.map(e => e.id);
-        return res.json(eventsIds);
+        return res.json(events);
       });
     },
 
