@@ -38,13 +38,13 @@ module.exports = function(helpers, EventSchema) {
     },
 
     deleteFromCalendar: function(req, res, next) {
-      EventSchema.findById(req.params.id, function(_error, event) {
+      EventSchema.findById(req.params.eventId, function(_error, event) {
         if (!event) {
           return next(new Error('Event not found'));
         }
 
         const newCalendar = event.calendar.filter(function(item) {
-          return item._id.toString() !== req.body.id;
+          return item._id.toString() !== req.params.itemId;
         });
 
         if (event.calendar.length === newCalendar.length) {

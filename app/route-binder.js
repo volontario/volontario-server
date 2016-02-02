@@ -28,7 +28,7 @@ module.exports = function(schs, passport, app, digester, salter) {
 
   app.delete('/events', reqAuth, ec.delete);
   app.delete('/events/:id', reqAuth, ec.deleteById);
-  app.delete('/events/:id/calendar', reqAuth, ec.deleteFromCalendar);
+  app.delete('/events/:eventId/calendar/:itemId', reqAuth, ec.deleteFromCalendar);
   app.get('/events', ec.get);
   app.get('/events/:id', ec.getById);
   app.get('/events/:id/calendar', ec.getCalendar);
