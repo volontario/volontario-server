@@ -43,9 +43,15 @@ module.exports = function(helpers, EventSchema) {
           return next(new Error('Event not found'));
         }
 
-        event.calendar = event.calendar.filter(function(item) {
+        const newCalendar = event.calendar.filter(function(item) {
           return item._id.toString() !== req.body.id;
         });
+
+        if (event.calendar.length === newCalendar.length) {
+          return next(new Error('Calendar item not found'));
+        }
+
+        event.calendar = newCalendar;
 
         event.save(function(error) {
           if (error) {

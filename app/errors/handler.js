@@ -11,6 +11,7 @@ module.exports = function(app) {
       switch (errorMessage) {
         case 'Authentication failed':
           return 401;
+        case 'Calendar item not found':
         case 'User not found':
           return 404;
         case 'Bad path':
