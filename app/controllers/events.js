@@ -88,6 +88,51 @@ module.exports = function(helpers, EventSchema) {
       });
     },
 
+    getWithBody: function(req, res, next) {
+      EventSchema.find(req.body.filters, function(_error, events) {
+        if (req.body.sort && req.body.sort.by === 'distance') {
+          if (!req.body.sort.latitude) {
+            return next(new Error('Missing fields: latitude'));
+          }
+
+          if (!req.body.sort.longitude) {
+            return next(new Error('Missing fields: longitude'));
+          }
+
+          events.forEach(function(e) {
+            e.distance = helpers.calculateDistanceBetween(
+              req.body.sort.latitude,
+              req.body.sort.longitude,
+              e.coordinates.latitude,
+              e.coordinates.longitude
+            );
+          });
+
+          events.sort((a, b) => a.distance - b.distance);
+        }
+
+        const keptProperties = [
+          'addedAt',
+          'category',
+          'coordinates',
+          'distance',
+          'endsAt',
+          'id',
+          'name',
+          'origin',
+          'originalId',
+          'ownerId',
+          'updatedAt',
+          'startsAt',
+          'url'
+        ];
+
+        return res.json(events.map(function(e) {
+          return helpers.dropExcludedProperties(keptProperties, e);
+        }));
+      });
+    },
+
     getById: function(req, res, next) {
       EventSchema.findById(req.params.id, function(_error, event) {
         return event ? res.json(event) : next(new Error('Event not found'));

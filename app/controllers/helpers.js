@@ -1,4 +1,23 @@
 module.exports = {
+  // http://stackoverflow.com/questions/27928/calculate-distance-between-\
+  // two-latitude-longitude-points-haversine-formula
+  calculateDistanceBetween: function(latA, lonA, latB, lonB) {
+    // Radius of the Earth
+    const r = 6371000;
+
+    const degToRad = deg => deg * (Math.PI / 180);
+
+    const dLat = degToRad(latB - latA);
+    const dLon = degToRad(lonB - lonA);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(degToRad(latA)) * Math.cos(degToRad(latB)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = r * c;
+    return d;
+  },
+
   dropExcludedProperties: function(propertyList, originalObject) {
     return propertyList.reduce(function(incompleteObject, property) {
       incompleteObject[property] = originalObject[property];
@@ -19,7 +38,10 @@ module.exports = {
 
   requireFields: function(req, requiredFields) {
     const missingFields = requiredFields.reduce(function(mf, rf) {
-      return req.body[rf] === undefined ? mf.concat(rf) : mf;
+      const missing = req.body[rf] === undefined &&
+        req.query[rf] === undefined;
+
+      return missing ? mf.concat(rf) : mf;
     }, []);
 
     const missingFormattedFields = missingFields.join(', ');
