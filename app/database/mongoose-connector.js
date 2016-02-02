@@ -1,58 +1,7 @@
 module.exports = function(config, mongoose) {
-  let eventFields = {
-    addedAt: {type: Date, default: Date.now},
-    calendar: [
-      {
-        userId: String,
-        from: Date,
-        to: Date
-      }
-    ],
-    category: String,
-    coordinates: {
-      latitude: Number,
-      longitude: Number
-    },
-    endsAt: Date,
-    name: String,
-    originalId: String,
-    origin: String,
-    ownerId: {type: String, default: null},
-    startsAt: Date,
-    url: String,
-    updatedAt: {type: Date, default: Date.now}
-  };
-
-  let locationFields = {
-    addedAt: {type: Date, default: Date.now},
-    category: String,
-    coordinates: {
-      latitude: Number,
-      longitude: Number
-    },
-    name: String,
-    ownerId: {type: String, default: null},
-    url: String,
-    updatedAt: {type: Date, default: Date.now}
-  };
-
-  let userFields = {
-    addedAt: {type: Date, default: Date.now},
-    coordinates: {
-      latitude: Number,
-      longitude: Number
-    },
-    dateOfBirth: Date,
-    digest: String,
-    email: String,
-    familyName: String,
-    givenName: String,
-    owner: {type: String, default: null},
-    phoneNumber: String,
-    salt: String,
-    tags: [String],
-    updatedAt: {type: Date, default: Date.now}
-  };
+  let rawEvent = require('./raw-schemas/event.js');
+  let rawLocation = require('./raw-schemas/location.js');
+  let rawUser = require('./raw-schemas/user.js');
 
   let schemaFactory = function(name, fields) {
     let Schema = new mongoose.Schema(fields);
@@ -75,9 +24,9 @@ module.exports = function(config, mongoose) {
   };
 
   let schemas = {
-    Event: schemaFactory('event', eventFields),
-    Location: schemaFactory('location', locationFields),
-    User: schemaFactory('user', userFields)
+    Event: schemaFactory('event', rawEvent),
+    Location: schemaFactory('location', rawLocation),
+    User: schemaFactory('user', rawUser)
   };
 
   mongoose.connect(config.MONGO_URL, {
