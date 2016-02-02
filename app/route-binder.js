@@ -13,7 +13,7 @@ module.exports = function(schs, passport, app, digester, salter) {
   let rc = require('./controllers/root.js')();
   let lc = require('./controllers/locations.js')(h, schs.Location);
   let ec = require('./controllers/events.js')(h, schs.Event);
-  let uc = require('./controllers/users.js')(h, digester, salter, schs.User);
+  let uc = require('./controllers/users.js')(h, digester, salter, schs);
 
   let reqAuth = passport.authenticate('basic');
 
@@ -41,6 +41,7 @@ module.exports = function(schs, passport, app, digester, salter) {
   app.delete('/users/:id', reqAuth, uc.deleteById);
   app.get('/users', reqAuth, uc.get);
   app.get('/users/:id', uc.getById);
+  app.get('/users/:id/events', uc.getEvents);
   app.get('/users/:id/:field', uc.getFieldById);
   app.post('/users', uc.post);
 

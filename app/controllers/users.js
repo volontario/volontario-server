@@ -4,10 +4,12 @@
  * @param {object} helpers Controller helpers
  * @param {object} digester Digest generator
  * @param {function} salter Salt generating function
- * @param {object} UserSchema Mongoose user schema
+ * @param {object} schemas Mongoose user schemas
  * @return {object} Routes per HTTP method
  */
-module.exports = function(helpers, digester, salter, UserSchema) {
+module.exports = function(helpers, digester, salter, schemas) {
+  let UserSchema = schemas.User;
+
   return {
     delete: function(req, res, next) {
       let flagError = helpers.requireNotVagueFlag(req);
@@ -59,6 +61,14 @@ module.exports = function(helpers, digester, salter, UserSchema) {
     getById: function(req, res, next) {
       UserSchema.findById(req.params.id, function(_error, user) {
         return user ? res.json(user) : next(new Error('User not found'));
+      });
+    },
+
+    getEvents: function(req, res) {
+      let query = {'calendar.userId': req.params.id};
+      schemas.Event.find(query, function(_error, events) {
+        let eventsIds = events.map(e => e.id);
+        return res.json(eventsIds);
       });
     },
 
