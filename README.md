@@ -122,7 +122,7 @@ Returns a list of users.
 #### `GET /users/:id`
 Returns a user with the provided `id`.
 
-### `GET /users/:id/:field`
+#### `GET /users/:id/:field`
 Returns a specific field of a user with the provided `id`. Has to be used to fetch expensive fields such as `events` or `calendar`.
 
 #### `POST /users`
