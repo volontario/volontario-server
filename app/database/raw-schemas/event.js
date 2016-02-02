@@ -2,9 +2,11 @@ module.exports = {
   addedAt: {type: Date, default: Date.now},
   calendar: [
     {
-      userId: String,
+      hostApproved: Boolean,
       from: Date,
-      to: Date
+      to: Date,
+      userApproved: Boolean,
+      userId: String
     }
   ],
   category: String,

@@ -260,9 +260,11 @@ module.exports = function(helpers, EventSchema) {
 
         var updateableCalendar = event.calendar;
         updateableCalendar.push({
-          userId: req.body.userId,
+          hostApproved: false,
           from: req.body.from,
-          to: req.body.to
+          to: req.body.to,
+          userApproved: true,
+          userId: req.body.userId
         });
 
         event.update({calendar: updateableCalendar}, null, function(error) {

@@ -15,6 +15,19 @@ module.exports = function(config, mongoose) {
           result.calendar.forEach(function(item) {
             item.id = item._id;
             item._id = undefined;
+
+            if (item.userApproved === false && item.hostApproved === false) {
+              item.approvalStatus = 'removed';
+            }
+            if (item.userApproved === false && item.hostApproved === true) {
+              item.approvalStatus = 'cancelled';
+            }
+            if (item.userApproved === true && item.hostApproved === false) {
+              item.approvalStatus = 'pending';
+            }
+            if (item.userApproved === true && item.hostApproved === true) {
+              item.approvalStatus = 'approved';
+            }
           });
         }
       }
