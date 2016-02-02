@@ -2,8 +2,8 @@ module.exports = (function() {
   const environment = process.env.NODE_ENV || 'production';
 
   const prefixGet = function(body) {
-    let id = `VOLONTARIO_${environment}_${body}`;
-    let upperCaseId = id.toUpperCase();
+    const id = `VOLONTARIO_${environment}_${body}`;
+    const upperCaseId = id.toUpperCase();
 
     if (process.env[upperCaseId] === undefined) {
       throw new Error(`Missing envvar: ${upperCaseId}`);

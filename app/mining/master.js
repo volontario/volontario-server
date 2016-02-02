@@ -5,7 +5,7 @@ module.exports = function(schemas) {
     },
 
     mine: function(name) {
-      let miner = this._requireMiner(name);
+      const miner = this._requireMiner(name);
       miner(schemas);
     }
   };

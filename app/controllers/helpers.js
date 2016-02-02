@@ -18,11 +18,11 @@ module.exports = {
   },
 
   requireFields: function(req, requiredFields) {
-    let missingFields = requiredFields.reduce(function(mf, rf) {
+    const missingFields = requiredFields.reduce(function(mf, rf) {
       return req.body[rf] === undefined ? mf.concat(rf) : mf;
     }, []);
 
-    let missingFormattedFields = missingFields.join(', ');
+    const missingFormattedFields = missingFields.join(', ');
 
     // Early exit in case of missing fields
     if (missingFields.length !== 0) {

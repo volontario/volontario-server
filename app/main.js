@@ -1,24 +1,24 @@
 module.exports = function() {
   console.log('Initializing...');
 
-  let bodyParser = require('body-parser');
-  let crypto = require('crypto');
-  let express = require('express');
-  let mongoose = require('mongoose');
-  let morgan = require('morgan');
-  let passport = require('passport');
-  let PassportBasicStrategy = require('passport-http').BasicStrategy;
-  let pbkdf2 = require('pbkdf2');
+  const bodyParser = require('body-parser');
+  const crypto = require('crypto');
+  const express = require('express');
+  const mongoose = require('mongoose');
+  const morgan = require('morgan');
+  const passport = require('passport');
+  const PassportBasicStrategy = require('passport-http').BasicStrategy;
+  const pbkdf2 = require('pbkdf2');
 
-  let basicStrategyConfigurer = require('./auth/basic.js');
-  let config = require('./config.js');
-  let errorHandler = require('./errors/handler.js');
-  let mongooseConnector = require('./database/mongoose-connector.js');
-  let routeBinder = require('./route-binder.js');
+  const basicStrategyConfigurer = require('./auth/basic.js');
+  const config = require('./config.js');
+  const errorHandler = require('./errors/handler.js');
+  const mongooseConnector = require('./database/mongoose-connector.js');
+  const routeBinder = require('./route-binder.js');
 
-  let mongooseConnection = mongooseConnector(config, mongoose);
+  const mongooseConnection = mongooseConnector(config, mongoose);
 
-  let app = express();
+  const app = express();
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({extended: true}));
@@ -32,7 +32,7 @@ module.exports = function() {
     app.use(morgan('common'));
   }
 
-  let digester = function(pw, salt) {
+  const digester = function(pw, salt) {
     return pbkdf2
       .pbkdf2Sync(pw, salt, 16384, 128, 'sha512')
       .toString('utf8');

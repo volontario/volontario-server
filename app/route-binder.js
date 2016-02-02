@@ -8,14 +8,14 @@
  * @param {function} salter Salt generating function
  */
 module.exports = function(schs, passport, app, digester, salter) {
-  let h = require('./controllers/helpers.js');
+  const h = require('./controllers/helpers.js');
 
-  let rc = require('./controllers/root.js')();
-  let lc = require('./controllers/locations.js')(h, schs.Location);
-  let ec = require('./controllers/events.js')(h, schs.Event);
-  let uc = require('./controllers/users.js')(h, digester, salter, schs);
+  const rc = require('./controllers/root.js')();
+  const lc = require('./controllers/locations.js')(h, schs.Location);
+  const ec = require('./controllers/events.js')(h, schs.Event);
+  const uc = require('./controllers/users.js')(h, digester, salter, schs);
 
-  let reqAuth = passport.authenticate('basic');
+  const reqAuth = passport.authenticate('basic');
 
   app.get('/', rc.get);
 

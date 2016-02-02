@@ -5,9 +5,9 @@ module.exports = function(app) {
      * contains the descriptor for the error. The body part contains extra
      * information for the API user.
      */
-    let errorMessageHead = err.message.split(':', 1)[0];
+    const errorMessageHead = err.message.split(':', 1)[0];
 
-    let statusCode = (function(errorMessage) {
+    const statusCode = (function(errorMessage) {
       switch (errorMessage) {
         case 'Authentication failed':
           return 401;

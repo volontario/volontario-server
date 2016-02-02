@@ -8,16 +8,16 @@
  * @return {object} Routes per HTTP method
  */
 module.exports = function(helpers, digester, salter, schemas) {
-  let UserSchema = schemas.User;
+  const UserSchema = schemas.User;
 
   return {
     delete: function(req, res, next) {
-      let flagError = helpers.requireNotVagueFlag(req);
+      const flagError = helpers.requireNotVagueFlag(req);
       if (flagError) {
         return next(flagError);
       }
 
-      let query = req.body;
+      const query = req.body;
       UserSchema.remove(query, function(error, obj) {
         if (error) {
           next(new Error());
@@ -41,7 +41,7 @@ module.exports = function(helpers, digester, salter, schemas) {
 
     get: function(req, res) {
       UserSchema.find(req.query, function(_error, users) {
-        let keptProperties = [
+        const keptProperties = [
           'dateOfBirth',
           'email',
           'familyName',
@@ -65,9 +65,9 @@ module.exports = function(helpers, digester, salter, schemas) {
     },
 
     getEvents: function(req, res) {
-      let query = {'calendar.userId': req.params.id};
+      const query = {'calendar.userId': req.params.id};
       schemas.Event.find(query, function(_error, events) {
-        let eventsIds = events.map(e => e.id);
+        const eventsIds = events.map(e => e.id);
         return res.json(eventsIds);
       });
     },
@@ -85,7 +85,7 @@ module.exports = function(helpers, digester, salter, schemas) {
     },
 
     post: function(req, res, next) {
-      let requiredFields = [
+      const requiredFields = [
         'dateOfBirth',
         'email',
         'familyName',
@@ -97,16 +97,16 @@ module.exports = function(helpers, digester, salter, schemas) {
         'tags'
       ];
 
-      let fieldError = helpers.requireFields(req, requiredFields);
+      const fieldError = helpers.requireFields(req, requiredFields);
       if (fieldError) {
         return next(fieldError);
       }
 
-      let salt = salter();
-      let digest = digester(req.body.password, salt);
+      const salt = salter();
+      const digest = digester(req.body.password, salt);
 
       // This is crappy and I admit it
-      let user = new UserSchema({
+      const user = new UserSchema({
         dateOfBirth: new Date(req.body.dateOfBirth),
         digest: digest,
         email: req.body.email,

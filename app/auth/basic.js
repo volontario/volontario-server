@@ -20,7 +20,7 @@ module.exports = function(passport, Strategy, digester, UserSchema) {
         return done(new Error('Authentication failed'));
       }
 
-      let digest = digester(providedPassword, user.salt);
+      const digest = digester(providedPassword, user.salt);
       if (digest !== user.digest) {
         return done(new Error('Authentication failed'));
       }

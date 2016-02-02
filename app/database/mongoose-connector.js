@@ -1,10 +1,10 @@
 module.exports = function(config, mongoose) {
-  let rawEvent = require('./raw-schemas/event.js');
-  let rawLocation = require('./raw-schemas/location.js');
-  let rawUser = require('./raw-schemas/user.js');
+  const rawEvent = require('./raw-schemas/event.js');
+  const rawLocation = require('./raw-schemas/location.js');
+  const rawUser = require('./raw-schemas/user.js');
 
-  let schemaFactory = function(name, fields) {
-    let Schema = new mongoose.Schema(fields);
+  const schemaFactory = function(name, fields) {
+    const Schema = new mongoose.Schema(fields);
 
     Schema.set('toJSON', {
       transform: function(_es, result) {
@@ -23,7 +23,7 @@ module.exports = function(config, mongoose) {
     return mongoose.model(name, Schema);
   };
 
-  let schemas = {
+  const schemas = {
     Event: schemaFactory('event', rawEvent),
     Location: schemaFactory('location', rawLocation),
     User: schemaFactory('user', rawUser)

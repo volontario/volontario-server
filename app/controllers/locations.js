@@ -6,16 +6,16 @@
  * @return {object} Routes per HTTP method
  */
 module.exports = function(helpers, LocationSchema) {
-  let minerMaster = require('../mining/master.js')(LocationSchema);
+  const minerMaster = require('../mining/master.js')(LocationSchema);
 
   return {
     delete: function(req, res, next) {
-      let flagError = helpers.requireNotVagueFlag(req);
+      const flagError = helpers.requireNotVagueFlag(req);
       if (flagError) {
         return next(flagError);
       }
 
-      let query = req.body;
+      const query = req.body;
       LocationSchema.remove(query, function(error, obj) {
         if (error) {
           next(new Error());
@@ -62,7 +62,7 @@ module.exports = function(helpers, LocationSchema) {
     },
 
     post: function(req, res, next) {
-      let requiredFields = [
+      const requiredFields = [
         'category',
         'latitude',
         'longitude',
@@ -70,13 +70,13 @@ module.exports = function(helpers, LocationSchema) {
         'url'
       ];
 
-      let fieldError = helpers.requireFields(req, requiredFields);
+      const fieldError = helpers.requireFields(req, requiredFields);
       if (fieldError) {
         return next(fieldError);
       }
 
       // This is crappy and I admit it
-      let location = new LocationSchema({
+      const location = new LocationSchema({
         category: req.body.category,
         coordinates: {
           latitude: req.body.latitude,

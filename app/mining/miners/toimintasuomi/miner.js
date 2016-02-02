@@ -1,16 +1,16 @@
 module.exports = function(EventSchema) {
   const URL = 'https://www.toimintasuomi.fi/api/v1/vapaaehtoistoiminta.json';
 
-  let request = require('request');
+  const request = require('request');
 
   request(URL, function(error, response, body) {
-    let events = JSON.parse(body);
+    const events = JSON.parse(body);
 
-    let hasCoordinates = e => e.coordinates && e.coordinates.length === 2;
-    let eventsWithCoordinates = events.filter(hasCoordinates);
+    const hasCoordinates = e => e.coordinates && e.coordinates.length === 2;
+    const eventsWithCoordinates = events.filter(hasCoordinates);
 
     eventsWithCoordinates.forEach(function(e) {
-      let event = {
+      const event = {
         category: 'voluntaryWork',
         coordinates: {
           longitude: e.coordinates[0],

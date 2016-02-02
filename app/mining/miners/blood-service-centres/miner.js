@@ -1,10 +1,10 @@
 module.exports = function(LocationSchema) {
-  let read = require('read-file');
-  let path = require('path');
+  const read = require('read-file');
+  const path = require('path');
 
-  let pathToInput = path.join(__dirname, '/input.json');
+  const pathToInput = path.join(__dirname, '/input.json');
 
-  let inputLocations = JSON.parse(read.sync(pathToInput));
+  const inputLocations = JSON.parse(read.sync(pathToInput));
 
   inputLocations.forEach(function(loc) {
     LocationSchema.findOneAndUpdate(
