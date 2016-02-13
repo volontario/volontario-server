@@ -2,6 +2,7 @@ module.exports = function() {
   console.log('Initializing...');
 
   const bodyParser = require('body-parser');
+  const cors = require('cors');
   const crypto = require('crypto');
   const express = require('express');
   const mongoose = require('mongoose');
@@ -22,6 +23,8 @@ module.exports = function() {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({extended: true}));
+
+  app.use(cors());
 
   app.use(passport.initialize());
 
@@ -52,6 +55,7 @@ module.exports = function() {
     digester,
     () => crypto.randomBytes(128).toString('utf8')
   );
+
   errorHandler(app);
 
   app.listen(config.EXPRESS_PORT, () => console.log('Server up!'));
