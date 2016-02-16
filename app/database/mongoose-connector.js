@@ -30,6 +30,11 @@ module.exports = function(config, mongoose) {
             }
           });
         }
+
+        if (result.dateOfBirth) {
+          result.dateOfBirth =
+            result.dateOfBirth.toISOString().substring(0, 10);
+        }
       }
     });
 
