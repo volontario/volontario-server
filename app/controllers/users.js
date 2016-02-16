@@ -22,7 +22,7 @@ module.exports = function(helpers, digester, salter, schemas) {
         if (error) {
           next(new Error());
         } else {
-          res.status(obj.result.n > 0 ? 205 : 204).send();
+          res.status(obj.result.n > 0 ? 205 : 204).end();
         }
       });
     },
@@ -30,7 +30,7 @@ module.exports = function(helpers, digester, salter, schemas) {
     deleteById: function(req, res, next) {
       UserSchema.findByIdAndRemove(req.params.id, function(error) {
         if (!error) {
-          res.status(204).send();
+          res.status(204).end();
         } else if (error.name === 'CastError') {
           next(new Error('Bad resource ID'));
         } else {
@@ -122,7 +122,7 @@ module.exports = function(helpers, digester, salter, schemas) {
         if (error) {
           next(new Error('Database error'));
         } else {
-          res.status(201).send();
+          res.status(201).end();
         }
       });
     }
