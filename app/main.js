@@ -14,7 +14,7 @@ module.exports = function() {
   const config = require('./config.js');
   const errorHandler = require('./errors/handler.js');
   const mongooseConnector = require('./database/mongoose-connector.js');
-  const routeBinder = require('./route-binder.js');
+  const router = require('./router.js');
 
   const mongooseConnection = mongooseConnector(config, mongoose);
 
@@ -45,7 +45,7 @@ module.exports = function() {
     mongooseConnection.schemas.User
   );
 
-  routeBinder(
+  router(
     mongooseConnection.schemas,
     passport,
     app,
