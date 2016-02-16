@@ -115,7 +115,7 @@ module.exports = function(helpers, digester, salter, schemas) {
         longitude: req.body.longitude,
         phoneNumber: req.body.phoneNumber,
         salt: salt,
-        tags: req.body.tags.split(',')
+        tags: req.body.tags
       });
 
       user.save(function(error) {

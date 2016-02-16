@@ -137,7 +137,7 @@ Enters a user into the system. Returns `201` on success.
 | latitude | `float` | Latitude |
 | longitude | `float` | Longitude |
 | phoneNumber | `string` | Phone number with country code |
-| tags | `string,string,...` | Comma separated list of tags |
+| tags | `[string]` | Array of tags |
 
 #### `DELETE /users`
 Deletes users that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
