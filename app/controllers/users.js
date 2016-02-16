@@ -122,7 +122,7 @@ module.exports = function(helpers, digester, salter, schemas) {
         if (error) {
           next(new Error('Database error'));
         } else {
-          res.status(201).end();
+          res.status(201).json({id: user.id});
         }
       });
     }
