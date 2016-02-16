@@ -40,12 +40,20 @@ module.exports = function(helpers, LocationSchema) {
     get: function(req, res) {
       minerMaster.mine('blood-service-centres');
 
-      LocationSchema.find(req.query, (_error, locs) => res.json(locs));
+      LocationSchema.find(req.query, function(_error, locs) {
+        locs.forEach(l => l.tidy());
+        return res.json(locs);
+      });
     },
 
     getById: function(req, res, next) {
-      LocationSchema.findById(req.params.id, function(_error, loc) {
-        return loc ? res.json(loc) : next(new Error('Location not found'));
+      LocationSchema.findById(req.params.id, function(_error, location) {
+        if (!location) {
+          return next(new Error('Location not found'));
+        }
+
+        location.tidy();
+        return res.json(location);
       });
     },
 
@@ -54,6 +62,8 @@ module.exports = function(helpers, LocationSchema) {
         if (!location) {
           return next(new Error('Location not found'));
         }
+
+        location.tidy();
 
         let response = {};
         response[req.params.field] = location[req.params.field];

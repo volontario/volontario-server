@@ -66,25 +66,9 @@ module.exports = function(helpers, EventSchema) {
     get: function(req, res) {
       minerMaster.mine('toimintasuomi');
 
-      const keptProperties = [
-        'addedAt',
-        'category',
-        'coordinates',
-        'endsAt',
-        'id',
-        'name',
-        'origin',
-        'originalId',
-        'ownerId',
-        'updatedAt',
-        'startsAt',
-        'url'
-      ];
-
       EventSchema.find(req.query, function(_error, events) {
-        return res.json(events.map(function(e) {
-          return helpers.dropExcludedProperties(keptProperties, e);
-        }));
+        events.forEach(e => e.tidy());
+        res.json(events);
       });
     },
 
@@ -111,31 +95,19 @@ module.exports = function(helpers, EventSchema) {
           events.sort((a, b) => a.distance - b.distance);
         }
 
-        const keptProperties = [
-          'addedAt',
-          'category',
-          'coordinates',
-          'distance',
-          'endsAt',
-          'id',
-          'name',
-          'origin',
-          'originalId',
-          'ownerId',
-          'updatedAt',
-          'startsAt',
-          'url'
-        ];
-
-        return res.json(events.map(function(e) {
-          return helpers.dropExcludedProperties(keptProperties, e);
-        }));
+        return res.json(events);
       });
     },
 
     getById: function(req, res, next) {
       EventSchema.findById(req.params.id, function(_error, event) {
-        return event ? res.json(event) : next(new Error('Event not found'));
+        if (!event) {
+          return next(new Error('Event not found'));
+        }
+
+        event.garnish();
+        event.tidy();
+        return res.json(event);
       });
     },
 
@@ -215,6 +187,8 @@ module.exports = function(helpers, EventSchema) {
         if (!event) {
           return next(new Error('Event not found'));
         }
+
+        event.tidy();
 
         let response = {};
         response[req.params.field] = event[req.params.field];

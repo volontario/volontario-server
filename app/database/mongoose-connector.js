@@ -1,42 +1,16 @@
 module.exports = function(config, mongoose) {
-  const rawEvent = require('./raw-schemas/event.js');
-  const rawLocation = require('./raw-schemas/location.js');
-  const rawUser = require('./raw-schemas/user.js');
+  const rawEvent = require('./schemas-with-methods/event.js');
+  const rawLocation = require('./schemas-with-methods/location.js');
+  const rawUser = require('./schemas-with-methods/user.js');
 
-  const schemaFactory = function(name, fields) {
-    const Schema = new mongoose.Schema(fields);
+  const schemaFactory = function(name, schemaWithMethods) {
+    let Schema = new mongoose.Schema(schemaWithMethods.schema);
 
-    Schema.set('toJSON', {
-      transform: function(_es, result) {
-        result.id = result._id;
-        result._id = result.__v = undefined;
-
-        if (result.calendar) {
-          result.calendar.forEach(function(item) {
-            item.id = item._id;
-            item._id = undefined;
-
-            if (item.userApproved === false && item.hostApproved === false) {
-              item.approvalStatus = 'removed';
-            }
-            if (item.userApproved === false && item.hostApproved === true) {
-              item.approvalStatus = 'cancelled';
-            }
-            if (item.userApproved === true && item.hostApproved === false) {
-              item.approvalStatus = 'pending';
-            }
-            if (item.userApproved === true && item.hostApproved === true) {
-              item.approvalStatus = 'approved';
-            }
-          });
-        }
-
-        if (result.dateOfBirth) {
-          result.dateOfBirth =
-            result.dateOfBirth.toISOString().substring(0, 10);
-        }
-      }
+    schemaWithMethods.methods.forEach(function(method) {
+      Schema.methods[method.name] = method;
     });
+
+    Schema.set('toJSON', {getters: true});
 
     return mongoose.model(name, Schema);
   };

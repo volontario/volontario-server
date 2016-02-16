@@ -41,26 +41,20 @@ module.exports = function(helpers, digester, salter, schemas) {
 
     get: function(req, res) {
       UserSchema.find(req.query, function(_error, users) {
-        const keptProperties = [
-          'dateOfBirth',
-          'email',
-          'familyName',
-          'givenName',
-          'id',
-          'owner',
-          'phoneNumber',
-          'tags'
-        ];
+        users.forEach(u => u.tidy());
 
-        return res.json(users.map(function(u) {
-          return helpers.dropExcludedProperties(keptProperties, u);
-        }));
+        return res.json(users);
       });
     },
 
     getById: function(req, res, next) {
       UserSchema.findById(req.params.id, function(_error, user) {
-        return user ? res.json(user) : next(new Error('User not found'));
+        if (!user) {
+          return next(new Error('User not found'));
+        }
+
+        user.tidy();
+        return res.json(user);
       });
     },
 
@@ -76,6 +70,8 @@ module.exports = function(helpers, digester, salter, schemas) {
         if (!user) {
           return next(new Error('User not found'));
         }
+
+        user.tidy();
 
         let response = {};
         response[req.params.field] = user[req.params.field];
