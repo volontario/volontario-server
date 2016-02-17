@@ -5,14 +5,14 @@ module.exports = function() {
   const TESTING_EMAIL = 'testerman@test.test';
   const TESTING_PASSWORD = 'testpassword';
 
-  let frisby = require('frisby');
+  const frisby = require('frisby');
 
   let credentials = encodeURIComponent(TESTING_EMAIL + ':' + TESTING_PASSWORD);
   let host = process.env.VOLONTARIO_EXPRESS_HOST || DEFAULT_HOST;
   let port = process.env.VOLONTARIO_EXPRESS_PORT || DEFAULT_PORT;
-  let url = 'http://' + credentials + '@' + host + ':' + port;
+  const API_ROOT = `http://${credentials}@${host}:${port}`;
 
-  const testUserData = {
+  const userData = {
     coordinates: {
       latitude: 58.000,
       longitude: 18.000
@@ -27,59 +27,77 @@ module.exports = function() {
   };
 
   frisby.create('Make sure the API returns something')
-    .get(url)
+    .get(API_ROOT)
     .expectStatus(200)
     .expectBodyContains('{}')
     .toss();
 
   frisby.create('Create a testing user')
-    .post(url + '/users', testUserData)
+    .post(API_ROOT + '/users', userData)
     .expectStatus(201)
-    .after(function(_err, _res, body) {
-      const userId = JSON.parse(body).id;
+    .after(function(_err, _res, data) {
+      const userId = JSON.parse(data).id;
 
-      testUserData.password = undefined;
-      frisby.create('Fetch user data and ensure they have not changed')
-        .get(`${url}/users/${userId}`)
-        .expectJSON(testUserData)
+      userData.password = undefined;
+      frisby.create('Fetch fresh user data and confirm it has not changed')
+        .get(`${API_ROOT}/users/${userId}`)
+        .expectJSON(userData)
         .toss();
 
-      frisby.create('Create a new location')
-        .post(url + '/locations', {
-          category: 'testing',
+      const locationData = {
+        category: 'testing',
+        coordinates: {
           latitude: 60.000,
-          longitude: 20.000,
-          name: 'Testing Location',
-          url: 'http://location-testing-url/'
-        })
+          longitude: 20.000
+        },
+        name: 'Testing Location',
+        url: 'http://location-testing-url/'
+      };
+
+      frisby.create('Create a new location')
+        .post(API_ROOT + '/locations', locationData)
         .expectStatus(201)
+        .after(function(_err, _res, data) {
+          const locationId = JSON.parse(data).id;
+
+          frisby.create('Fetch fresh location data and confirm it is the same')
+            .get(`${API_ROOT}/locations/${locationId}`)
+            .expectJSON(locationData)
+            .toss();
+        })
         .toss();
 
       frisby.create('Delete testing locations')
-        .delete(url + '/locations', {category: 'testing'})
+        .delete(API_ROOT + '/locations', {category: 'testing'})
         .expectStatus(205)
         .toss();
 
-      frisby.create('Create a new event')
-        .post(url + '/events', {
-          category: 'testing',
+      const eventData = {
+        category: 'testing',
+        coordinates: {
           latitude: 62.000,
-          longitude: 22.000,
-          name: 'Testing Event',
-          origin: 'test_run',
-          originalId: 'Original Testing Event',
-          url: 'http://event-testing-url/'
-        })
+          longitude: 22.000
+        },
+        name: 'Testing Event',
+        origin: 'test_run',
+        originalId: 'Original Testing Event',
+        url: 'http://event-testing-url/'
+      };
+      frisby.create('Create a new event')
+        .post(API_ROOT + '/events', eventData)
         .expectStatus(201)
-        .toss();
+        .after(function(_err, _res, data) {
+          const eventId = JSON.parse(data).id;
 
-      frisby.create('Delete testing events')
-        .delete(url + '/events', {category: 'testing'})
-        .expectStatus(205)
+          frisby.create('Fetch fresh event data and confirm it is the same')
+            .get(`${API_ROOT}/events/${eventId}`)
+            .expectJSON(eventData)
+            .toss();
+        })
         .toss();
 
       frisby.create('Delete testing users')
-        .delete(url + '/users', {email: TESTING_EMAIL})
+        .delete(API_ROOT + '/users', {email: TESTING_EMAIL})
         .expectStatus(205)
         .toss();
     })
