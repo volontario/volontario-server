@@ -220,21 +220,6 @@ module.exports = function(helpers, EventSchema) {
     },
 
     post: function(req, res, next) {
-      const requiredFields = [
-        'category',
-        'latitude',
-        'longitude',
-        'name',
-        'origin',
-        'originalId',
-        'url'
-      ];
-
-      const fieldError = helpers.requireFields(req, requiredFields);
-      if (fieldError) {
-        return next(fieldError);
-      }
-
       // This is crappy and I admit it
       const event = new EventSchema({
         category: req.body.category,
@@ -253,10 +238,10 @@ module.exports = function(helpers, EventSchema) {
 
       event.save(function(error) {
         if (error) {
-          next(new Error('Database error'));
-        } else {
-          res.status(201).end();
+          return next(helpers.decorateError(error));
         }
+
+        res.status(201).end();
       });
     },
 

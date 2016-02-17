@@ -10,18 +10,18 @@ module.exports = {
         userId: String
       }
     ],
-    category: String,
+    category: {type: String, required: true},
     coordinates: {
-      latitude: Number,
-      longitude: Number
+      latitude: {type: Number, required: true},
+      longitude: {type: Number, required: true}
     },
     endsAt: Date,
-    name: String,
-    originalId: String,
-    origin: String,
+    name: {type: String, required: true},
+    originalId: {type: String, required: true},
+    origin: {type: String, required: true},
     ownerId: {type: String, default: null},
     startsAt: Date,
-    url: String,
+    url: {type: String, required: true},
     updatedAt: {type: Date, default: Date.now}
   },
   methods: [

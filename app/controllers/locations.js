@@ -72,19 +72,6 @@ module.exports = function(helpers, LocationSchema) {
     },
 
     post: function(req, res, next) {
-      const requiredFields = [
-        'category',
-        'latitude',
-        'longitude',
-        'name',
-        'url'
-      ];
-
-      const fieldError = helpers.requireFields(req, requiredFields);
-      if (fieldError) {
-        return next(fieldError);
-      }
-
       // This is crappy and I admit it
       const location = new LocationSchema({
         category: req.body.category,
@@ -99,10 +86,10 @@ module.exports = function(helpers, LocationSchema) {
 
       location.save(function(error) {
         if (error) {
-          next(new Error('Database error'));
-        } else {
-          res.status(201).end();
+          return next(helpers.decorateError(error));
         }
+
+        return res.status(201).end();
       });
     }
   };

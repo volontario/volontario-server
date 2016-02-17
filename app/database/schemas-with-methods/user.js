@@ -2,19 +2,18 @@ module.exports = {
   schema: {
     addedAt: {type: Date, default: Date.now},
     coordinates: {
-      latitude: Number,
-      longitude: Number
+      latitude: {type: Number, required: true},
+      longitude: {type: Number, required: true}
     },
-    dateOfBirth: {type: Date, get: function(rawDate) {
-      console.log('GOD');
+    dateOfBirth: {type: Date, required: true, get: function(rawDate) {
       return rawDate.toISOString().substring(0, 10);
     }},
     digest: String,
-    email: String,
-    familyName: String,
-    givenName: String,
+    email: {type: String, required: true},
+    familyName: {type: String, required: true},
+    givenName: {type: String, required: true},
     owner: {type: String, default: null},
-    phoneNumber: String,
+    phoneNumber: {type: String, required: true},
     salt: String,
     tags: [String],
     updatedAt: {type: Date, default: Date.now}

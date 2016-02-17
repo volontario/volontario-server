@@ -80,35 +80,20 @@ module.exports = function(helpers, digester, salter, schemas) {
     },
 
     post: function(req, res, next) {
-      const requiredFields = [
-        'dateOfBirth',
-        'email',
-        'familyName',
-        'givenName',
-        'latitude',
-        'longitude',
-        'password',
-        'phoneNumber',
-        'tags'
-      ];
-
-      const fieldError = helpers.requireFields(req, requiredFields);
-      if (fieldError) {
-        return next(fieldError);
-      }
-
       const salt = salter();
       const digest = digester(req.body.password, salt);
 
       // This is crappy and I admit it
       const user = new UserSchema({
+        coordinates: {
+          latitude: req.body.coordinates.latitude,
+          longitude: req.body.coordinates.longitude
+        },
         dateOfBirth: new Date(req.body.dateOfBirth),
         digest: digest,
         email: req.body.email,
         familyName: req.body.familyName,
         givenName: req.body.givenName,
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
         phoneNumber: req.body.phoneNumber,
         salt: salt,
         tags: req.body.tags
@@ -116,10 +101,10 @@ module.exports = function(helpers, digester, salter, schemas) {
 
       user.save(function(error) {
         if (error) {
-          next(new Error('Database error'));
-        } else {
-          res.status(201).json({id: user.id});
+          return next(helpers.decorateError(error));
         }
+
+        res.status(201).json({id: user.id});
       });
     }
   };
