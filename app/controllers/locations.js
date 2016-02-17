@@ -76,8 +76,8 @@ module.exports = function(helpers, LocationSchema) {
       const location = new LocationSchema({
         category: req.body.category,
         coordinates: {
-          latitude: req.body.latitude,
-          longitude: req.body.longitude
+          latitude: req.body.coordinates.latitude,
+          longitude: req.body.coordinates.longitude
         },
         name: req.body.name,
         ownerId: req.user.id,
@@ -89,7 +89,7 @@ module.exports = function(helpers, LocationSchema) {
           return next(helpers.decorateError(error));
         }
 
-        return res.status(201).end();
+        return res.status(201).json({id: location.id});
       });
     }
   };

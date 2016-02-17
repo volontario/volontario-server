@@ -224,8 +224,8 @@ module.exports = function(helpers, EventSchema) {
       const event = new EventSchema({
         category: req.body.category,
         coordinates: {
-          latitude: req.body.latitude,
-          longitude: req.body.longitude
+          latitude: req.body.coordinates.latitude,
+          longitude: req.body.coordinates.longitude
         },
         endsAt: (req.body.endsAt || undefined),
         name: req.body.name,
@@ -241,7 +241,7 @@ module.exports = function(helpers, EventSchema) {
           return next(helpers.decorateError(error));
         }
 
-        res.status(201).end();
+        res.status(201).json({id: event.id});
       });
     },
 
