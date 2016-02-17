@@ -43,6 +43,35 @@ module.exports = {
     }, {});
   },
 
+  // Magic
+  parseDottedQuery: function(query) {
+    const queryKeys = Object.keys(query);
+    const parsedQuery = queryKeys.reduce(function(parsedQuery, keychain) {
+      const keys = keychain.split('.');
+      const value = query[keychain];
+
+      let curObj = parsedQuery;
+      for (let i = 0; i < keys.length - 1; ++i) {
+        const curKey = keys[i];
+        let nextObj;
+        if (curObj.hasOwnProperty(curKey)) {
+          nextObj = curObj[curKey];
+        } else {
+          nextObj = {};
+        }
+
+        curObj[curKey] = nextObj;
+        curObj = nextObj;
+      }
+
+      curObj[keys[keys.length - 1]] = value;
+
+      return parsedQuery;
+    }, {});
+
+    return parsedQuery;
+  },
+
   requireNotVagueFlag: function(req) {
     if (req.body.notVague === 'true') {
       // Now the flag won't be left hanging around
