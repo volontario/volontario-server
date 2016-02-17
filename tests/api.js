@@ -12,6 +12,20 @@ module.exports = function() {
   let port = process.env.VOLONTARIO_EXPRESS_PORT || DEFAULT_PORT;
   let url = 'http://' + credentials + '@' + host + ':' + port;
 
+  const testUserData = {
+    coordinates: {
+      latitude: 58.000,
+      longitude: 18.000
+    },
+    dateOfBirth: '1990-12-01',
+    email: TESTING_EMAIL,
+    familyName: 'User',
+    givenName: 'Testing',
+    password: TESTING_PASSWORD,
+    phoneNumber: '+35850000000',
+    tags: ['tagA', 'tagB', 'tagC']
+  };
+
   frisby.create('Make sure the API returns something')
     .get(url)
     .expectStatus(200)
@@ -19,19 +33,17 @@ module.exports = function() {
     .toss();
 
   frisby.create('Create a testing user')
-    .post(url + '/users', {
-      dateOfBirth: '1990-12-01',
-      email: TESTING_EMAIL,
-      familyName: 'User',
-      givenName: 'Testing',
-      latitude: 58.000,
-      longitude: 18.000,
-      password: TESTING_PASSWORD,
-      phoneNumber: '+35850000000',
-      tags: 'tagA,tagB,tagC'
-    })
+    .post(url + '/users', testUserData)
     .expectStatus(201)
-    .after(function() {
+    .after(function(_err, _res, body) {
+      const userId = JSON.parse(body).id;
+
+      testUserData.password = undefined;
+      frisby.create('Fetch user data and ensure they have not changed')
+        .get(`${url}/users/${userId}`)
+        .expectJSON(testUserData)
+        .toss();
+
       frisby.create('Create a new location')
         .post(url + '/locations', {
           category: 'testing',
