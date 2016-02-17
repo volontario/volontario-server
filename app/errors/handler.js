@@ -12,6 +12,8 @@ module.exports = function(app) {
         case 'Authentication failed':
           return 401;
         case 'Calendar item not found':
+        case 'Event not found':
+        case 'Location not found':
         case 'User not found':
           return 404;
         case 'Bad path':
