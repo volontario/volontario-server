@@ -34,8 +34,8 @@ module.exports = function() {
   frisby.create('Create a testing user')
     .post(API_ROOT + '/users', userData)
     .expectStatus(201)
-    .after(function(_err, _res, data) {
-      const userId = JSON.parse(data).id;
+    .afterJSON(function(data) {
+      const userId = data.id;
 
       userData.password = undefined;
       frisby.create('Fetch fresh user data and confirm it has not changed')
@@ -55,8 +55,8 @@ module.exports = function() {
       frisby.create('Create a new location')
         .post(API_ROOT + '/locations', locationData)
         .expectStatus(201)
-        .after(function(_err, _res, data) {
-          const locationId = JSON.parse(data).id;
+        .afterJSON(function(data) {
+          const locationId = data.id;
 
           frisby.create('Fetch fresh location data and confirm it is the same')
             .get(`${API_ROOT}/locations/${locationId}`)
@@ -85,8 +85,8 @@ module.exports = function() {
       frisby.create('Create a new event')
         .post(API_ROOT + '/events', eventData)
         .expectStatus(201)
-        .after(function(_err, _res, data) {
-          const eventId = JSON.parse(data).id;
+        .afterJSON(function(data) {
+          const eventId = data.id;
 
           frisby.create('Fetch fresh event data and confirm it is the same')
             .get(`${API_ROOT}/events/${eventId}`)
