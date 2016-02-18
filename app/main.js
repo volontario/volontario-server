@@ -13,6 +13,7 @@ module.exports = function() {
 
   const basicStrategyConfigurer = require('./auth/basic.js');
   const config = require('./config.js');
+  const dotQueryParser = require('./middleware/dot-query-parser.js');
   const errorHandler = require('./errors/handler.js');
   const mongooseConnector = require('./database/mongoose-connector.js');
   const router = require('./router.js');
@@ -34,6 +35,8 @@ module.exports = function() {
   } else {
     app.use(morgan('common'));
   }
+
+  app.use(dotQueryParser);
 
   const digester = function(pw, salt) {
     return pbkdf2
