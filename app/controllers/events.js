@@ -66,7 +66,7 @@ module.exports = function(helpers, EventSchema) {
     get: function(req, res) {
       minerMaster.mine('toimintasuomi');
 
-      EventSchema.find(req.query, function(_error, events) {
+      EventSchema.find(req.query.filters, function(_error, events) {
         events.forEach(e => e.tidy());
         res.json(events);
       });
@@ -117,7 +117,7 @@ module.exports = function(helpers, EventSchema) {
           return next(new Error('Event not found'));
         }
 
-        if (req.query.inverted !== 'true') {
+        if (req.query.options.inverted !== 'true') {
           // Just the plain calender -- this is normal behavior from /:field
           return res.json(event.calendar);
         }

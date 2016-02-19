@@ -40,7 +40,7 @@ module.exports = function(helpers, digester, salter, schemas) {
     },
 
     get: function(req, res) {
-      UserSchema.find(req.query, function(_error, users) {
+      UserSchema.find(req.query.filters, function(_error, users) {
         users.forEach(u => u.tidy());
 
         return res.json(users);

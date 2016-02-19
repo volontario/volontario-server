@@ -40,7 +40,7 @@ module.exports = function(helpers, LocationSchema) {
     get: function(req, res) {
       minerMaster.mine('blood-service-centres');
 
-      LocationSchema.find(req.query, function(_error, locs) {
+      LocationSchema.find(req.query.filters, function(_error, locs) {
         locs.forEach(l => l.tidy());
         return res.json(locs);
       });
