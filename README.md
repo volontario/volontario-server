@@ -1,7 +1,11 @@
 volontario API
 ==============
+
 * All responses are formatted as JSON.
-* To use any `POST` or `DELETE` commands except `POST /users`, you have to authenticate via HTTP Basic Auth. Create a user and use the same credentials as given to the newly made user when creating or deleting things. This is to be able to match things to their creators and deleters.
+* To fetch resources, use GET. No authentication needed!
+* To add resources, you must use Basic auth. The fresh resources will be owned by the user you created.
+* To modify and delete resources, ensure you either own the resource directly or own the user that owns the resources. Then use Basic auth.
+* For Basic auth credentials, create a user (via `POST /users`).
 
 ### Notes on `PATCH`
 `PATCH` requests are formatted as specified in RFC6902. The only supported operation is `replace`.
@@ -18,21 +22,19 @@ For example, to update the `startsAt` field of an event, send the following body
 
 The response should then be an empty `204`.
 
+
 Root
 ----
 
 #### `GET /`
-Returns an empty object as a status check. Consider Redis's `PONG`.
+Always returns an empty object. May be used as a status check.
+
 
 Locations
 ---------
 
 #### `GET /locations`
-Returns a list of locations.
-
-| Field | Meaning |
-|-------|:--------|
-| category | Filter by category |
+Returns a list of locations along with basic details.
 
 #### `GET /locations/:id`
 Returns a location with the provided `id`.
@@ -43,13 +45,18 @@ Returns a specific field of a location with the provided `id`. Has to be used to
 #### `POST /locations`
 Enters a location into the system. Returns `201` on success.
 
-| Field | Type | Meaning |
-|-------|:---- |:--------|
-| category | `string` | Category, e.g. "bloodServiceCentre" |
-| latitude | `float` | Latitude |
-| longitude | `float` | Longitude |
-| name | `string` | Name of the location |
-| url | `string` | URL for the location |
+```json
+{
+	"category": "soupKitchen",
+	"coordinates": {
+		"latitude": 61.493,
+		"longitude": 23.766
+	},
+	"name": "Soup kitchen",
+	"ownerId": "0123456789abcdef",
+	"url": "https://soup.kitchen"
+}
+```
 
 #### `DELETE /locations`
 Deletes locations that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
@@ -58,6 +65,7 @@ On success, returns either `205` or `204` depending on whether anything was actu
 
 #### `DELETE /locations/:id`
 Deletes a location with the provided `id`. Returns `204` on success.
+
 
 Events
 ------
@@ -77,23 +85,26 @@ Returns a specific field of an event with the provided `id`. Has to be used to f
 #### `POST /events`
 Enters an event into the system. Returns `201` on success.
 
-| Field | Type | Meaning |
-|-------|:---- |:--------|
-| category | `string` | Category, e.g. "charity" |
-| latitude | `float` | Latitude |
-| longitude | `float` | Longitude |
-| name | `string` | Name of the event |
-| originalId | `string` | ID in the original system |
-| url | `string` | URL for the event |
+```json
+{
+	"category": "food",
+	"name": "Free food for the poor",
+	"locationId": "01203baccdb123",
+	"startsAt": 1455977371443,
+	"endsAt": 1455984342294
+}
+```
 
 #### `POST /events/:id/calendar`
 Enters an item into an event calendar. Returns `201` on success.
 
-| Field | Type | Meaning |
-|-------|:---- |:--------|
-| userId | `hexstring` | Attendee |
-| from | `microtimestamp` | Attending from |
-| to | `microtimestamp` | Attending to |
+```json
+{
+	"from": 1455970444328,
+	"to": 1455971059585,
+	"userId": "bb34f8098444df"
+}
+```
 
 #### `PATCH /events/:id`
 Updates the given field of an event. See Notes for more information.
@@ -109,9 +120,6 @@ Deletes an event with the provided `id`. Returns `204` on success.
 #### `DELETE /events/:id/calendar`
 Deletes an item in an event calendar. Returns `204` on success.
 
-| Field | Type | Meaning |
-|-------|:---- |:--------|
-| id | `hexstring` | ID of the item |
 
 Users
 -----
@@ -128,16 +136,24 @@ Returns a specific field of a user with the provided `id`. Has to be used to fet
 #### `POST /users`
 Enters a user into the system. Returns `201` on success.
 
-| Field | Type | Meaning |
-|-------|:---- |:--------|
-| dateOfBirth | `microtimestamp` | Date of birth
-| email | `string` | Email address
-| familyName | `string` | Family name |
-| givenName | `string` | Given name |
-| latitude | `float` | Latitude |
-| longitude | `float` | Longitude |
-| phoneNumber | `string` | Phone number with country code |
-| tags | `[string]` | Array of tags |
+```json
+{
+	"coordinates": {
+		"latitude": 62.493,
+		"longitude": 22.766
+	},
+	"dateOfBirth": 74049120000,
+	"email": "oliver@volontar.io",
+	"givenName": "Oliver",
+	"familyName": "Testerman",
+	"phoneNumber": "+358504445194",
+	"tags": [
+		"cooking",
+		"computers",
+		"organizing"
+	]
+}
+```
 
 #### `DELETE /users`
 Deletes users that match the appropriate fields (described in the above `POST`). If no field is given i.e. everything is to be deleted, the API will throw an error *unless* it is given a `notVague` override with the value `true`.
