@@ -223,17 +223,14 @@ module.exports = function(helpers, EventSchema) {
       // This is crappy and I admit it
       const event = new EventSchema({
         category: req.body.category,
-        coordinates: {
-          latitude: req.body.coordinates.latitude,
-          longitude: req.body.coordinates.longitude
-        },
         endsAt: (req.body.endsAt || undefined),
         name: req.body.name,
-        origin: req.body.origin,
-        originalId: req.body.originalId,
+        origin: (req.body.origin || undefined),
+        originalId: (req.body.originalId || undefined),
         ownerId: req.user.id,
+        locationId: req.body.locationId,
         startsAt: (req.body.startsAt || undefined),
-        url: req.body.url
+        url: (req.body.url || undefined)
       });
 
       event.save(function(error) {

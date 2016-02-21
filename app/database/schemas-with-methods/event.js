@@ -11,17 +11,14 @@ module.exports = {
       }
     ],
     category: {type: String, required: true},
-    coordinates: {
-      latitude: {type: Number, required: true},
-      longitude: {type: Number, required: true}
-    },
     endsAt: Date,
     name: {type: String, required: true},
-    originalId: {type: String, required: true},
-    origin: {type: String, required: true},
+    originalId: String,
+    origin: String,
     ownerId: {type: String, default: null},
+    locationId: {type: String, required: true},
     startsAt: Date,
-    url: {type: String, required: true},
+    url: String,
     updatedAt: {type: Date, default: Date.now}
   },
   methods: [
