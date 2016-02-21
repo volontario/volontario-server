@@ -1,6 +1,8 @@
 /* eslint require-jsdoc:0 */
+/* eslint no-use-before-define: [2, {classes: false}] */
 
 (function() {
+  const _ = require('underscore');
   const async = require('async');
   const frisby = require('frisby');
 
@@ -10,139 +12,219 @@
   const EMAIL = 'testerman@test.test';
   const PASSWORD = 'testpassword';
 
-  const credentials = encodeURIComponent(EMAIL + ':' + PASSWORD);
-  const host = process.env.VOLONTARIO_EXPRESS_HOST || DEFAULT_HOST;
-  const port = process.env.VOLONTARIO_EXPRESS_PORT || DEFAULT_PORT;
-  const API_ROOT = `http://${credentials}@${host}:${port}`;
+  const CREDENTIALS = encodeURIComponent(EMAIL + ':' + PASSWORD);
+  const HOST = process.env.VOLONTARIO_EXPRESS_HOST || DEFAULT_HOST;
+  const PORT = process.env.VOLONTARIO_EXPRESS_PORT || DEFAULT_PORT;
+  const API_ROOT = `http://${CREDENTIALS}@${HOST}:${PORT}`;
 
-  const eventData = {
-    category: 'testing',
-    coordinates: {
-      latitude: 62.000,
-      longitude: 22.000
-    },
-    name: 'Testing Event',
-    origin: 'test_run',
-    originalId: 'Original Testing Event',
-    url: 'http://event-testing-url/'
-  };
+  class Event {
+    constructor() {
+      this._data = {
+        category: 'testing',
+        name: 'Testing Event',
+        origin: 'test_run',
+        originalId: 'Original Testing Event',
+        url: 'http://event-testing-url/'
+      };
+    }
 
-  const locationData = {
-    category: 'testing',
-    coordinates: {
-      latitude: 60.000,
-      longitude: 20.000
-    },
-    name: 'Testing Location',
-    url: 'http://location-testing-url/'
-  };
+    get data() {
+      return this._data;
+    }
 
-  const userData = {
-    coordinates: {
-      latitude: 58.000,
-      longitude: 18.000
-    },
-    dateOfBirth: '1990-12-01',
-    email: EMAIL,
-    familyName: 'User',
-    givenName: 'Testing',
-    password: PASSWORD,
-    phoneNumber: '+35850000000',
-    tags: ['tagA', 'tagB', 'tagC']
-  };
+    set data(d) {
+      this._data = d;
+    }
 
-  function confirmFreshEvent(creationData, callback) {
-    const eventId = creationData.id;
+    confirm(creationData, callback) {
+      this._data.id = creationData.id;
 
-    frisby.create('Fetch fresh event data and confirm it is the same')
-      .get(`${API_ROOT}/events/${eventId}`)
-      .expectJSON(eventData)
-      .after(() => callback())
-      .toss();
+      frisby.create('Fetch fresh event data and confirm it is the same')
+        .get(`${API_ROOT}/events/${this._data.id}`)
+        .expectJSON(this._data)
+        .after(() => callback())
+        .toss();
+    }
+
+    delete(callback) {
+      frisby.create('Delete testing events')
+        .delete(API_ROOT + '/events', {category: 'testing'})
+        .expectStatus(205)
+        .after(() => callback())
+        .toss();
+    }
+
+    locateTo(loc) {
+      if (!(loc instanceof Location) || loc.data.id === undefined) {
+        throw new Error('Location not valid');
+      }
+
+      this._data.locationId = loc.data.id;
+    }
+
+    ownBy(owner) {
+      if (!(owner instanceof User) || owner.data.id === undefined) {
+        throw new Error('Owner not valid');
+      }
+
+      this._data.ownerId = owner.data.id;
+    }
+
+    save(callback) {
+      frisby.create('Create a new event')
+        .post(API_ROOT + '/events', this._data)
+        .expectStatus(201)
+        .afterJSON(data => callback(null, data))
+        .toss();
+    }
   }
 
-  function confirmFreshLocation(creationData, callback) {
-    const locationId = creationData.id;
+  class Location {
+    constructor() {
+      this._data = {
+        category: 'testing',
+        coordinates: {
+          latitude: 60.000,
+          longitude: 20.000
+        },
+        name: 'Testing Location',
+        url: 'http://location-testing-url/'
+      };
+    }
 
-    frisby.create('Fetch fresh location data and confirm it is the same')
-      .get(`${API_ROOT}/locations/${locationId}`)
-      .expectJSON(locationData)
-      .after(() => callback())
-      .toss();
+    get data() {
+      return this._data;
+    }
+
+    set data(d) {
+      this._data = d;
+    }
+
+    confirm(creationData, callback) {
+      this._data.id = creationData.id;
+
+      frisby.create('Fetch fresh location data and confirm it is the same')
+        .get(`${API_ROOT}/locations/${this._data.id}`)
+        .expectJSON(this._data)
+        .after(() => callback())
+        .toss();
+    }
+
+    delete(callback) {
+      frisby.create('Delete testing locations')
+        .delete(API_ROOT + '/locations', {category: 'testing'})
+        .expectStatus(205)
+        .after(() => callback())
+        .toss();
+    }
+
+    ownBy(owner) {
+      if (!(owner instanceof User) || owner.data.id === undefined) {
+        throw new Error('Owner not valid');
+      }
+
+      this._data.ownerId = owner.data.id;
+    }
+
+    save(callback) {
+      frisby.create('Create a new location')
+        .post(API_ROOT + '/locations', this._data)
+        .expectStatus(201)
+        .afterJSON(data => callback(null, data))
+        .toss();
+    }
   }
 
-  function confirmFreshUser(creationData, callback) {
-    const userId = creationData.id;
-    userData.password = undefined;
-    frisby.create('Fetch fresh user data and confirm it has not changed')
-      .get(`${API_ROOT}/users/${userId}`)
-      .expectJSON(userData)
-      .after(() => callback())
-      .toss();
-  }
+  class User {
+    constructor() {
+      this._data = {
+        coordinates: {
+          latitude: 58.000,
+          longitude: 18.000
+        },
+        dateOfBirth: '1990-12-01',
+        email: EMAIL,
+        familyName: 'User',
+        givenName: 'Testing',
+        password: PASSWORD,
+        phoneNumber: '+35850000000',
+        tags: ['tagA', 'tagB', 'tagC']
+      };
+    }
 
-  function createEvent(callback) {
-    frisby.create('Create a new event')
-      .post(API_ROOT + '/events', eventData)
-      .expectStatus(201)
-      .afterJSON(data => callback(null, data))
-      .toss();
-  }
+    get data() {
+      return this._data;
+    }
 
-  function createLocation(callback) {
-    frisby.create('Create a new location')
-      .post(API_ROOT + '/locations', locationData)
-      .expectStatus(201)
-      .afterJSON(data => callback(null, data))
-      .toss();
-  }
+    set data(d) {
+      this._data = d;
+    }
 
-  function createUser(callback) {
-    frisby.create('Create a testing user')
-      .post(API_ROOT + '/users', userData)
-      .expectStatus(201)
-      .afterJSON(data => callback(null, data))
-      .toss();
-  }
+    save(callback) {
+      frisby.create('Create a testing user')
+        .post(API_ROOT + '/users', this._data)
+        .expectStatus(201)
+        .afterJSON(data => callback(null, data))
+        .toss();
+    }
 
-  function deleteTestingEvents(callback) {
-    frisby.create('Delete testing events')
-      .delete(API_ROOT + '/events', {category: 'testing'})
-      .expectStatus(205)
-      .after(() => callback())
-      .toss();
-  }
+    confirm(creationData, callback) {
+      this._data.id = creationData.id;
 
-  function deleteTestingLocations(callback) {
-    frisby.create('Delete testing locations')
-      .delete(API_ROOT + '/locations', {category: 'testing'})
-      .expectStatus(205)
-      .after(() => callback())
-      .toss();
-  }
+      const comparableData = _.clone(this._data);
 
-  function deleteTestingUsers(callback) {
-    frisby.create('Delete testing users')
-      .delete(API_ROOT + '/users', {email: EMAIL})
-      .expectStatus(205)
-      .after(() => callback())
-      .toss();
+      // Not going to be returned by the API
+      comparableData.password = undefined;
+
+      frisby.create('Fetch fresh user data and confirm it has not changed')
+        .get(`${API_ROOT}/users/${this._data.id}`)
+        .expectJSON(comparableData)
+        .after(() => callback())
+        .toss();
+    }
+
+    delete(callback) {
+      frisby.create('Delete testing users')
+        .delete(API_ROOT + '/users', {email: EMAIL})
+        .expectStatus(205)
+        .after(() => callback())
+        .toss();
+    }
   }
 
   function testMain(callback) {
+    const validUser = new User();
+
     async.waterfall([
-      createUser,
-      confirmFreshUser,
+      validUser.save.bind(validUser),
+      validUser.confirm.bind(validUser),
 
-      createLocation,
-      confirmFreshLocation,
-      deleteTestingLocations,
+      function(callback) {
+        const validLocation = new Location();
+        validLocation.ownBy(validUser);
 
-      createEvent,
-      confirmFreshEvent,
-      deleteTestingEvents,
+        async.waterfall([
+          validLocation.save.bind(validLocation),
+          validLocation.confirm.bind(validLocation),
+          function(callback) {
+            const validEvent = new Event();
 
-      deleteTestingUsers
+            validEvent.locateTo(validLocation);
+            validEvent.ownBy(validUser);
+
+            async.waterfall([
+              validEvent.save.bind(validEvent),
+              validEvent.confirm.bind(validEvent),
+              validEvent.delete.bind(validEvent),
+              () => callback()
+            ]);
+          },
+          validLocation.delete.bind(validLocation),
+          () => callback()
+        ]);
+      },
+
+      validUser.delete.bind(validUser)
     ]);
 
     callback();
