@@ -20,14 +20,16 @@
   const API_ROOT = `http://${CREDENTIALS}@${HOST}:${PORT}`;
 
   class Event {
-    constructor() {
-      this._data = {
+    constructor(overrideData) {
+      const defaultData = {
         category: 'testing',
         name: 'Testing Event',
         origin: 'test_run',
         originalId: 'Original Testing Event',
         url: 'http://event-testing-url/'
       };
+
+      this._data = _.extend(defaultData, overrideData);
     }
 
     get data() {
@@ -72,10 +74,12 @@
       this._data.ownerId = owner.data.id;
     }
 
-    save(callback) {
+    save(callback, expectedStatus) {
+      expectedStatus = expectedStatus || 201;
+
       frisby.create('Create a new event')
         .post(API_ROOT + '/events', this._data)
-        .expectStatus(201)
+        .expectStatus(expectedStatus)
         .afterJSON(data => callback(null, data))
         .toss();
     }
@@ -195,41 +199,67 @@
   }
 
   function testMain(callback) {
-    const validUser = new User();
+    const user = new User();
 
     async.waterfall([
-      validUser.save.bind(validUser),
-      validUser.confirm.bind(validUser),
+      cb => user.save(cb),
+
+      (data, cb) => user.confirm(data, cb),
 
       function(callback) {
-        const validLocation = new Location();
-        validLocation.ownBy(validUser);
+        const location = new Location();
+        location.ownBy(user);
 
         async.waterfall([
-          validLocation.save.bind(validLocation),
-          validLocation.confirm.bind(validLocation),
-          function(callback) {
-            const validEvent = new Event();
+          cb => location.save(cb),
 
-            validEvent.locateTo(validLocation);
-            validEvent.ownBy(validUser);
+          (data, cb) => location.confirm(data, cb),
+
+          function testValidEvent(callback) {
+            const e = new Event();
+
+            e.locateTo(location);
+            e.ownBy(user);
 
             async.waterfall([
-              validEvent.save.bind(validEvent),
-              validEvent.confirm.bind(validEvent),
-              validEvent.delete.bind(validEvent),
+              cb => e.save(cb),
+              (data, cb) => e.confirm(data, cb),
+              cb => e.delete(cb),
               () => callback()
             ]);
           },
-          validLocation.delete.bind(validLocation),
+
+          function testEventWithoutLocation(callback) {
+            const e = new Event();
+
+            e.ownBy(user);
+
+            async.waterfall([
+              cb => e.save(cb, 422),
+              () => callback()
+            ]);
+          },
+
+          function testEventWithoutName(callback) {
+            const e = new Event({name: undefined});
+
+            e.locateTo(location);
+            e.ownBy(user);
+
+            async.waterfall([
+              cb => e.save(cb, 422),
+              () => callback()
+            ]);
+          },
+
+          cb => location.delete(cb),
+
           () => callback()
         ]);
       },
 
-      validUser.delete.bind(validUser)
-    ]);
-
-    callback();
+      cb => user.delete(cb)
+    ], callback);
   }
 
   function testPing(callback) {
