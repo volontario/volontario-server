@@ -14,7 +14,7 @@ module.exports = function() {
   const basicStrategyConfigurer = require('./auth/basic.js');
   const config = require('./config.js');
   const dotQueryParser = require('./middleware/dot-query-parser.js');
-  const errorHandler = require('./errors/handler.js');
+  const errorHandler = require('./middleware/error-handler.js');
   const mongooseConnector = require('./database/mongoose-connector.js');
   const router = require('./router.js');
 
@@ -59,7 +59,7 @@ module.exports = function() {
     () => crypto.randomBytes(128).toString('utf8')
   );
 
-  errorHandler(app);
+  app.use(errorHandler);
 
   app.listen(config.EXPRESS_PORT, () => console.log('Server up!'));
 };
