@@ -19,21 +19,30 @@ module.exports = {
   },
 
   decorateError: function(error) {
-    if (error.name !== 'ValidationError') {
-      return new Error('Database error');
-    }
+    switch (error.name) {
+      case 'ValidationError':
+        let requiredKeys = [];
+        for (let key in error.errors) {
+          if (error.errors[key].kind !== 'required') {
+            return new Error('Database error');
+          }
 
-    let requiredKeys = [];
-    for (let key in error.errors) {
-      if (error.errors[key].kind !== 'required') {
+          requiredKeys.push(key);
+        }
+
+        let joinedKeys = requiredKeys.join(', ');
+        return new Error(`Missing fields: ${joinedKeys}`);
+
+      case 'MongoError':
+        if (error.code !== 11000) {
+          break;
+        }
+
+        return new Error('Resource not unique');
+
+      default:
         return new Error('Database error');
-      }
-
-      requiredKeys.push(key);
     }
-
-    let joinedKeys = requiredKeys.join(', ');
-    return new Error(`Missing fields: ${joinedKeys}`);
   },
 
   dropExcludedProperties: function(propertyList, originalObject) {
