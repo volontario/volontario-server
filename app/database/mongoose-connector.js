@@ -12,6 +12,11 @@ module.exports = function(config, mongoose) {
 
     Schema.set('toJSON', {getters: true});
 
+    Schema.options.toJSON.transform = function(doc, json) {
+      json.id = json._id;
+      json._id = json.__v = undefined;
+    };
+
     return mongoose.model(name, Schema);
   };
 

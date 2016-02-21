@@ -11,10 +11,7 @@ module.exports = {
     url: {type: String, required: true},
     updatedAt: {type: Date, default: Date.now}
   },
+
   methods: [
-    function tidy() {
-      this.set('id', this._id);
-      this._id = this.__v = undefined;
-    }
   ]
 };

@@ -21,12 +21,10 @@ module.exports = {
     url: String,
     updatedAt: {type: Date, default: Date.now}
   },
+
   methods: [
     function garnish() {
       this.calendar.forEach(function(item) {
-        item.id = item._id;
-        item._id = undefined;
-
         if (item.userApproved === false && item.hostApproved === false) {
           item.approvalStatus = 'removed';
         }
@@ -40,11 +38,6 @@ module.exports = {
           item.approvalStatus = 'approved';
         }
       });
-    },
-
-    function tidy() {
-      this.set('id', this._id);
-      this._id = this.__v = undefined;
     }
   ]
 };

@@ -67,7 +67,6 @@ module.exports = function(helpers, EventSchema) {
       minerMaster.mine('toimintasuomi');
 
       EventSchema.find(req.query.filters, function(_error, events) {
-        events.forEach(e => e.tidy());
         res.json(events);
       });
     },
@@ -106,7 +105,6 @@ module.exports = function(helpers, EventSchema) {
         }
 
         event.garnish();
-        event.tidy();
         return res.json(event);
       });
     },
@@ -187,8 +185,6 @@ module.exports = function(helpers, EventSchema) {
         if (!event) {
           return next(new Error('Event not found'));
         }
-
-        event.tidy();
 
         let response = {};
         response[req.params.field] = event[req.params.field];

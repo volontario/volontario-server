@@ -41,7 +41,6 @@ module.exports = function(helpers, LocationSchema) {
       minerMaster.mine('blood-service-centres');
 
       LocationSchema.find(req.query.filters, function(_error, locs) {
-        locs.forEach(l => l.tidy());
         return res.json(locs);
       });
     },
@@ -52,7 +51,6 @@ module.exports = function(helpers, LocationSchema) {
           return next(new Error('Location not found'));
         }
 
-        location.tidy();
         return res.json(location);
       });
     },
@@ -62,8 +60,6 @@ module.exports = function(helpers, LocationSchema) {
         if (!location) {
           return next(new Error('Location not found'));
         }
-
-        location.tidy();
 
         let response = {};
         response[req.params.field] = location[req.params.field];

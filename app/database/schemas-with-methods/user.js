@@ -21,9 +21,6 @@ module.exports = {
 
   methods: [
     function tidy() {
-      this.id = this._id;
-      this._id = this.__v = undefined;
-
       this.digest = undefined;
       this.salt = undefined;
     }
