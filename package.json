@@ -48,6 +48,7 @@
   "devDependencies": {
     "async": "^1.5.2",
     "frisby": "^0.8.5",
-    "jasmine-node": "^1.14.5"
+    "jasmine-node": "^1.14.5",
+    "underscore": "^1.8.3"
   }
 }
