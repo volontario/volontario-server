@@ -2,6 +2,8 @@
 /* eslint no-use-before-define: [2, {classes: false}] */
 
 (function() {
+  console.log('Running tests...\n');
+
   const _ = require('underscore');
   const async = require('async');
   const frisby = require('frisby');
