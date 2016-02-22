@@ -1,5 +1,5 @@
 /* eslint require-jsdoc:0 */
-/* eslint no-use-before-define: [2, {classes: false}] */
+/* eslint no-use-before-define:0 */
 
 (function() {
   console.log('Running tests...\n');
@@ -18,6 +18,74 @@
   const HOST = process.env.VOLONTARIO_EXPRESS_HOST || DEFAULT_HOST;
   const PORT = process.env.VOLONTARIO_EXPRESS_PORT || DEFAULT_PORT;
   const API_ROOT = `http://${CREDENTIALS}@${HOST}:${PORT}`;
+
+  class CalendarItem {
+    constructor() {
+      this._data = {
+        from: new Date('2016-03-10 13:00:00').toISOString(),
+        to: new Date('2016-03-10 16:00:00').toISOString()
+      };
+    }
+
+    get data() {
+      return this._data;
+    }
+
+    set data(d) {
+      this._data = d;
+    }
+
+    assignTo(user) {
+      if (!(user instanceof User) || user.data.id === undefined) {
+        throw new Error('User not valid');
+      }
+
+      this._data.userId = user.data.id;
+    }
+
+    confirm(creationData, callback) {
+      this._data.id = creationData.id;
+
+      const comparableData = _.clone(this._data);
+      // Not going to be returned by the API
+      comparableData.eventId = undefined;
+
+      frisby.create('Fetch fresh calendar item data and confirm it is the same')
+        .get(`${API_ROOT}/events/${this._data.eventId}/calendar`)
+        .expectJSON([comparableData])
+        .after(() => callback())
+        .toss();
+    }
+
+    delete(callback) {
+      const itemPath =
+        `${API_ROOT}/events/${this._data.eventId}/calendar/${this._data.id}`;
+
+      frisby.create('Delete calendar item')
+        .delete(itemPath)
+        .expectStatus(205)
+        .after(() => callback())
+        .toss();
+    }
+
+    pertainTo(event) {
+      if (!(event instanceof Event) || event.data.id === undefined) {
+        throw new Error('Event not valid');
+      }
+
+      this._data.eventId = event.data.id;
+    }
+
+    save(callback, expectedStatus) {
+      expectedStatus = expectedStatus || 201;
+
+      frisby.create('Create a new calendar item')
+        .post(`${API_ROOT}/events/${this._data.eventId}/calendar`, this._data)
+        .expectStatus(expectedStatus)
+        .afterJSON(data => callback(null, data))
+        .toss();
+    }
+  }
 
   class Event {
     constructor(overrideData) {
@@ -178,7 +246,6 @@
       this._data.id = creationData.id;
 
       const comparableData = _.clone(this._data);
-
       // Not going to be returned by the API
       comparableData.password = undefined;
 
@@ -206,7 +273,7 @@
 
       (data, cb) => user.confirm(data, cb),
 
-      function(callback) {
+      function testValidLocation(callback) {
         const location = new Location();
         location.ownBy(user);
 
@@ -224,6 +291,21 @@
             async.waterfall([
               cb => e.save(cb),
               (data, cb) => e.confirm(data, cb),
+
+              function testValidCalendarItem(callback) {
+                const i = new CalendarItem();
+
+                i.assignTo(user);
+                i.pertainTo(e);
+
+                async.waterfall([
+                  cb => i.save(cb),
+                  (data, cb) => i.confirm(data, cb),
+                  cb => i.delete(cb),
+                  () => callback()
+                ]);
+              },
+
               cb => e.delete(cb),
               () => callback()
             ]);
