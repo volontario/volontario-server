@@ -12,9 +12,24 @@ module.exports = function(config, mongoose) {
 
     Schema.set('toJSON', {getters: true});
 
-    Schema.options.toJSON.transform = function(doc, json) {
-      json.id = json._id;
-      json._id = json.__v = undefined;
+    Schema.options.toJSON.transform = function(_, json) {
+      const renameIdRec = function(doc) {
+        console.log(doc);
+        doc.id = doc._id;
+        doc._id = doc.__v = undefined;
+
+        for (let propKey in doc) {
+          if (doc.hasOwnProperty(propKey) &&
+              doc[propKey] &&
+              doc[propKey].constructor.name === 'Array') {
+            for (let i = 0; i < doc[propKey].length; ++i) {
+              renameIdRec(doc[propKey][i]);
+            }
+          }
+        }
+      };
+
+      renameIdRec(json);
     };
 
     return mongoose.model(name, Schema);
