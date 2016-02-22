@@ -1,5 +1,5 @@
-module.exports = {
-  schema: {
+module.exports = function(mongoose) {
+  const fields = {
     addedAt: {type: Date, default: Date.now},
     coordinates: {
       latitude: {type: Number, required: true},
@@ -17,12 +17,14 @@ module.exports = {
     salt: String,
     tags: [String],
     updatedAt: {type: Date, default: Date.now}
-  },
+  };
 
-  methods: [
-    function tidy() {
-      this.digest = undefined;
-      this.salt = undefined;
-    }
-  ]
+  const Schema = new mongoose.Schema(fields);
+
+  Schema.methods.tidy = function() {
+    this.digest = undefined;
+    this.salt = undefined;
+  };
+
+  return Schema;
 };

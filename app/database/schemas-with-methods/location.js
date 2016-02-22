@@ -1,5 +1,5 @@
-module.exports = {
-  schema: {
+module.exports = function(mongoose) {
+  const fields = {
     addedAt: {type: Date, default: Date.now},
     category: {type: String, required: true},
     coordinates: {
@@ -10,8 +10,9 @@ module.exports = {
     ownerId: {type: String, required: true, default: null},
     url: {type: String, required: true},
     updatedAt: {type: Date, default: Date.now}
-  },
+  };
 
-  methods: [
-  ]
+  const Schema = new mongoose.Schema(fields);
+
+  return Schema;
 };

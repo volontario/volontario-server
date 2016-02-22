@@ -1,20 +1,12 @@
 module.exports = function(config, mongoose) {
-  const rawEvent = require('./schemas-with-methods/event.js');
-  const rawLocation = require('./schemas-with-methods/location.js');
-  const rawUser = require('./schemas-with-methods/user.js');
-
-  const schemaFactory = function(name, schemaWithMethods) {
-    let Schema = new mongoose.Schema(schemaWithMethods.schema);
-
-    schemaWithMethods.methods.forEach(function(method) {
-      Schema.methods[method.name] = method;
-    });
+  const schemaFactory = function(name) {
+    const schemeCreator = require(`./schemas-with-methods/${name}.js`);
+    const Schema = schemeCreator(mongoose);
 
     Schema.set('toJSON', {getters: true});
 
     Schema.options.toJSON.transform = function(_, json) {
       const renameIdRec = function(doc) {
-        console.log(doc);
         doc.id = doc._id;
         doc._id = doc.__v = undefined;
 
@@ -36,9 +28,9 @@ module.exports = function(config, mongoose) {
   };
 
   const schemas = {
-    Event: schemaFactory('event', rawEvent),
-    Location: schemaFactory('location', rawLocation),
-    User: schemaFactory('user', rawUser)
+    Event: schemaFactory('event'),
+    Location: schemaFactory('location'),
+    User: schemaFactory('user')
   };
 
   mongoose.connect(config.MONGO_URL, {
