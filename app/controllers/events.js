@@ -104,7 +104,6 @@ module.exports = function(helpers, EventSchema) {
           return next(new Error('Event not found'));
         }
 
-        event.garnish();
         return res.json(event);
       });
     },
@@ -115,8 +114,8 @@ module.exports = function(helpers, EventSchema) {
           return next(new Error('Event not found'));
         }
 
-        if (req.query.options.inverted !== 'true') {
-          // Just the plain calender -- this is normal behavior from /:field
+        if (!req.query.options || req.query.options.inverted !== 'true') {
+          // Just the plain calendar -- this is normal behavior from /:field
           return res.json(event.calendar);
         }
 
@@ -264,11 +263,16 @@ module.exports = function(helpers, EventSchema) {
           userId: req.body.userId
         });
 
-        event.update({calendar: updateableCalendar}, null, function(error) {
+        event.locationId = 'test';
+
+        event.save(function(error) {
           if (error) {
             next(new Error('Database error'));
           } else {
-            res.status(201).end();
+            const newItem = updateableCalendar.reduce(function(newest, item) {
+              return item.addedAt > newest.addedAt ? item : newest;
+            });
+            res.status(201).json({id: newItem.id});
           }
         });
       });
