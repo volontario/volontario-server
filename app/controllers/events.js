@@ -57,7 +57,7 @@ module.exports = function(helpers, EventSchema) {
           if (error) {
             next(new Error('Database error'));
           } else {
-            res.status(204).end();
+            res.status(205).end();
           }
         });
       });
@@ -114,9 +114,11 @@ module.exports = function(helpers, EventSchema) {
           return next(new Error('Event not found'));
         }
 
+        // Just the plain calendar -- this is default behavior for /:field
         if (!req.query.options || req.query.options.inverted !== 'true') {
-          // Just the plain calendar -- this is normal behavior from /:field
-          return res.json(event.calendar);
+          // Force the event to JSON to call its schema's .toJSON()
+          const jsonEvent = event.toJSON();
+          return res.json(jsonEvent.calendar);
         }
 
         if (event.startsAt === undefined || event.endsAt === undefined) {
