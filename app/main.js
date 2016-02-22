@@ -41,7 +41,7 @@ module.exports = function() {
   const digester = function(pw, salt) {
     return pbkdf2
       .pbkdf2Sync(pw, salt, 16384, 128, 'sha512')
-      .toString('utf8');
+      .toString('hex');
   };
 
   basicStrategyConfigurer(
@@ -56,7 +56,7 @@ module.exports = function() {
     passport,
     app,
     digester,
-    () => crypto.randomBytes(128).toString('utf8')
+    () => crypto.randomBytes(128).toString('hex')
   );
 
   app.use(errorHandler);
