@@ -7,6 +7,10 @@ module.exports = function(config, mongoose) {
 
     Schema.options.toJSON.transform = function(_, json) {
       const renameIdRec = function(doc) {
+        if (doc.constructor.name !== 'Object') {
+          return;
+        }
+
         doc.id = doc._id;
         doc._id = doc.__v = undefined;
 
