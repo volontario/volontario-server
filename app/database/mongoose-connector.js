@@ -1,6 +1,6 @@
 module.exports = function(config, mongoose) {
   const schemaFactory = function(name) {
-    const schemeCreator = require(`./schemas-with-methods/${name}.js`);
+    const schemeCreator = require(`./schemas/${name}.js`);
     const Schema = schemeCreator(mongoose);
 
     Schema.set('toJSON', {getters: true});
