@@ -1,11 +1,12 @@
 volontario API
 ==============
 
-* All responses are formatted as JSON.
-* To fetch resources, use GET. No authentication needed!
+* All responses and request bodies are formatted as JSON.
+* To fetch resources, use GET. Some resources may require Basic auth.
 * To add resources, you must use Basic auth. The fresh resources will be owned by the user you created.
 * To modify and delete resources, ensure you either own the resource directly or own the user that owns the resources. Then use Basic auth.
 * For Basic auth credentials, create a user (via `POST /users`).
+* Tests may be ran using `npm tests`.
 
 ### Notes on `PATCH`
 `PATCH` requests are formatted as specified in RFC6902. The only supported operation is `replace`.
