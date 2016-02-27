@@ -147,8 +147,8 @@
     }
 
     delete(callback) {
-      frisby.create('Delete testing events')
-        .delete(API_ROOT + '/events', {category: 'testing'})
+      frisby.create('Delete event')
+        .delete(`${API_ROOT}/events/${this._data.id}`)
         .expectStatus(205)
         .after(() => callback())
         .toss();
@@ -233,8 +233,8 @@
     }
 
     delete(callback) {
-      frisby.create('Delete testing locations')
-        .delete(API_ROOT + '/locations', {category: 'testing'})
+      frisby.create('Delete location')
+        .delete(`${API_ROOT}/locations/${this._data.id}`)
         .expectStatus(205)
         .after(() => callback())
         .toss();
@@ -325,8 +325,8 @@
     }
 
     delete(callback) {
-      frisby.create('Delete testing users')
-        .delete(API_ROOT + '/users', {email: EMAIL})
+      frisby.create('Delete user')
+        .delete(`${API_ROOT}/users/${this._data.id}`)
         .expectStatus(205)
         .after(() => callback())
         .toss();
