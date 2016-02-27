@@ -265,8 +265,6 @@ module.exports = function(helpers, EventSchema) {
           userId: req.body.userId
         });
 
-        event.locationId = 'test';
-
         event.save(function(error) {
           if (error) {
             next(new Error('Database error'));
