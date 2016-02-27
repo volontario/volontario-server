@@ -61,7 +61,7 @@
       frisby.create('Fetch fresh calendar item data and compare it')
         .get(`${API_ROOT}/events/${this._data.eventId}/calendar`)
         .expectJSON([comparableData])
-        .after(() => callback())
+        .afterJSON(comparableData => callback(null, comparableData))
         .toss();
     }
 
@@ -167,6 +167,7 @@
         throw new Error('Owner not valid');
       }
 
+      owner.ownEvent(this);
       this._data.ownerId = owner.data.id;
     }
 
@@ -272,6 +273,8 @@
         phoneNumber: '+35850000000',
         tags: ['tagA', 'tagB', 'tagC']
       };
+
+      this.events = [];
     }
 
     get data() {
@@ -304,6 +307,14 @@
         .toss();
     }
 
+    confirmEvents(assumedEvents, callback) {
+      frisby.create('Fetch user events and compare them')
+        .get(`${API_ROOT}/users/${this._data.id}/events`)
+        .expectJSON(this.events.map(e => e.data))
+        .after(() => callback())
+        .toss();
+    }
+
     confirmFields(callback) {
       const confirmEmail = cb => {
         frisby.create('Fetch user email and compare it')
@@ -330,6 +341,14 @@
         .expectStatus(205)
         .after(() => callback())
         .toss();
+    }
+
+    ownEvent(newEvent) {
+      if (this.events.some(e => e.id === newEvent.id)) {
+        return;
+      }
+
+      this.events.push(newEvent);
     }
   }
 
@@ -372,6 +391,7 @@
                 async.waterfall([
                   cb => i.save(cb),
                   (data, cb) => i.confirm(data, cb),
+                  (data, cb) => user.confirmEvents(data, cb),
                   cb => i.delete(cb)
                 ], callback);
               },
