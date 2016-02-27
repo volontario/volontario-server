@@ -28,7 +28,7 @@ module.exports = function(helpers, LocationSchema) {
     deleteById: function(req, res, next) {
       LocationSchema.findByIdAndRemove(req.params.id, function(error) {
         if (!error) {
-          res.status(204).end();
+          res.status(205).end();
         } else if (error.name === 'CastError') {
           next(new Error('Bad resource ID'));
         } else {

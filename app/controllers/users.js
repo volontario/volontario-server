@@ -30,7 +30,7 @@ module.exports = function(helpers, digester, salter, schemas) {
     deleteById: function(req, res, next) {
       UserSchema.findByIdAndRemove(req.params.id, function(error) {
         if (!error) {
-          res.status(204).end();
+          res.status(205).end();
         } else if (error.name === 'CastError') {
           next(new Error('Bad resource ID'));
         } else {
