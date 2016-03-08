@@ -146,9 +146,29 @@
       async.series([confirmName, confirmLocationId], () => callback());
     }
 
+    confirmUniqueUrl(cb) {
+      const comparableData = _.clone(this._data);
+
+      frisby.create('Fetch from all events but expect only this')
+        .get(`${API_ROOT}/events?filters.url=${this._data.url}`)
+        .expectJSON([comparableData])
+        .after(() => cb())
+        .toss();
+    }
+
     delete(callback) {
       frisby.create('Delete event')
         .delete(`${API_ROOT}/events/${this._data.id}`)
+        .expectStatus(205)
+        .after(() => callback())
+        .toss();
+    }
+
+    deleteByUrl(callback) {
+      const data = {url: this._data.url};
+
+      frisby.create('Delete events by URL')
+        .delete(`${API_ROOT}/events`, data)
         .expectStatus(205)
         .after(() => callback())
         .toss();
@@ -233,9 +253,29 @@
       async.series([confirmName, confirmCoordinates], () => callback());
     }
 
+    confirmUniqueName(cb) {
+      const comparableData = _.clone(this._data);
+
+      frisby.create('Fetch from all locations but expect only this')
+        .get(`${API_ROOT}/locations?filters.name=${this._data.name}`)
+        .expectJSON([comparableData])
+        .after(() => cb())
+        .toss();
+    }
+
     delete(callback) {
       frisby.create('Delete location')
         .delete(`${API_ROOT}/locations/${this._data.id}`)
+        .expectStatus(205)
+        .after(() => callback())
+        .toss();
+    }
+
+    deleteByName(callback) {
+      const data = {name: this._data.name};
+
+      frisby.create('Delete locations by name')
+        .delete(`${API_ROOT}/locations`, data)
         .expectStatus(205)
         .after(() => callback())
         .toss();
@@ -335,9 +375,31 @@
       async.series([confirmEmail, confirmCoordinates], () => callback());
     }
 
+    confirmUniqueFamilyName(cb) {
+      const comparableData = _.clone(this._data);
+      // Not going to be returned by the API
+      comparableData.password = undefined;
+
+      frisby.create('Fetch from all users but expect only this')
+        .get(`${API_ROOT}/users?filters.familyName=${this._data.familyName}`)
+        .expectJSON([comparableData])
+        .after(() => cb())
+        .toss();
+    }
+
     delete(callback) {
       frisby.create('Delete user')
         .delete(`${API_ROOT}/users/${this._data.id}`)
+        .expectStatus(205)
+        .after(() => callback())
+        .toss();
+    }
+
+    deleteByFamilyName(callback) {
+      const data = {familyName: this._data.familyName};
+
+      frisby.create('Delete users by family name')
+        .delete(`${API_ROOT}/users`, data)
         .expectStatus(205)
         .after(() => callback())
         .toss();
@@ -361,6 +423,19 @@
       (data, cb) => user.confirm(data, cb),
       cb => user.confirmFields(cb),
 
+      function testHandlingMultipleUsers(callback) {
+        const differentUser = new User();
+        differentUser.data.email = 'supertest@test.test';
+        differentUser.data.familyName = 'Testerberg';
+
+        async.waterfall([
+          cb => differentUser.save(cb),
+          (data, cb) => differentUser.confirm(data, cb),
+          cb => differentUser.confirmUniqueFamilyName(cb),
+          cb => differentUser.deleteByFamilyName(cb)
+        ], callback);
+      },
+
       function testValidLocation(callback) {
         const location = new Location();
         location.ownBy(user);
@@ -370,6 +445,19 @@
 
           (data, cb) => location.confirm(data, cb),
           cb => location.confirmFields(cb),
+
+          function testHandlingMultipleLocations(callback) {
+            const differentLocation = new Location();
+            differentLocation.data.name = 'SuperLocation 2000';
+            differentLocation.data.coordinates.latitude = 40.123;
+
+            async.waterfall([
+              cb => differentLocation.save(cb),
+              (data, cb) => differentLocation.confirm(data, cb),
+              cb => differentLocation.confirmUniqueName(cb),
+              cb => differentLocation.deleteByName(cb)
+            ], callback);
+          },
 
           function testValidEvent(callback) {
             const e = new Event();
@@ -381,6 +469,22 @@
               cb => e.save(cb),
               (data, cb) => e.confirm(data, cb),
               cb => e.confirmFields(cb),
+
+              function testHandlingMultipleEvents(callback) {
+                const differentEvent = new Event();
+                differentEvent.data.name = 'SuperEvent 2000';
+                differentEvent.data.url = 'http://super-event-2000.org';
+
+                differentEvent.locateTo(location);
+                differentEvent.ownBy(user);
+
+                async.waterfall([
+                  cb => differentEvent.save(cb),
+                  (data, cb) => differentEvent.confirm(data, cb),
+                  cb => differentEvent.confirmUniqueUrl(cb),
+                  cb => differentEvent.deleteByUrl(cb)
+                ], callback);
+              },
 
               function testValidCalendarItem(callback) {
                 const i = new CalendarItem();
