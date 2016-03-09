@@ -47,6 +47,12 @@ module.exports = function(helpers, digester, salter, schemas) {
       });
     },
 
+    getMe: function(req, res) {
+      const me = req.user;
+      me.tidy();
+      return res.json(me);
+    },
+
     getById: function(req, res, next) {
       UserSchema.findById(req.params.id, function(_error, user) {
         if (!user) {

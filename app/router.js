@@ -40,6 +40,7 @@ module.exports = function(schs, passport, app, digester, salter) {
   app.delete('/users', reqAuth, uc.delete);
   app.delete('/users/:id', reqAuth, uc.deleteById);
   app.get('/users', reqAuth, uc.get);
+  app.get('/users/me', reqAuth, uc.getMe);
   app.get('/users/:id', uc.getById);
   app.get('/users/:id/events', uc.getEvents);
   app.get('/users/:id/:field', uc.getFieldById);
