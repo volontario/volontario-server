@@ -9,9 +9,10 @@ module.exports = function() {
   const morgan = require('morgan');
   const passport = require('passport');
   const PassportBasicStrategy = require('passport-http').BasicStrategy;
+  const PassportFacebookStrategy = require('passport-facebook').Strategy;
   const pbkdf2 = require('pbkdf2');
 
-  const basicStrategyConfigurer = require('./auth/basic.js');
+  const authConfigurer = require('./auth/basic.js');
   const config = require('./config.js');
   const dotQueryParser = require('./middleware/dot-query-parser.js');
   const errorHandler = require('./middleware/error-handler.js');
@@ -44,9 +45,10 @@ module.exports = function() {
       .toString('hex');
   };
 
-  basicStrategyConfigurer(
+  authConfigurer(
     passport,
     PassportBasicStrategy,
+    PassportFacebookStrategy,
     digester,
     mongooseConnection.schemas.User
   );

@@ -46,6 +46,9 @@ module.exports = function(schs, passport, app, digester, salter) {
   app.get('/users/:id/:field', uc.getFieldById);
   app.post('/users', uc.post);
 
+  app.get('/oauth/auths/facebook', passport.authenticate('facebook', {scope: 'email'}));
+  app.get('/oauth/callbacks/facebook', passport.authenticate('facebook', {successRedirect: '/users/me', failureRedirect: '/'}));
+
   // If path not found
   app.get('*', (_req, _res, next) => next(new Error('Bad path')));
 };

@@ -40,6 +40,7 @@
     "mongoose": "^4.2.3",
     "morgan": "^1.6.1",
     "passport": "^0.3.2",
+    "passport-facebook": "^2.1.0",
     "passport-http": "^0.3.0",
     "pbkdf2": "^3.0.4",
     "read-file": "^0.2.0",
