@@ -16,8 +16,8 @@ module.exports = function(helpers, LocationSchema) {
       }
 
       const query = req.body;
-      LocationSchema.find(query, function(error, locations) {
-        if (error) {
+      LocationSchema.find(query, function(err, locations) {
+        if (err) {
           return next(new Error());
         }
 
@@ -35,14 +35,14 @@ module.exports = function(helpers, LocationSchema) {
     },
 
     deleteById: function(req, res, next) {
-      LocationSchema.findById(req.params.id, function(error, location) {
+      LocationSchema.findById(req.params.id, function(err, location) {
         if (!helpers.isOwnerOrTheirAncestor(req.user, location)) {
           return res.status(403).end();
         }
 
-        if (error && error.name === 'CastError') {
+        if (err && err.name === 'CastError') {
           return next(new Error('Bad resource ID'));
-        } else if (error) {
+        } else if (err) {
           return next(new Error());
         }
 
@@ -51,16 +51,24 @@ module.exports = function(helpers, LocationSchema) {
       });
     },
 
-    get: function(req, res) {
+    get: function(req, res, next) {
       minerMaster.mine('blood-service-centres');
 
-      LocationSchema.find(req.query.filters, function(_error, locs) {
+      LocationSchema.find(req.query.filters, function(err, locs) {
+        if (err) {
+          return next(new Error());
+        }
+
         return res.json(locs);
       });
     },
 
     getById: function(req, res, next) {
-      LocationSchema.findById(req.params.id, function(_error, location) {
+      LocationSchema.findById(req.params.id, function(err, location) {
+        if (err) {
+          return next(new Error());
+        }
+
         if (!location) {
           return next(new Error('Location not found'));
         }
@@ -70,7 +78,11 @@ module.exports = function(helpers, LocationSchema) {
     },
 
     getFieldById: function(req, res, next) {
-      LocationSchema.findById(req.params.id, function(_error, location) {
+      LocationSchema.findById(req.params.id, function(err, location) {
+        if (err) {
+          return next(new Error());
+        }
+
         if (!location) {
           return next(new Error('Location not found'));
         }
@@ -94,9 +106,9 @@ module.exports = function(helpers, LocationSchema) {
         url: req.body.url
       });
 
-      location.save(function(error) {
-        if (error) {
-          return next(helpers.decorateError(error));
+      location.save(function(err) {
+        if (err) {
+          return next(helpers.decorateError(err));
         }
 
         return res.status(201).json({id: location.id});

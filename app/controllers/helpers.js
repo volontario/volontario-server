@@ -19,12 +19,12 @@ module.exports = function(schemas) {
       return d;
     },
 
-    decorateError: function(error) {
-      switch (error.name) {
+    decorateError: function(err) {
+      switch (err.name) {
         case 'ValidationError':
           let requiredKeys = [];
-          for (let key in error.errors) {
-            if (error.errors[key].kind !== 'required') {
+          for (let key in err.errors) {
+            if (err.errors[key].kind !== 'required') {
               return new Error('Database error');
             }
 
@@ -35,7 +35,7 @@ module.exports = function(schemas) {
           return new Error(`Missing fields: ${joinedKeys}`);
 
         case 'MongoError':
-          if (error.code !== 11000) {
+          if (err.code !== 11000) {
             break;
           }
 
@@ -63,7 +63,11 @@ module.exports = function(schemas) {
           return false;
         }
 
-        schemas.User.findById(doc.ownerId, function(_, owner) {
+        schemas.User.findById(doc.ownerId, function(err, owner) {
+          if (err) {
+            return false;
+          }
+
           if (owner.ownerId === testedUser.id) {
             return true;
           }

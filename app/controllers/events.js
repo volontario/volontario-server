@@ -16,8 +16,8 @@ module.exports = function(helpers, EventSchema) {
       }
 
       const query = req.body;
-      EventSchema.find(query, function(error, events) {
-        if (error) {
+      EventSchema.find(query, function(err, events) {
+        if (err) {
           return next(new Error());
         }
 
@@ -35,14 +35,14 @@ module.exports = function(helpers, EventSchema) {
     },
 
     deleteById: function(req, res, next) {
-      EventSchema.findById(req.params.id, function(error, event) {
+      EventSchema.findById(req.params.id, function(err, event) {
         if (!helpers.isOwnerOrTheirAncestor(req.user, event)) {
           return res.status(403).end();
         }
 
-        if (error && error.name === 'CastError') {
+        if (err && err.name === 'CastError') {
           return next(new Error('Bad resource ID'));
-        } else if (error) {
+        } else if (err) {
           return next(new Error());
         }
 
@@ -52,7 +52,11 @@ module.exports = function(helpers, EventSchema) {
     },
 
     deleteFromCalendar: function(req, res, next) {
-      EventSchema.findById(req.params.eventId, function(_error, event) {
+      EventSchema.findById(req.params.eventId, function(err, event) {
+        if (err) {
+          return next(new Error('Database error'));
+        }
+
         if (!event) {
           return next(new Error('Event not found'));
         }
@@ -71,26 +75,34 @@ module.exports = function(helpers, EventSchema) {
 
         event.calendar = newCalendar;
 
-        event.save(function(error) {
-          if (error) {
-            next(new Error('Database error'));
-          } else {
-            res.status(205).end();
+        event.save(function(err) {
+          if (err) {
+            return next(new Error('Database error'));
           }
+
+          res.status(205).end();
         });
       });
     },
 
-    get: function(req, res) {
+    get: function(req, res, next) {
       minerMaster.mine('toimintasuomi');
 
-      EventSchema.find(req.query.filters, function(_error, events) {
+      EventSchema.find(req.query.filters, function(err, events) {
+        if (err) {
+          return next(new Error('Database error'));
+        }
+
         res.json(events);
       });
     },
 
     getWithBody: function(req, res, next) {
-      EventSchema.find(req.body.filters, function(_error, events) {
+      EventSchema.find(req.body.filters, function(err, events) {
+        if (err) {
+          return next(new Error('Database error'));
+        }
+
         if (req.body.sort && req.body.sort.by === 'distance') {
           if (!req.body.sort.latitude) {
             return next(new Error('Missing fields: latitude'));
@@ -117,7 +129,11 @@ module.exports = function(helpers, EventSchema) {
     },
 
     getById: function(req, res, next) {
-      EventSchema.findById(req.params.id, function(_error, event) {
+      EventSchema.findById(req.params.id, function(err, event) {
+        if (err) {
+          return next(new Error('Database error'));
+        }
+
         if (!event) {
           return next(new Error('Event not found'));
         }
@@ -127,7 +143,11 @@ module.exports = function(helpers, EventSchema) {
     },
 
     getCalendar: function(req, res, next) {
-      EventSchema.findById(req.params.id, function(_error, event) {
+      EventSchema.findById(req.params.id, function(err, event) {
+        if (err) {
+          return next(new Error('Database error'));
+        }
+
         if (!event) {
           return next(new Error('Event not found'));
         }
@@ -200,7 +220,11 @@ module.exports = function(helpers, EventSchema) {
     },
 
     getFieldById: function(req, res, next) {
-      EventSchema.findById(req.params.id, function(_error, event) {
+      EventSchema.findById(req.params.id, function(err, event) {
+        if (err) {
+          return next(new Error('Database error'));
+        }
+
         if (!event) {
           return next(new Error('Event not found'));
         }
@@ -212,7 +236,11 @@ module.exports = function(helpers, EventSchema) {
     },
 
     patchField: function(req, res, next) {
-      EventSchema.findById(req.params.id, function(_error, event) {
+      EventSchema.findById(req.params.id, function(err, event) {
+        if (err) {
+          return next(new Error('Database error'));
+        }
+
         if (!event) {
           return next(new Error('Event not found'));
         }
@@ -228,8 +256,8 @@ module.exports = function(helpers, EventSchema) {
         const field = req.body.path.substring(1);
         event[field] = req.body.value;
 
-        event.save(function(error) {
-          if (error) {
+        event.save(function(err) {
+          if (err) {
             next(new Error('Database error'));
           } else {
             res.status(204).end();
@@ -252,9 +280,9 @@ module.exports = function(helpers, EventSchema) {
         url: (req.body.url || undefined)
       });
 
-      event.save(function(error) {
-        if (error) {
-          return next(helpers.decorateError(error));
+      event.save(function(err) {
+        if (err) {
+          return next(helpers.decorateError(err));
         }
 
         res.status(201).json({id: event.id});
@@ -273,7 +301,11 @@ module.exports = function(helpers, EventSchema) {
         return next(fieldError);
       }
 
-      EventSchema.findById(req.params.id, function(_error, event) {
+      EventSchema.findById(req.params.id, function(err, event) {
+        if (err) {
+          return next(new Error('Database error'));
+        }
+
         if (!event) {
           return next(new Error('Event not found'));
         }
@@ -287,8 +319,8 @@ module.exports = function(helpers, EventSchema) {
           userId: req.body.userId
         });
 
-        event.save(function(error) {
-          if (error) {
+        event.save(function(err) {
+          if (err) {
             next(new Error('Database error'));
           } else {
             const newItem = updateableCalendar.reduce(function(newest, item) {

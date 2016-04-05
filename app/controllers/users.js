@@ -18,9 +18,9 @@ module.exports = function(helpers, digester, salter, schemas) {
       }
 
       const query = req.body;
-      UserSchema.find(query, function(error, users) {
-        if (error) {
-          return next(new Error());
+      UserSchema.find(query, function(err, users) {
+        if (err) {
+          return next(new Error('Database error'));
         }
 
         const deletedN = users.reduce(function(dN, user) {
@@ -37,15 +37,15 @@ module.exports = function(helpers, digester, salter, schemas) {
     },
 
     deleteById: function(req, res, next) {
-      UserSchema.findById(req.params.id, function(error, user) {
+      UserSchema.findById(req.params.id, function(err, user) {
         if (!helpers.isOwnerOrTheirAncestor(req.user, user)) {
           return res.status(403).end();
         }
 
-        if (error && error.name === 'CastError') {
+        if (err && err.name === 'CastError') {
           return next(new Error('Bad resource ID'));
-        } else if (error) {
-          return next(new Error());
+        } else if (err) {
+          return next(new Error('Database error'));
         }
 
         user.remove().exec();
@@ -53,8 +53,12 @@ module.exports = function(helpers, digester, salter, schemas) {
       });
     },
 
-    get: function(req, res) {
-      UserSchema.find(req.query.filters, function(_error, users) {
+    get: function(req, res, next) {
+      UserSchema.find(req.query.filters, function(err, users) {
+        if (err) {
+          return next(new Error('Database error'));
+        }
+
         users.forEach(u => u.tidy());
 
         return res.json(users);
@@ -68,7 +72,11 @@ module.exports = function(helpers, digester, salter, schemas) {
     },
 
     getById: function(req, res, next) {
-      UserSchema.findById(req.params.id, function(_error, user) {
+      UserSchema.findById(req.params.id, function(err, user) {
+        if (err) {
+          return next(new Error('Database error'));
+        }
+
         if (!user) {
           return next(new Error('User not found'));
         }
@@ -78,15 +86,23 @@ module.exports = function(helpers, digester, salter, schemas) {
       });
     },
 
-    getEvents: function(req, res) {
+    getEvents: function(req, res, next) {
       const query = {'calendar.userId': req.params.id};
-      schemas.Event.find(query, function(_error, events) {
+      schemas.Event.find(query, function(err, events) {
+        if (err) {
+          return next(new Error('Database error'));
+        }
+
         return res.json(events);
       });
     },
 
     getFieldById: function(req, res, next) {
-      UserSchema.findById(req.params.id, function(_error, user) {
+      UserSchema.findById(req.params.id, function(err, user) {
+        if (err) {
+          return next(new Error('Database error'));
+        }
+
         if (!user) {
           return next(new Error('User not found'));
         }
@@ -119,9 +135,9 @@ module.exports = function(helpers, digester, salter, schemas) {
         tags: req.body.tags
       });
 
-      user.save(function(error) {
-        if (error) {
-          return next(helpers.decorateError(error));
+      user.save(function(err) {
+        if (err) {
+          return next(helpers.decorateError(err));
         }
 
         res.status(201).json({id: user.id});
