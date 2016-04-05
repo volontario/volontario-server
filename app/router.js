@@ -8,7 +8,7 @@
  * @param {function} salter Salt generating function
  */
 module.exports = function(schs, passport, app, digester, salter) {
-  const h = require('./controllers/helpers.js');
+  const h = require('./controllers/helpers.js')(schs);
 
   const rc = require('./controllers/root.js')();
   const lc = require('./controllers/locations.js')(h, schs.Location);

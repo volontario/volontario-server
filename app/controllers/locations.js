@@ -26,14 +26,19 @@ module.exports = function(helpers, LocationSchema) {
     },
 
     deleteById: function(req, res, next) {
-      LocationSchema.findByIdAndRemove(req.params.id, function(error) {
-        if (!error) {
-          res.status(205).end();
-        } else if (error.name === 'CastError') {
-          next(new Error('Bad resource ID'));
-        } else {
-          next(new Error());
+      LocationSchema.findById(req.params.id, function(error, location) {
+        if (!helpers.isOwnerOrTheirAncestor(req.user, location)) {
+          return res.status(403).end();
         }
+
+        if (error && error.name === 'CastError') {
+          return next(new Error('Bad resource ID'));
+        } else if (error) {
+          return next(new Error());
+        }
+
+        location.remove().exec();
+        res.status(205).end();
       });
     },
 
