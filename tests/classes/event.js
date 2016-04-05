@@ -1,4 +1,4 @@
-module.exports = function(frisby, _, async, API_ROOT, Location, User) {
+module.exports = function(frisby, _, async, apiRooter, Location, User) {
   const exportedClass = class {
     constructor(overrideData) {
       const defaultData = {
@@ -24,7 +24,7 @@ module.exports = function(frisby, _, async, API_ROOT, Location, User) {
       this._data.id = creationData.id;
 
       frisby.create('Fetch fresh event data and compare it')
-        .get(`${API_ROOT}/events/${this._data.id}`)
+        .get(`${apiRooter(this._auth)}/events/${this._data.id}`)
         .expectJSON(this._data)
         .after(() => callback())
         .toss();
@@ -33,7 +33,7 @@ module.exports = function(frisby, _, async, API_ROOT, Location, User) {
     confirmFields(callback) {
       const confirmName = cb => {
         frisby.create('Fetch event name and compare it')
-          .get(`${API_ROOT}/events/${this._data.id}/name`)
+          .get(`${apiRooter(this._auth)}/events/${this._data.id}/name`)
           .expectJSON({name: this._data.name})
           .after(() => cb())
           .toss();
@@ -41,7 +41,7 @@ module.exports = function(frisby, _, async, API_ROOT, Location, User) {
 
       const confirmLocationId = cb => {
         frisby.create('Fetch event locationId and compare them')
-          .get(`${API_ROOT}/events/${this._data.id}/locationId`)
+          .get(`${apiRooter(this._auth)}/events/${this._data.id}/locationId`)
           .expectJSON({locationId: this._data.locationId})
           .after(() => cb())
           .toss();
@@ -54,7 +54,7 @@ module.exports = function(frisby, _, async, API_ROOT, Location, User) {
       const comparableData = _.clone(this._data);
 
       frisby.create('Fetch from all events but expect only this')
-        .get(`${API_ROOT}/events?filters.url=${this._data.url}`)
+        .get(`${apiRooter(this._auth)}/events?filters.url=${this._data.url}`)
         .expectJSON([comparableData])
         .after(() => cb())
         .toss();
@@ -62,7 +62,7 @@ module.exports = function(frisby, _, async, API_ROOT, Location, User) {
 
     delete(callback) {
       frisby.create('Delete event')
-        .delete(`${API_ROOT}/events/${this._data.id}`)
+        .delete(`${apiRooter(this._auth)}/events/${this._data.id}`)
         .expectStatus(205)
         .after(() => callback())
         .toss();
@@ -72,7 +72,7 @@ module.exports = function(frisby, _, async, API_ROOT, Location, User) {
       const data = {url: this._data.url};
 
       frisby.create('Delete events by URL')
-        .delete(`${API_ROOT}/events`, data)
+        .delete(`${apiRooter(this._auth)}/events`, data)
         .expectStatus(205)
         .after(() => callback())
         .toss();
@@ -93,13 +93,14 @@ module.exports = function(frisby, _, async, API_ROOT, Location, User) {
 
       owner.ownEvent(this);
       this._data.ownerId = owner.data.id;
+      this._auth = owner.data;
     }
 
     save(callback, expectedStatus) {
       expectedStatus = expectedStatus || 201;
 
       frisby.create('Create a new event')
-        .post(API_ROOT + '/events', this._data)
+        .post(apiRooter(this._auth) + '/events', this._data)
         .expectStatus(expectedStatus)
         .afterJSON(data => callback(null, data))
         .toss();

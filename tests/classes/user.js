@@ -1,4 +1,4 @@
-module.exports = function(frisby, _, async, API_ROOT, EMAIL, PASSWORD) {
+module.exports = function(frisby, _, async, apiRooter, EMAIL, PASSWORD) {
   const exportedClass = class {
     constructor() {
       this._data = {
@@ -15,6 +15,11 @@ module.exports = function(frisby, _, async, API_ROOT, EMAIL, PASSWORD) {
         tags: ['tagA', 'tagB', 'tagC']
       };
 
+      this._auth = {
+        email: EMAIL,
+        password: PASSWORD
+      };
+
       this.events = [];
     }
 
@@ -28,7 +33,7 @@ module.exports = function(frisby, _, async, API_ROOT, EMAIL, PASSWORD) {
 
     save(callback) {
       frisby.create('Create a testing user')
-        .post(API_ROOT + '/users', this._data)
+        .post(apiRooter(this._auth) + '/users', this._data)
         .expectStatus(201)
         .afterJSON(data => callback(null, data))
         .toss();
@@ -42,7 +47,7 @@ module.exports = function(frisby, _, async, API_ROOT, EMAIL, PASSWORD) {
       comparableData.password = undefined;
 
       frisby.create('Fetch fresh user data and confirm it has not changed')
-        .get(`${API_ROOT}/users/${this._data.id}`)
+        .get(`${apiRooter(this._auth)}/users/${this._data.id}`)
         .expectJSON(comparableData)
         .after(() => callback())
         .toss();
@@ -50,7 +55,7 @@ module.exports = function(frisby, _, async, API_ROOT, EMAIL, PASSWORD) {
 
     confirmEvents(assumedEvents, callback) {
       frisby.create('Fetch user events and compare them')
-        .get(`${API_ROOT}/users/${this._data.id}/events`)
+        .get(`${apiRooter(this._auth)}/users/${this._data.id}/events`)
         .expectJSON(this.events.map(e => e.data))
         .after(() => callback())
         .toss();
@@ -59,7 +64,7 @@ module.exports = function(frisby, _, async, API_ROOT, EMAIL, PASSWORD) {
     confirmFields(callback) {
       const confirmEmail = cb => {
         frisby.create('Fetch user email and compare it')
-          .get(`${API_ROOT}/users/${this._data.id}/email`)
+          .get(`${apiRooter(this._auth)}/users/${this._data.id}/email`)
           .expectJSON({email: this._data.email})
           .after(() => cb())
           .toss();
@@ -67,7 +72,7 @@ module.exports = function(frisby, _, async, API_ROOT, EMAIL, PASSWORD) {
 
       const confirmCoordinates = cb => {
         frisby.create('Fetch user coordinates and compare them')
-          .get(`${API_ROOT}/users/${this._data.id}/coordinates`)
+          .get(`${apiRooter(this._auth)}/users/${this._data.id}/coordinates`)
           .expectJSON({coordinates: this._data.coordinates})
           .after(() => cb())
           .toss();
@@ -81,8 +86,12 @@ module.exports = function(frisby, _, async, API_ROOT, EMAIL, PASSWORD) {
       // Not going to be returned by the API
       comparableData.password = undefined;
 
+      const url =
+        `${apiRooter(this._auth)}/users` +
+        `?filters.familyName=${this._data.familyName}`;
+
       frisby.create('Fetch from all users but expect only this')
-        .get(`${API_ROOT}/users?filters.familyName=${this._data.familyName}`)
+        .get(url)
         .expectJSON([comparableData])
         .after(() => cb())
         .toss();
@@ -90,7 +99,7 @@ module.exports = function(frisby, _, async, API_ROOT, EMAIL, PASSWORD) {
 
     delete(callback) {
       frisby.create('Delete user')
-        .delete(`${API_ROOT}/users/${this._data.id}`)
+        .delete(`${apiRooter(this._auth)}/users/${this._data.id}`)
         .expectStatus(205)
         .after(() => callback())
         .toss();
@@ -100,7 +109,7 @@ module.exports = function(frisby, _, async, API_ROOT, EMAIL, PASSWORD) {
       const data = {familyName: this._data.familyName};
 
       frisby.create('Delete users by family name')
-        .delete(`${API_ROOT}/users`, data)
+        .delete(`${apiRooter(this._auth)}/users`, data)
         .expectStatus(205)
         .after(() => callback())
         .toss();

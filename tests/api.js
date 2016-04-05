@@ -22,19 +22,34 @@
   const EMAIL = 'testerman@test.test';
   const PASSWORD = 'testpassword';
 
-  const CREDENTIALS = encodeURIComponent(EMAIL + ':' + PASSWORD);
   const HOST = process.env.VOLONTARIO_EXPRESS_HOST || DEFAULT_HOST;
   const PORT = process.env.VOLONTARIO_EXPRESS_PORT || DEFAULT_PORT;
-  const API_ROOT = `http://${CREDENTIALS}@${HOST}:${PORT}`;
+
+  const DEFAULT_USER = {
+    email: EMAIL,
+    password: PASSWORD
+  };
+
+  const apiRooter = function(user) {
+    let auth;
+    if (user) {
+      auth = encodeURIComponent(user.email) + ':' +
+        encodeURIComponent(user.password);
+    } else {
+      auth = '';
+    }
+
+    return `http://${auth}@${HOST}:${PORT}`;
+  };
 
   const User =
-    require('./classes/user.js')(frisby, _, async, API_ROOT, EMAIL, PASSWORD);
+    require('./classes/user.js')(frisby, _, async, apiRooter, EMAIL, PASSWORD);
   const Location =
-    require('./classes/location.js')(frisby, _, async, API_ROOT, User);
+    require('./classes/location.js')(frisby, _, async, apiRooter, User);
   const Event =
-    require('./classes/event.js')(frisby, _, async, API_ROOT, Location, User);
+    require('./classes/event.js')(frisby, _, async, apiRooter, Location, User);
   const CalendarItem =
-    require('./classes/calendar-item.js')(frisby, _, API_ROOT, Event, User);
+    require('./classes/calendar-item.js')(frisby, _, apiRooter, Event, User);
 
   function testMain(callback) {
     const user = new User();
@@ -72,6 +87,7 @@
             const differentLocation = new Location();
             differentLocation.data.name = 'SuperLocation 2000';
             differentLocation.data.coordinates.latitude = 40.123;
+            differentLocation.ownBy(user);
 
             async.waterfall([
               cb => differentLocation.save(cb),
@@ -153,6 +169,40 @@
         ], callback);
       },
 
+      function testUserAuthorization(callback) {
+        const differentUser = new User();
+        differentUser.data.email = 'anotheruser@test.test';
+
+        async.waterfall([
+          cb => differentUser.save(cb),
+          (data, cb) => differentUser.confirm(data, cb),
+
+          function createLocation(callback) {
+            const differentLocation = new Location();
+            differentLocation.ownBy(user);
+
+            async.waterfall([
+              cb => differentLocation.save(cb),
+              (data, cb) => differentLocation.confirm(data, cb),
+
+              function(callback) {
+                differentLocation.ownBy(differentUser);
+                differentLocation.deleteAndFailAuthorization(callback);
+              },
+
+              function(callback) {
+                differentLocation.ownBy(user);
+                callback();
+              },
+
+              cb => differentLocation.delete(cb)
+            ], callback);
+          },
+
+          cb => differentUser.delete(cb)
+        ], callback);
+      },
+
       function testBadLocation(callback) {
         const location = new Location();
 
@@ -168,7 +218,7 @@
 
   function testPing(callback) {
     frisby.create('Make sure the API returns something')
-      .get(API_ROOT)
+      .get(apiRooter(DEFAULT_USER))
       .expectStatus(200)
       .expectJSON({})
       .after(callback)
@@ -177,7 +227,7 @@
 
   function deleteTestUserAnyway(callback) {
     frisby.create('Delete old testing users')
-      .delete(API_ROOT + '/users', {email: EMAIL})
+      .delete(apiRooter(DEFAULT_USER) + '/users', {email: EMAIL})
       .after(callback)
       .toss();
   }

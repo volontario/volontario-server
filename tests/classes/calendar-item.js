@@ -1,4 +1,4 @@
- module.exports = function(frisby, _, API_ROOT, Event, User) {
+module.exports = function(frisby, _, apiRooter, Event, User) {
   const exportedClass = class {
     constructor() {
       this._data = {
@@ -21,6 +21,10 @@
       }
 
       this._data.userId = user.data.id;
+      this._auth = {
+        email: user.data.email,
+        password: user.data.password
+      };
     }
 
     confirm(creationData, callback) {
@@ -31,18 +35,19 @@
       comparableData.eventId = undefined;
 
       frisby.create('Fetch fresh calendar item data and compare it')
-        .get(`${API_ROOT}/events/${this._data.eventId}/calendar`)
+        .get(`${apiRooter(this._auth)}/events/${this._data.eventId}/calendar`)
         .expectJSON([comparableData])
         .afterJSON(comparableData => callback(null, comparableData))
         .toss();
     }
 
     delete(callback) {
-      const itemPath =
-        `${API_ROOT}/events/${this._data.eventId}/calendar/${this._data.id}`;
+      const url =
+        `${apiRooter(this._auth)}/events/${this._data.eventId}` +
+        `/calendar/${this._data.id}`;
 
       frisby.create('Delete calendar item')
-        .delete(itemPath)
+        .delete(url)
         .expectStatus(205)
         .after(() => callback())
         .toss();
@@ -59,8 +64,11 @@
     save(callback, expectedStatus) {
       expectedStatus = expectedStatus || 201;
 
+      const url =
+        `${apiRooter(this._auth)}/events/${this._data.eventId}/calendar`;
+
       frisby.create('Create a new calendar item')
-        .post(`${API_ROOT}/events/${this._data.eventId}/calendar`, this._data)
+        .post(url, this._data)
         .expectStatus(expectedStatus)
         .afterJSON(data => callback(null, data))
         .toss();

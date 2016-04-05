@@ -1,4 +1,4 @@
-module.exports = function(frisby, _, async, API_ROOT, User) {
+module.exports = function(frisby, _, async, apiRooter, User) {
   const exportedClass = class {
     constructor() {
       this._data = {
@@ -24,7 +24,7 @@ module.exports = function(frisby, _, async, API_ROOT, User) {
       this._data.id = creationData.id;
 
       frisby.create('Fetch fresh location data and compare it')
-        .get(`${API_ROOT}/locations/${this._data.id}`)
+        .get(`${apiRooter(this._auth)}/locations/${this._data.id}`)
         .expectJSON(this._data)
         .after(() => callback())
         .toss();
@@ -33,15 +33,18 @@ module.exports = function(frisby, _, async, API_ROOT, User) {
     confirmFields(callback) {
       const confirmName = cb => {
         frisby.create('Fetch location name and compare it')
-          .get(`${API_ROOT}/locations/${this._data.id}/name`)
+          .get(`${apiRooter(this._auth)}/locations/${this._data.id}/name`)
           .expectJSON({name: this._data.name})
           .after(() => cb())
           .toss();
       };
 
+      const url =
+        `${apiRooter(this._auth)}/locations/${this._data.id}/coordinates`;
+
       const confirmCoordinates = cb => {
         frisby.create('Fetch location coordinates and compare them')
-          .get(`${API_ROOT}/locations/${this._data.id}/coordinates`)
+          .get(url)
           .expectJSON({coordinates: this._data.coordinates})
           .after(() => cb())
           .toss();
@@ -53,8 +56,11 @@ module.exports = function(frisby, _, async, API_ROOT, User) {
     confirmUniqueName(cb) {
       const comparableData = _.clone(this._data);
 
+      const url =
+        `${apiRooter(this._auth)}/locations?filters.name=${this._data.name}`;
+
       frisby.create('Fetch from all locations but expect only this')
-        .get(`${API_ROOT}/locations?filters.name=${this._data.name}`)
+        .get(url)
         .expectJSON([comparableData])
         .after(() => cb())
         .toss();
@@ -62,8 +68,16 @@ module.exports = function(frisby, _, async, API_ROOT, User) {
 
     delete(callback) {
       frisby.create('Delete location')
-        .delete(`${API_ROOT}/locations/${this._data.id}`)
+        .delete(`${apiRooter(this._auth)}/locations/${this._data.id}`)
         .expectStatus(205)
+        .after(() => callback())
+        .toss();
+    }
+
+    deleteAndFailAuthorization(callback) {
+      frisby.create('Attempt to delete location but fail at authorization')
+        .delete(`${apiRooter(this._auth)}/locations/${this._data.id}`)
+        .expectStatus(403)
         .after(() => callback())
         .toss();
     }
@@ -72,7 +86,7 @@ module.exports = function(frisby, _, async, API_ROOT, User) {
       const data = {name: this._data.name};
 
       frisby.create('Delete locations by name')
-        .delete(`${API_ROOT}/locations`, data)
+        .delete(`${apiRooter(this._auth)}/locations`, data)
         .expectStatus(205)
         .after(() => callback())
         .toss();
@@ -84,11 +98,12 @@ module.exports = function(frisby, _, async, API_ROOT, User) {
       }
 
       this._data.ownerId = owner.data.id;
+      this._auth = owner.data;
     }
 
     save(callback) {
       frisby.create('Create a new location')
-        .post(API_ROOT + '/locations', this._data)
+        .post(apiRooter(this._auth) + '/locations', this._data)
         .expectStatus(201)
         .afterJSON(data => callback(null, data))
         .toss();
