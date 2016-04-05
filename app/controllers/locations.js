@@ -16,12 +16,21 @@ module.exports = function(helpers, LocationSchema) {
       }
 
       const query = req.body;
-      LocationSchema.remove(query, function(error, obj) {
+      LocationSchema.find(query, function(error, locations) {
         if (error) {
-          next(new Error());
-        } else {
-          res.status(obj.result.n > 0 ? 205 : 204).end();
+          return next(new Error());
         }
+
+        const deletedN = locations.reduce(function(dN, location) {
+          if (!helpers.isOwnerOrTheirAncestor(req.user, location)) {
+            return dN;
+          }
+
+          location.remove().exec();
+          return dN + 1;
+        }, 0);
+
+        res.status(deletedN > 0 ? 205 : 204).end();
       });
     },
 

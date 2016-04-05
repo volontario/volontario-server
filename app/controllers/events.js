@@ -16,24 +16,38 @@ module.exports = function(helpers, EventSchema) {
       }
 
       const query = req.body;
-      EventSchema.remove(query, function(error, obj) {
+      EventSchema.find(query, function(error, events) {
         if (error) {
-          next(new Error());
-        } else {
-          res.status(obj.result.n > 0 ? 205 : 204).end();
+          return next(new Error());
         }
+
+        const deletedN = events.reduce(function(dN, event) {
+          if (!helpers.isOwnerOrTheirAncestor(req.user, event)) {
+            return dN;
+          }
+
+          event.remove().exec();
+          return dN + 1;
+        }, 0);
+
+        res.status(deletedN > 0 ? 205 : 204).end();
       });
     },
 
     deleteById: function(req, res, next) {
-      EventSchema.findByIdAndRemove(req.params.id, function(error) {
-        if (!error) {
-          res.status(205).end();
-        } else if (error.name === 'CastError') {
-          next(new Error('Bad resource ID'));
-        } else {
-          next(new Error());
+      EventSchema.findById(req.params.id, function(error, event) {
+        if (!helpers.isOwnerOrTheirAncestor(req.user, event)) {
+          return res.status(403).end();
         }
+
+        if (error && error.name === 'CastError') {
+          return next(new Error('Bad resource ID'));
+        } else if (error) {
+          return next(new Error());
+        }
+
+        event.remove().exec();
+        res.status(205).end();
       });
     },
 
@@ -41,6 +55,10 @@ module.exports = function(helpers, EventSchema) {
       EventSchema.findById(req.params.eventId, function(_error, event) {
         if (!event) {
           return next(new Error('Event not found'));
+        }
+
+        if (!helpers.isOwnerOrTheirAncestor(req.user, event)) {
+          return res.status(403).end();
         }
 
         const newCalendar = event.calendar.filter(function(item) {
@@ -197,6 +215,10 @@ module.exports = function(helpers, EventSchema) {
       EventSchema.findById(req.params.id, function(_error, event) {
         if (!event) {
           return next(new Error('Event not found'));
+        }
+
+        if (!helpers.isOwnerOrTheirAncestor(req.user, event)) {
+          return res.status(403).end();
         }
 
         if (req.body.op !== 'replace') {

@@ -18,24 +18,38 @@ module.exports = function(helpers, digester, salter, schemas) {
       }
 
       const query = req.body;
-      UserSchema.remove(query, function(error, obj) {
+      UserSchema.find(query, function(error, users) {
         if (error) {
-          next(new Error());
-        } else {
-          res.status(obj.result.n > 0 ? 205 : 204).end();
+          return next(new Error());
         }
+
+        const deletedN = users.reduce(function(dN, user) {
+          if (!helpers.isOwnerOrTheirAncestor(req.user, user)) {
+            return dN;
+          }
+
+          user.remove().exec();
+          return dN + 1;
+        }, 0);
+
+        res.status(deletedN > 0 ? 205 : 204).end();
       });
     },
 
     deleteById: function(req, res, next) {
-      UserSchema.findByIdAndRemove(req.params.id, function(error) {
-        if (!error) {
-          res.status(205).end();
-        } else if (error.name === 'CastError') {
-          next(new Error('Bad resource ID'));
-        } else {
-          next(new Error());
+      UserSchema.findById(req.params.id, function(error, user) {
+        if (!helpers.isOwnerOrTheirAncestor(req.user, user)) {
+          return res.status(403).end();
         }
+
+        if (error && error.name === 'CastError') {
+          return next(new Error('Bad resource ID'));
+        } else if (error) {
+          return next(new Error());
+        }
+
+        user.remove().exec();
+        res.status(205).end();
       });
     },
 
