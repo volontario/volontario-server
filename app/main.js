@@ -3,23 +3,24 @@ module.exports = function() {
 
   const bodyParser = require('body-parser');
   const cors = require('cors');
-  const crypto = require('crypto');
   const express = require('express');
   const mongoose = require('mongoose');
   const morgan = require('morgan');
   const passport = require('passport');
   const PassportBasicStrategy = require('passport-http').BasicStrategy;
   const PassportFacebookStrategy = require('passport-facebook').Strategy;
-  const pbkdf2 = require('pbkdf2');
 
   const authConfigurer = require('./auth/basic.js');
   const config = require('./config.js');
   const dotQueryParser = require('./middleware/dot-query-parser.js');
   const errorHandler = require('./middleware/error-handler.js');
+  const controllerHelpersInit = require('./controllers/helpers.js');
   const mongooseConnector = require('./database/mongoose-connector.js');
   const router = require('./router.js');
 
   const mongooseConnection = mongooseConnector(config, mongoose);
+
+  const controllerHelpers = controllerHelpersInit(mongooseConnection.schemas);
 
   const app = express();
 
@@ -39,27 +40,15 @@ module.exports = function() {
 
   app.use(dotQueryParser);
 
-  const digester = function(pw, salt) {
-    return pbkdf2
-      .pbkdf2Sync(pw, salt, 16384, 128, 'sha512')
-      .toString('hex');
-  };
-
   authConfigurer(
     passport,
     PassportBasicStrategy,
     PassportFacebookStrategy,
-    digester,
-    mongooseConnection.schemas.User
+    mongooseConnection.schemas,
+    controllerHelpers
   );
 
-  router(
-    mongooseConnection.schemas,
-    passport,
-    app,
-    digester,
-    () => crypto.randomBytes(128).toString('hex')
-  );
+  router(mongooseConnection.schemas, controllerHelpers, passport, app);
 
   app.use(errorHandler);
 

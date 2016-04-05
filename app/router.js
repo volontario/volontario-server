@@ -1,54 +1,65 @@
 /**
- * All the routes
+ * Route matching
  *
- * @param {object} schs Mongoose schemas
+ * @param {object} schemas Mongoose schemas
+ * @param {object} helpers Controller helpers
  * @param {object} passport Passport
  * @param {function} app Express.js application
- * @param {function} digester Digest generator
- * @param {function} salter Salt generating function
  */
-module.exports = function(schs, passport, app, digester, salter) {
-  const h = require('./controllers/helpers.js')(schs);
-
+module.exports = function(schemas, helpers, passport, app) {
   const rc = require('./controllers/root.js')();
-  const lc = require('./controllers/locations.js')(h, schs.Location);
-  const ec = require('./controllers/events.js')(h, schs.Event);
-  const uc = require('./controllers/users.js')(h, digester, salter, schs);
+  const lc = require('./controllers/locations.js')(helpers, schemas);
+  const ec = require('./controllers/events.js')(helpers, schemas);
+  const uc = require('./controllers/users.js')(helpers, schemas);
 
-  const reqAuth = passport.authenticate('basic');
+  const auth = passport.authenticate('basic');
 
+  // Root AKA ping
   app.get('/', rc.get);
 
-  app.delete('/locations', reqAuth, lc.delete);
-  app.delete('/locations/:id', reqAuth, lc.deleteById);
+  // Locations
+  app.delete('/locations', auth, lc.delete);
+  app.delete('/locations/:id', auth, lc.deleteById);
   app.get('/locations', lc.get);
   app.get('/locations/:id', lc.getById);
   app.get('/locations/:id/:field', lc.getFieldById);
-  app.post('/locations', reqAuth, lc.post);
+  app.post('/locations', auth, lc.post);
 
-  app.delete('/events', reqAuth, ec.delete);
-  app.delete('/events/:id', reqAuth, ec.deleteById);
-  app.delete('/events/:eventId/calendar/:itemId', reqAuth, ec.deleteFromCalendar);
+  // Events
+  app.delete('/events', auth, ec.delete);
+  app.delete('/events/:id', auth, ec.deleteById);
+  app.delete('/events/:eventId/calendar/:itemId', auth, ec.deleteFromCalendar);
   app.get('/events', ec.get);
   app.get('/events/:id', ec.getById);
   app.get('/events/:id/calendar', ec.getCalendar);
   app.get('/events/:id/:field', ec.getFieldById);
   app.patch('/events/:id', ec.patchField);
-  app.post('/events', reqAuth, ec.post);
-  app.post('/events/:id/calendar', reqAuth, ec.postToCalendar);
+  app.post('/events', auth, ec.post);
+  app.post('/events/:id/calendar', auth, ec.postToCalendar);
 
-  app.delete('/users', reqAuth, uc.delete);
-  app.delete('/users/:id', reqAuth, uc.deleteById);
-  app.get('/users', reqAuth, uc.get);
-  app.get('/users/me', reqAuth, uc.getMe);
+  // Users
+  app.delete('/users', auth, uc.delete);
+  app.delete('/users/:id', auth, uc.deleteById);
+  app.get('/users', auth, uc.get);
+  app.get('/users/me', auth, uc.getMe);
   app.get('/users/:id', uc.getById);
   app.get('/users/:id/events', uc.getEvents);
   app.get('/users/:id/:field', uc.getFieldById);
   app.post('/users', uc.post);
 
-  app.get('/oauth/auths/facebook', passport.authenticate('facebook', {scope: 'email'}));
-  app.get('/oauth/callbacks/facebook', passport.authenticate('facebook', {successRedirect: '/users/me', failureRedirect: '/'}));
+  // oAuth
+  app.get(
+    '/oauth/auths/facebook',
+    passport.authenticate('facebook', {scope: 'email'})
+  );
 
-  // If path not found
+  app.get(
+    '/oauth/callbacks/facebook',
+    passport.authenticate(
+      'facebook', {successRedirect: '/users/me', failureRedirect: '/'}
+    )
+  );
+
+  // If no matching handler is found
   app.get('*', (_req, _res, next) => next(new Error('Bad path')));
 };

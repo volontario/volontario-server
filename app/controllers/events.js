@@ -2,10 +2,11 @@
  * Controllers for /events
  *
  * @param {object} helpers Controller helpers
- * @param {object} EventSchema Mongoose event schema
+ * @param {object} schemas Mongoose schemas
  * @return {object} Routes per HTTP method
  */
-module.exports = function(helpers, EventSchema) {
+module.exports = function(helpers, schemas) {
+  const EventSchema = schemas.Event;
   const minerMaster = require('../mining/master.js')(EventSchema);
 
   return {

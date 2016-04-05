@@ -2,12 +2,10 @@
  * Controllers for /users
  *
  * @param {object} helpers Controller helpers
- * @param {object} digester Digest generator
- * @param {function} salter Salt generating function
  * @param {object} schemas Mongoose user schemas
  * @return {object} Routes per HTTP method
  */
-module.exports = function(helpers, digester, salter, schemas) {
+module.exports = function(helpers, schemas) {
   const UserSchema = schemas.User;
 
   return {
@@ -116,8 +114,8 @@ module.exports = function(helpers, digester, salter, schemas) {
     },
 
     post: function(req, res, next) {
-      const salt = salter();
-      const digest = digester(req.body.password, salt);
+      const salt = helpers.generateSalt();
+      const digest = helpers.digest(req.body.password, salt);
 
       // This is crappy and I admit it
       const user = new UserSchema({

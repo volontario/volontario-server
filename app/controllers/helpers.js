@@ -1,3 +1,6 @@
+const crypto = require('crypto');
+const pbkdf2 = require('pbkdf2');
+
 module.exports = function(schemas) {
   return {
     // http://stackoverflow.com/questions/27928/calculate-distance-between-\
@@ -46,11 +49,21 @@ module.exports = function(schemas) {
       }
     },
 
+    digest: function(password, salt) {
+      return pbkdf2
+        .pbkdf2Sync(password, salt, 16384, 128, 'sha512')
+        .toString('hex');
+    },
+
     dropExcludedProperties: function(propertyList, originalObject) {
       return propertyList.reduce(function(incompleteObject, property) {
         incompleteObject[property] = originalObject[property];
         return incompleteObject;
       }, {});
+    },
+
+    generateSalt: function() {
+      return crypto.randomBytes(128).toString('hex');
     },
 
     isOwnerOrTheirAncestor: function(testedUser, doc) {

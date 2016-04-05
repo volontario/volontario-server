@@ -1,10 +1,4 @@
-module.exports = function(
-  passport,
-  Strategy,
-  FBStrategy,
-  digester,
-  UserSchema
-) {
+module.exports = function(passport, Strategy, FBStrategy, schemas, helpers) {
   passport.serializeUser(function(user, done) {
     done(null, user);
   });
@@ -17,7 +11,7 @@ module.exports = function(
       return done(true);
     }
 
-    UserSchema.findOne({email: providedEmail}, function(error, user) {
+    schemas.User.findOne({email: providedEmail}, function(error, user) {
       if (error) {
         return done(new Error('Database error'));
       }
@@ -26,7 +20,7 @@ module.exports = function(
         return done(new Error('Authentication failed'));
       }
 
-      const digest = digester(providedPassword, user.salt);
+      const digest = helpers.digest(providedPassword, user.salt);
       if (digest !== user.digest) {
         return done(new Error('Authentication failed'));
       }
@@ -40,7 +34,7 @@ module.exports = function(
     clientSecret: 'c85bb18cfb4d19878729e0ca62d62f92',
     callbackURL: 'http://alivje.com:8080/oauth/callbacks/facebook'
   }, function(token, refreshToken, profile, done) {
-    UserSchema.findOne({facebookId: profile.id}, function(error, user) {
+    schemas.User.findOne({facebookId: profile.id}, function(error, user) {
       if (error) {
         return done(error);
       }
@@ -51,7 +45,7 @@ module.exports = function(
 
       console.log(profile);
 
-      const newUser = new UserSchema({
+      const newUser = new schemas.User({
         coordinates: {
           latitude: 0,
           longitude: 0

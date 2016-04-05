@@ -2,10 +2,12 @@
  * Controllers for /locations
  *
  * @param {object} helpers Controller helpers
- * @param {object} LocationSchema Mongoose location schema
+ * @param {object} schemas Mongoose schemas
  * @return {object} Routes per HTTP method
  */
-module.exports = function(helpers, LocationSchema) {
+module.exports = function(helpers, schemas) {
+  const LocationSchema = schemas.Location;
+
   const minerMaster = require('../mining/master.js')(LocationSchema);
 
   return {
