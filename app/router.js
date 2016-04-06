@@ -53,12 +53,23 @@ module.exports = function(schemas, helpers, passport, app) {
     passport.authenticate('facebook', {scope: 'email'})
   );
 
-  app.get(
-    '/oauth/callbacks/facebook',
-    passport.authenticate(
-      'facebook', {successRedirect: '/users/me', failureRedirect: '/'}
-    )
-  );
+  app.get('/oauth/callbacks/facebook', function(req, res, next) {
+    console.log('2');
+    passport.authenticate('facebook', function(err, user) {
+      console.log('3');
+      if (err) {
+        return next(err);
+      }
+
+      req.logIn(user, function(err) {
+        if (err) {
+          return next(err);
+        }
+
+        return res.redirect('http://localhost:8100?id=' + user.id);
+      });
+    });
+  });
 
   // If no matching handler is found
   app.get('*', (_req, _res, next) => next(new Error('Bad path')));

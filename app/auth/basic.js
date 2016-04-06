@@ -34,6 +34,7 @@ module.exports = function(passport, Strategy, FBStrategy, schemas, helpers) {
     clientSecret: 'c85bb18cfb4d19878729e0ca62d62f92',
     callbackURL: 'http://alivje.com:8080/oauth/callbacks/facebook'
   }, function(token, refreshToken, profile, done) {
+    console.log('1');
     schemas.User.findOne({facebookId: profile.id}, function(error, user) {
       if (error) {
         return done(error);
@@ -43,27 +44,16 @@ module.exports = function(passport, Strategy, FBStrategy, schemas, helpers) {
         return done(null, user);
       }
 
-      console.log(profile);
-
-      const newUser = new schemas.User({
-        coordinates: {
-          latitude: 0,
-          longitude: 0
-        },
-        dateOfBirth: new Date('1980-01-01'),
-        email: profile.email,
-        givenName: profile.name.givenName,
-        facebookId: profile.id,
-        familyName: profile.name.familyName,
-        phoneNumber: '+358504911000'
+      const newQuasiuser = new schemas.Quasiuser({
+        facebookId: profile.id
       });
 
-      newUser.save(function(error) {
+      newQuasiuser.save(function(error) {
         if (error) {
           return done(error);
         }
 
-        return done(null, newUser);
+        return done(null, newQuasiuser);
       });
     });
   }));

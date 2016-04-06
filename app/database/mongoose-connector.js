@@ -34,7 +34,8 @@ module.exports = function(config, mongoose) {
   const schemas = {
     Event: schemaFactory('event'),
     Location: schemaFactory('location'),
-    User: schemaFactory('user')
+    User: schemaFactory('user'),
+    Quasiuser: schemaFactory('quasiuser')
   };
 
   mongoose.connect(config.MONGO_URL, {
