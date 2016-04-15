@@ -1,11 +1,4 @@
-module.exports = function(passport, Strategy, FBStrategy, schemas, helpers) {
-  passport.serializeUser(function(user, done) {
-    done(null, user);
-  });
-  passport.deserializeUser(function(user, done) {
-    done(null, user);
-  });
-
+module.exports = function(passport, Strategy, schemas, helpers) {
   passport.use(new Strategy(function(providedEmail, providedPassword, done) {
     if (providedEmail === '' || providedPassword === '') {
       return done(true);
@@ -26,34 +19,6 @@ module.exports = function(passport, Strategy, FBStrategy, schemas, helpers) {
       }
 
       return done(null, user);
-    });
-  }));
-
-  passport.use(new FBStrategy({
-    clientID: 194982844214187,
-    clientSecret: 'c85bb18cfb4d19878729e0ca62d62f92',
-    callbackURL: 'http://alivje.com:8080/auths/facebook/callback'
-  }, function(token, refreshToken, profile, done) {
-    schemas.User.findOne({facebookId: profile.id}, function(error, user) {
-      if (error) {
-        return done(error);
-      }
-
-      if (user) {
-        return done(null, user);
-      }
-
-      const newQuasiuser = new schemas.Quasiuser({
-        externalIds: {facebook: profile.id}
-      });
-
-      newQuasiuser.save(function(error) {
-        if (error) {
-          return done(error);
-        }
-
-        return done(null, newQuasiuser);
-      });
     });
   }));
 };

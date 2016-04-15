@@ -27,6 +27,9 @@ module.exports = (function() {
     EXPRESS_PORT: expressPort,
     MONGO_URL: prefixGet('MONGO_URL'),
     MONGO_USERNAME: prefixGet('MONGO_USERNAME'),
-    MONGO_PASSWORD: prefixGet('MONGO_PASSWORD')
+    MONGO_PASSWORD: prefixGet('MONGO_PASSWORD'),
+    FACEBOOK_AUTH_ID: prefixGet('FACEBOOK_AUTH_ID'),
+    FACEBOOK_AUTH_SECRET: prefixGet('FACEBOOK_AUTH_SECRET'),
+    FACEBOOK_AUTH_CALLBACK: prefixGet('FACEBOOK_AUTH_CALLBACK')
   };
 })();

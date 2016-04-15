@@ -7,10 +7,12 @@ module.exports = function() {
   const mongoose = require('mongoose');
   const morgan = require('morgan');
   const passport = require('passport');
-  const PassportBasicStrategy = require('passport-http').BasicStrategy;
-  const PassportFacebookStrategy = require('passport-facebook').Strategy;
+  const PassportBasicS = require('passport-http').BasicStrategy;
+  const PassportFacebookS = require('passport-facebook').Strategy;
 
-  const authConfigurer = require('./auth/basic.js');
+  const authConfigurer = require('./auth/config.js');
+  const basicAuther = require('./auth/basic.js');
+  const facebookAuther = require('./auth/facebook.js');
   const config = require('./config.js');
   const dotQueryParser = require('./middleware/dot-query-parser.js');
   const errorHandler = require('./middleware/error-handler.js');
@@ -18,9 +20,9 @@ module.exports = function() {
   const mongooseConnector = require('./database/mongoose-connector.js');
   const router = require('./router.js');
 
-  const mongooseConnection = mongooseConnector(config, mongoose);
+  const mongooseConn = mongooseConnector(config, mongoose);
 
-  const controllerHelpers = controllerHelpersInit(mongooseConnection.schemas);
+  const ctrlHelpers = controllerHelpersInit(mongooseConn.schemas);
 
   const app = express();
 
@@ -40,15 +42,11 @@ module.exports = function() {
 
   app.use(dotQueryParser);
 
-  authConfigurer(
-    passport,
-    PassportBasicStrategy,
-    PassportFacebookStrategy,
-    mongooseConnection.schemas,
-    controllerHelpers
-  );
+  authConfigurer(passport);
+  basicAuther(passport, PassportBasicS, mongooseConn.schemas, ctrlHelpers);
+  facebookAuther(passport, PassportFacebookS, mongooseConn.schemas, config);
 
-  router(mongooseConnection.schemas, controllerHelpers, passport, app);
+  router(mongooseConn.schemas, ctrlHelpers, passport, app);
 
   app.use(errorHandler);
 
