@@ -32,9 +32,8 @@ module.exports = function(passport, Strategy, FBStrategy, schemas, helpers) {
   passport.use(new FBStrategy({
     clientID: 194982844214187,
     clientSecret: 'c85bb18cfb4d19878729e0ca62d62f92',
-    callbackURL: 'http://alivje.com:8080/oauth/callbacks/facebook'
+    callbackURL: 'http://alivje.com:8080/auths/facebook/callback'
   }, function(token, refreshToken, profile, done) {
-    console.log('1');
     schemas.User.findOne({facebookId: profile.id}, function(error, user) {
       if (error) {
         return done(error);
@@ -45,7 +44,7 @@ module.exports = function(passport, Strategy, FBStrategy, schemas, helpers) {
       }
 
       const newQuasiuser = new schemas.Quasiuser({
-        facebookId: profile.id
+        externalIds: {facebook: profile.id}
       });
 
       newQuasiuser.save(function(error) {

@@ -49,14 +49,12 @@ module.exports = function(schemas, helpers, passport, app) {
 
   // oAuth
   app.get(
-    '/oauth/auths/facebook',
+    '/auths/facebook',
     passport.authenticate('facebook', {scope: 'email'})
   );
 
-  app.get('/oauth/callbacks/facebook', function(req, res, next) {
-    console.log('2');
+  app.get('/auths/facebook/callback', function(req, res, next) {
     passport.authenticate('facebook', function(err, user) {
-      console.log('3');
       if (err) {
         return next(err);
       }
@@ -66,9 +64,14 @@ module.exports = function(schemas, helpers, passport, app) {
           return next(err);
         }
 
-        return res.redirect('http://localhost:8100?id=' + user.id);
+        const isQuasi =
+          user.constructor.modelName === 'quasiuser' ? 'true' : 'false';
+
+        const host = 'http://localhost:8100';
+
+        return res.redirect(`${host}?id=${user.id}&quasi=${isQuasi}`);
       });
-    });
+    })(req, res, next);
   });
 
   // If no matching handler is found
