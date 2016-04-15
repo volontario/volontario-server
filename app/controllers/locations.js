@@ -28,7 +28,7 @@ module.exports = function(helpers, schemas) {
             return dN;
           }
 
-          location.remove().exec();
+          LocationSchema.findByIdAndRemove(location.id, () => true);
           return dN + 1;
         }, 0);
 
@@ -48,7 +48,7 @@ module.exports = function(helpers, schemas) {
           return next(new Error());
         }
 
-        location.remove().exec();
+        location.remove();
         res.status(205).end();
       });
     },

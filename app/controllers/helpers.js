@@ -67,7 +67,7 @@ module.exports = function(schemas) {
     },
 
     isOwnerOrTheirAncestor: function(testedUser, doc) {
-      if (testedUser.id === doc.ownerId) {
+      if (doc.ownerId === testedUser.id) {
         return true;
       }
 
@@ -77,7 +77,7 @@ module.exports = function(schemas) {
         }
 
         schemas.User.findById(doc.ownerId, function(err, owner) {
-          if (err) {
+          if (err || !owner) {
             return false;
           }
 

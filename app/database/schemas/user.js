@@ -12,7 +12,7 @@ module.exports = function(mongoose) {
     email: {type: String, required: true, unique: true},
     familyName: {type: String, required: true},
     givenName: {type: String, required: true},
-    owner: {type: String, default: null},
+    ownerId: {type: String, default: null},
     phoneNumber: {type: String, required: true},
     salt: String,
     tags: [String],

@@ -26,7 +26,7 @@ module.exports = function(helpers, schemas) {
             return dN;
           }
 
-          user.remove().exec();
+          UserSchema.findByIdAndRemove(user.id, () => true);
           return dN + 1;
         }, 0);
 
@@ -46,7 +46,7 @@ module.exports = function(helpers, schemas) {
           return next(new Error('Database error'));
         }
 
-        user.remove().exec();
+        user.remove();
         res.status(205).end();
       });
     },
@@ -128,6 +128,7 @@ module.exports = function(helpers, schemas) {
         email: req.body.email,
         familyName: req.body.familyName,
         givenName: req.body.givenName,
+        ownerId: req.body.ownerId,
         phoneNumber: req.body.phoneNumber,
         salt: salt,
         tags: req.body.tags
@@ -138,7 +139,17 @@ module.exports = function(helpers, schemas) {
           return next(helpers.decorateError(err));
         }
 
-        res.status(201).json({id: user.id});
+        if (user.ownerId === null) {
+          user.ownerId = user.id;
+        }
+
+        user.save(function(err) {
+          if (err) {
+            return next(helpers.decorateError(err));
+          }
+
+          res.status(201).json({id: user.id});
+        });
       });
     }
   };

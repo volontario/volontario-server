@@ -115,6 +115,15 @@ module.exports = function(frisby, _, async, apiRooter, EMAIL, PASSWORD) {
         .toss();
     }
 
+    ownBy(owner) {
+      if (!(owner instanceof exportedClass) || owner.data.id === undefined) {
+        throw new Error('Owner not valid');
+      }
+
+      this._data.ownerId = owner.data.id;
+      this._auth = owner.data;
+    }
+
     ownEvent(newEvent) {
       if (this.events.some(e => e.id === newEvent.id)) {
         return;

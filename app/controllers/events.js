@@ -27,7 +27,7 @@ module.exports = function(helpers, schemas) {
             return dN;
           }
 
-          event.remove().exec();
+          EventSchema.findByIdAndRemove(event.id, () => true);
           return dN + 1;
         }, 0);
 
@@ -47,7 +47,7 @@ module.exports = function(helpers, schemas) {
           return next(new Error());
         }
 
-        event.remove().exec();
+        event.remove();
         res.status(205).end();
       });
     },

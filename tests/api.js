@@ -64,6 +64,7 @@
         const differentUser = new User();
         differentUser.data.email = 'supertest@test.test';
         differentUser.data.familyName = 'Testerberg';
+        differentUser.ownBy(user);
 
         async.waterfall([
           cb => differentUser.save(cb),
