@@ -117,6 +117,9 @@ module.exports = function(helpers, schemas) {
       const salt = helpers.generateSalt();
       const digest = helpers.digest(req.body.password, salt);
 
+      // To prevent "cannot read property 'latitude' of undefined" et al
+      req.body.coordinates = req.body.coordinates || {};
+
       // This is crappy and I admit it
       const user = new UserSchema({
         coordinates: {
