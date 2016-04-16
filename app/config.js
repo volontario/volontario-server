@@ -28,6 +28,7 @@ module.exports = (function() {
     MONGO_URL: prefixGet('MONGO_URL'),
     MONGO_USERNAME: prefixGet('MONGO_USERNAME'),
     MONGO_PASSWORD: prefixGet('MONGO_PASSWORD'),
+    AUTH_CALLBACK: prefixGet('AUTH_CALLBACK'),
     FACEBOOK_AUTH_ID: prefixGet('FACEBOOK_AUTH_ID'),
     FACEBOOK_AUTH_SECRET: prefixGet('FACEBOOK_AUTH_SECRET'),
     FACEBOOK_AUTH_CALLBACK: prefixGet('FACEBOOK_AUTH_CALLBACK')

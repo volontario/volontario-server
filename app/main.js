@@ -46,7 +46,7 @@ module.exports = function() {
   basicAuther(passport, PassportBasicS, mongooseConn.schemas, ctrlHelpers);
   facebookAuther(passport, PassportFacebookS, mongooseConn.schemas, config);
 
-  router(mongooseConn.schemas, ctrlHelpers, passport, app);
+  router(config, mongooseConn.schemas, ctrlHelpers, passport, app);
 
   app.use(errorHandler);
 

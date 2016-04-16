@@ -1,17 +1,18 @@
 /**
  * Route matching
  *
+ * @param {object} config Application configuration
  * @param {object} schemas Mongoose schemas
  * @param {object} helpers Controller helpers
  * @param {object} passport Passport
  * @param {function} app Express.js application
  */
-module.exports = function(schemas, helpers, passport, app) {
+module.exports = function(config, schemas, helpers, passport, app) {
   const rc = require('./controllers/root.js')();
   const lc = require('./controllers/locations.js')(helpers, schemas);
   const ec = require('./controllers/events.js')(helpers, schemas);
   const uc = require('./controllers/users.js')(helpers, schemas);
-  const ac = require('./controllers/auths.js')(passport);
+  const ac = require('./controllers/auths.js')(config, passport);
 
   const auth = passport.authenticate('basic');
 

@@ -4,7 +4,7 @@
  * @param {object} passport Passport
  * @return {object} Routes per HTTP method
  */
-module.exports = function(passport) {
+module.exports = function(config, passport) {
   return {
     facebookCallback: function(req, res, next) {
       passport.authenticate('facebook', function(err, user) {
@@ -17,12 +17,9 @@ module.exports = function(passport) {
             return next(err);
           }
 
-          const isQuasi =
-            user.constructor.modelName === 'quasiuser' ? 'true' : 'false';
+          const url = config.AUTH_CALLBACK;
 
-          const host = 'http://localhost:8100';
-
-          return res.redirect(`${host}?id=${user.id}&quasi=${isQuasi}`);
+          return res.redirect(`${url}?quasiuserId=${user.id}`);
         });
       })(req, res, next);
     },
