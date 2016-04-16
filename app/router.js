@@ -11,6 +11,7 @@ module.exports = function(schemas, helpers, passport, app) {
   const lc = require('./controllers/locations.js')(helpers, schemas);
   const ec = require('./controllers/events.js')(helpers, schemas);
   const uc = require('./controllers/users.js')(helpers, schemas);
+  const ac = require('./controllers/auths.js')(passport);
 
   const auth = passport.authenticate('basic');
 
@@ -47,32 +48,9 @@ module.exports = function(schemas, helpers, passport, app) {
   app.get('/users/:id/:field', uc.getFieldById);
   app.post('/users', uc.post);
 
-  // oAuth
-  app.get(
-    '/auths/facebook',
-    passport.authenticate('facebook', {scope: 'email'})
-  );
-
-  app.get('/auths/facebook/callback', function(req, res, next) {
-    passport.authenticate('facebook', function(err, user) {
-      if (err) {
-        return next(err);
-      }
-
-      req.logIn(user, function(err) {
-        if (err) {
-          return next(err);
-        }
-
-        const isQuasi =
-          user.constructor.modelName === 'quasiuser' ? 'true' : 'false';
-
-        const host = 'http://localhost:8100';
-
-        return res.redirect(`${host}?id=${user.id}&quasi=${isQuasi}`);
-      });
-    })(req, res, next);
-  });
+  // Authentication
+  app.get('/auths/facebook', ac.facebookInit);
+  app.get('/auths/facebook/callback', ac.facebookCallback);
 
   // If no matching handler is found
   app.get('*', (_req, _res, next) => next(new Error('Bad path')));
