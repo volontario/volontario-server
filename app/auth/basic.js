@@ -1,4 +1,7 @@
-module.exports = function(passport, Strategy, schemas, helpers) {
+module.exports = function(passport, schemas) {
+  const Strategy = require('passport-http').BasicStrategy;
+  const helpers = require('./helpers.js');
+
   passport.use(new Strategy(function(providedEmail, providedPassword, done) {
     if (providedEmail === '' || providedPassword === '') {
       return done(true);

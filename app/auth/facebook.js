@@ -1,4 +1,6 @@
-module.exports = function(passport, Strategy, schemas, config) {
+module.exports = function(passport, schemas, config) {
+  const Strategy = require('passport-facebook').Strategy;
+
   passport.use(new Strategy({
     clientID: config.FACEBOOK_AUTH_ID,
     clientSecret: config.FACEBOOK_AUTH_SECRET,

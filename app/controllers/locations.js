@@ -1,9 +1,9 @@
 /**
  * Controllers for /locations
  */
-module.exports = function(helpers, schemas) {
+module.exports = function(schemas) {
   const LocationSchema = schemas.Location;
-
+  const helpers = require('./helpers.js');
   const minerMaster = require('../mining/master.js')(LocationSchema);
 
   return {
@@ -20,7 +20,7 @@ module.exports = function(helpers, schemas) {
         }
 
         const deletedN = locations.reduce(function(dN, location) {
-          if (!helpers.isOwnerOrTheirAncestor(req.user, location)) {
+          if (!helpers.isOwnerOrTheirAncestor(req.user, location, schemas.User)) {
             return dN;
           }
 
@@ -34,7 +34,7 @@ module.exports = function(helpers, schemas) {
 
     deleteById: function(req, res, next) {
       LocationSchema.findById(req.params.id, function(err, location) {
-        if (!helpers.isOwnerOrTheirAncestor(req.user, location)) {
+        if (!helpers.isOwnerOrTheirAncestor(req.user, location, schemas.User)) {
           return res.status(403).end();
         }
 

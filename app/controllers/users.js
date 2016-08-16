@@ -1,7 +1,9 @@
 /**
  * Controllers for /users
  */
-module.exports = function(helpers, schemas) {
+module.exports = function(schemas) {
+  const authHelpers = require('../auth/helpers.js');
+  const helpers = require('./helpers.js');
   const UserSchema = schemas.User;
 
   return {
@@ -18,7 +20,7 @@ module.exports = function(helpers, schemas) {
         }
 
         const deletedN = users.reduce(function(dN, user) {
-          if (!helpers.isOwnerOrTheirAncestor(req.user, user)) {
+          if (!helpers.isOwnerOrTheirAncestor(req.user, user, schemas.User)) {
             return dN;
           }
 
@@ -32,7 +34,7 @@ module.exports = function(helpers, schemas) {
 
     deleteById: function(req, res, next) {
       UserSchema.findById(req.params.id, function(err, user) {
-        if (!helpers.isOwnerOrTheirAncestor(req.user, user)) {
+        if (!helpers.isOwnerOrTheirAncestor(req.user, user, schemas.User)) {
           return res.status(403).end();
         }
 
@@ -110,8 +112,8 @@ module.exports = function(helpers, schemas) {
     },
 
     post: function(req, res, next) {
-      const salt = helpers.generateSalt();
-      const digest = helpers.digest(req.body.password, salt);
+      const salt = authHelpers.generateSalt();
+      const digest = authHelpers.digest(req.body.password, salt);
 
       // To prevent "cannot read property 'latitude' of undefined" et al
       req.body.coordinates = req.body.coordinates || {};

@@ -1,11 +1,11 @@
 /**
  * Route matching
  */
-module.exports = function(config, schemas, helpers, passport, app) {
-  const rc = require('./controllers/root.js')();
-  const lc = require('./controllers/locations.js')(helpers, schemas);
-  const ec = require('./controllers/events.js')(helpers, schemas);
-  const uc = require('./controllers/users.js')(helpers, schemas);
+module.exports = function(config, schemas, passport, app) {
+const rc = require('./controllers/root.js')();
+  const lc = require('./controllers/locations.js')(schemas);
+  const ec = require('./controllers/events.js')(schemas);
+  const uc = require('./controllers/users.js')(schemas);
   const ac = require('./controllers/auths.js')(config, passport);
 
   const auth = passport.authenticate('basic');

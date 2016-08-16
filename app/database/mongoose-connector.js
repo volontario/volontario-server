@@ -1,4 +1,6 @@
-module.exports = function(config, mongoose) {
+module.exports = function(config) {
+  const mongoose = require('mongoose');
+
   const schemaFactory = function(name) {
     const schemeCreator = require(`./schemas/${name}.js`);
     const Schema = schemeCreator(mongoose);

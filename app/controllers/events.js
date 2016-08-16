@@ -1,8 +1,9 @@
 /**
  * Controllers for /events
  */
-module.exports = function(helpers, schemas) {
+module.exports = function(schemas) {
   const EventSchema = schemas.Event;
+  const helpers = require('./helpers.js');
   const minerMaster = require('../mining/master.js')(EventSchema);
 
   return {
@@ -19,7 +20,7 @@ module.exports = function(helpers, schemas) {
         }
 
         const deletedN = events.reduce(function(dN, event) {
-          if (!helpers.isOwnerOrTheirAncestor(req.user, event)) {
+          if (!helpers.isOwnerOrTheirAncestor(req.user, event, schemas.User)) {
             return dN;
           }
 
@@ -33,7 +34,7 @@ module.exports = function(helpers, schemas) {
 
     deleteById: function(req, res, next) {
       EventSchema.findById(req.params.id, function(err, event) {
-        if (!helpers.isOwnerOrTheirAncestor(req.user, event)) {
+        if (!helpers.isOwnerOrTheirAncestor(req.user, event, schemas.User)) {
           return res.status(403).end();
         }
 
@@ -58,7 +59,7 @@ module.exports = function(helpers, schemas) {
           return next(new Error('Event not found'));
         }
 
-        if (!helpers.isOwnerOrTheirAncestor(req.user, event)) {
+        if (!helpers.isOwnerOrTheirAncestor(req.user, event, schemas.User)) {
           return res.status(403).end();
         }
 
@@ -242,7 +243,7 @@ module.exports = function(helpers, schemas) {
           return next(new Error('Event not found'));
         }
 
-        if (!helpers.isOwnerOrTheirAncestor(req.user, event)) {
+        if (!helpers.isOwnerOrTheirAncestor(req.user, event, schemas.User)) {
           return res.status(403).end();
         }
 
