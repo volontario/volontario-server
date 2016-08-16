@@ -1,11 +1,5 @@
 /**
  * Route matching
- *
- * @param {object} config Application configuration
- * @param {object} schemas Mongoose schemas
- * @param {object} helpers Controller helpers
- * @param {object} passport Passport
- * @param {function} app Express.js application
  */
 module.exports = function(config, schemas, helpers, passport, app) {
   const rc = require('./controllers/root.js')();

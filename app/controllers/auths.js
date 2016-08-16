@@ -1,8 +1,5 @@
 /**
  * Controllers for /auths
- *
- * @param {object} passport Passport
- * @return {object} Routes per HTTP method
  */
 module.exports = function(config, passport) {
   return {

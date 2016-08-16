@@ -1,9 +1,5 @@
 /**
  * Controllers for /locations
- *
- * @param {object} helpers Controller helpers
- * @param {object} schemas Mongoose schemas
- * @return {object} Routes per HTTP method
  */
 module.exports = function(helpers, schemas) {
   const LocationSchema = schemas.Location;
